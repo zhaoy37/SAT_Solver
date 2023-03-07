@@ -1,0 +1,187 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> formula
+Rule 1     formula -> LITERAL
+Rule 2     formula -> formula AND formula
+Rule 3     formula -> formula OR formula
+Rule 4     formula -> NOT formula
+Rule 5     formula -> LPAREN formula RPAREN
+
+Terminals, with rules where they appear
+
+AND                  : 2
+LITERAL              : 1
+LPAREN               : 5
+NOT                  : 4
+OR                   : 3
+RPAREN               : 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+formula              : 2 2 3 3 4 5 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . formula
+    (1) formula -> . LITERAL
+    (2) formula -> . formula AND formula
+    (3) formula -> . formula OR formula
+    (4) formula -> . NOT formula
+    (5) formula -> . LPAREN formula RPAREN
+
+    LITERAL         shift and go to state 2
+    NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
+
+    formula                        shift and go to state 1
+
+state 1
+
+    (0) S' -> formula .
+    (2) formula -> formula . AND formula
+    (3) formula -> formula . OR formula
+
+    AND             shift and go to state 5
+    OR              shift and go to state 6
+
+
+state 2
+
+    (1) formula -> LITERAL .
+
+    AND             reduce using rule 1 (formula -> LITERAL .)
+    OR              reduce using rule 1 (formula -> LITERAL .)
+    $end            reduce using rule 1 (formula -> LITERAL .)
+    RPAREN          reduce using rule 1 (formula -> LITERAL .)
+
+
+state 3
+
+    (4) formula -> NOT . formula
+    (1) formula -> . LITERAL
+    (2) formula -> . formula AND formula
+    (3) formula -> . formula OR formula
+    (4) formula -> . NOT formula
+    (5) formula -> . LPAREN formula RPAREN
+
+    LITERAL         shift and go to state 2
+    NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
+
+    formula                        shift and go to state 7
+
+state 4
+
+    (5) formula -> LPAREN . formula RPAREN
+    (1) formula -> . LITERAL
+    (2) formula -> . formula AND formula
+    (3) formula -> . formula OR formula
+    (4) formula -> . NOT formula
+    (5) formula -> . LPAREN formula RPAREN
+
+    LITERAL         shift and go to state 2
+    NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
+
+    formula                        shift and go to state 8
+
+state 5
+
+    (2) formula -> formula AND . formula
+    (1) formula -> . LITERAL
+    (2) formula -> . formula AND formula
+    (3) formula -> . formula OR formula
+    (4) formula -> . NOT formula
+    (5) formula -> . LPAREN formula RPAREN
+
+    LITERAL         shift and go to state 2
+    NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
+
+    formula                        shift and go to state 9
+
+state 6
+
+    (3) formula -> formula OR . formula
+    (1) formula -> . LITERAL
+    (2) formula -> . formula AND formula
+    (3) formula -> . formula OR formula
+    (4) formula -> . NOT formula
+    (5) formula -> . LPAREN formula RPAREN
+
+    LITERAL         shift and go to state 2
+    NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
+
+    formula                        shift and go to state 10
+
+state 7
+
+    (4) formula -> NOT formula .
+    (2) formula -> formula . AND formula
+    (3) formula -> formula . OR formula
+
+    AND             reduce using rule 4 (formula -> NOT formula .)
+    OR              reduce using rule 4 (formula -> NOT formula .)
+    $end            reduce using rule 4 (formula -> NOT formula .)
+    RPAREN          reduce using rule 4 (formula -> NOT formula .)
+
+  ! AND             [ shift and go to state 5 ]
+  ! OR              [ shift and go to state 6 ]
+
+
+state 8
+
+    (5) formula -> LPAREN formula . RPAREN
+    (2) formula -> formula . AND formula
+    (3) formula -> formula . OR formula
+
+    RPAREN          shift and go to state 11
+    AND             shift and go to state 5
+    OR              shift and go to state 6
+
+
+state 9
+
+    (2) formula -> formula AND formula .
+    (2) formula -> formula . AND formula
+    (3) formula -> formula . OR formula
+
+    AND             reduce using rule 2 (formula -> formula AND formula .)
+    OR              reduce using rule 2 (formula -> formula AND formula .)
+    $end            reduce using rule 2 (formula -> formula AND formula .)
+    RPAREN          reduce using rule 2 (formula -> formula AND formula .)
+
+  ! AND             [ shift and go to state 5 ]
+  ! OR              [ shift and go to state 6 ]
+
+
+state 10
+
+    (3) formula -> formula OR formula .
+    (2) formula -> formula . AND formula
+    (3) formula -> formula . OR formula
+
+    OR              reduce using rule 3 (formula -> formula OR formula .)
+    $end            reduce using rule 3 (formula -> formula OR formula .)
+    RPAREN          reduce using rule 3 (formula -> formula OR formula .)
+    AND             shift and go to state 5
+
+  ! AND             [ reduce using rule 3 (formula -> formula OR formula .) ]
+  ! OR              [ shift and go to state 6 ]
+
+
+state 11
+
+    (5) formula -> LPAREN formula RPAREN .
+
+    AND             reduce using rule 5 (formula -> LPAREN formula RPAREN .)
+    OR              reduce using rule 5 (formula -> LPAREN formula RPAREN .)
+    $end            reduce using rule 5 (formula -> LPAREN formula RPAREN .)
+    RPAREN          reduce using rule 5 (formula -> LPAREN formula RPAREN .)
+
