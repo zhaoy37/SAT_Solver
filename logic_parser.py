@@ -20,6 +20,8 @@ https://tool.oschina.net/uploads/apidocs/jquery/regexp.html
 
 I also used some class materials from CS 3276 Provided
 by professor Kevin Leach: Please see https://www.youtube.com/watch?v=xfjCWRmDj3Q&t=1176s
+
+This work may partially overlap with my work in CS 8395, another class at Vanderbilt.
 """
 import ply.lex as lex
 import ply.yacc as yacc
