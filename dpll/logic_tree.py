@@ -3,6 +3,10 @@ Author: Nick
 
 The purpose of this file is to write the class
 for the tree structure of logic formulae.
+
+Acknowledgement: The course materials from
+CS 6315 provided by Professor Taylor Johnson are used
+for reference purposes.
 """
 
 class Logic:
@@ -43,6 +47,16 @@ class Logic:
         return set(leaves)
 
     """
+    This method evaluates an assignment.
+    The assignment is in the form of a dictionary mapping variables to boolean values.
+    """
+    def evaluate(self, assignment):
+        # Check if the assignment dictionary contains and only contains the leaves as the keys.
+        if self.leaves != set(assignment.keys()):
+            raise Exception("The given assignment is not valid")
+        return self.__evaluate_assignment_kernel(assignment, self)
+
+    """
     Private methods start here:
     """
 
@@ -60,3 +74,38 @@ class Logic:
                 self.left = Logic(self.formula[1])
                 self.right = Logic(self.formula[2])
                 return self.formula[0]
+
+    """
+    This method is the kernel to evaluate a potential assignment.
+    The assignment is in the form of a dictionary mapping variables to boolean values.
+    """
+    def __evaluate_assignment_kernel(self, assignment, tree):
+        if (tree.left is None) and (tree.right is None):
+            return assignment[tree.value]
+        else:
+            # Enforce some DPLL heuristics:
+
+            """
+            Deducing:
+            
+            p | (p or q) and (not p or s)
+            -----------------------------
+            p, s | (p or q) and (not p or s)
+            """
+            if tree.value == "and":
+                if tree.left.value == "or" and tree.right.value == "or":
+                    if tree.right.left.value == "not":
+                        p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left)
+                        p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right)
+                        if p1 and p2:
+                            return self.__evaluate_assignment_kernel(assignment, tree.right.right)
+
+            # Naive solution:
+            if tree.value == "not":
+                return (not self.__evaluate_assignment_kernel(assignment, tree.right))
+            elif tree.value == "and":
+                return (self.__evaluate_assignment_kernel(assignment, tree.left) and
+                        self.__evaluate_assignment_kernel(assignment, tree.right))
+            else:
+                return (self.__evaluate_assignment_kernel(assignment, tree.left) or
+                        self.__evaluate_assignment_kernel(assignment, tree.right))
