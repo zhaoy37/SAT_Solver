@@ -24,7 +24,7 @@ class Logic:
     def print_tree(self):
         if self.left is not None:
             self.left.print_tree()
-        print(self.value, end = "\n")
+        print(self.value)
         if self.right is not None:
             self.right.print_tree()
 
