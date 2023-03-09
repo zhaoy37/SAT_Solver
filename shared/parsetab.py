@@ -27,9 +27,9 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> formula","S'",1,None,None,None),
-  ('formula -> LITERAL','formula',1,'p_formula_literal','logic_parser.py',72),
-  ('formula -> formula AND formula','formula',3,'p_formula_and','logic_parser.py',76),
-  ('formula -> formula OR formula','formula',3,'p_formula_or','logic_parser.py',80),
-  ('formula -> NOT formula','formula',2,'p_formula_not','logic_parser.py',84),
-  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','logic_parser.py',88),
+  ('formula -> LITERAL','formula',1,'p_formula_literal','logic_parser.py',76),
+  ('formula -> formula AND formula','formula',3,'p_formula_and','logic_parser.py',80),
+  ('formula -> formula OR formula','formula',3,'p_formula_or','logic_parser.py',84),
+  ('formula -> NOT formula','formula',2,'p_formula_not','logic_parser.py',88),
+  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','logic_parser.py',92),
 ]

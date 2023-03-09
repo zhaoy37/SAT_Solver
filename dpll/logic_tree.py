@@ -1,5 +1,5 @@
 """
-Author: Nick
+Author: Yiqi (Nick) Zhao
 
 The purpose of this file is to write the class
 for the tree structure of logic formulae.
@@ -50,11 +50,11 @@ class Logic:
     This method evaluates an assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
-    def evaluate(self, assignment):
+    def evaluate(self, assignment, tree_heuristics_enabled = True):
         # Check if the assignment dictionary contains and only contains the leaves as the keys.
         if self.leaves != set(assignment.keys()):
             raise Exception("The given assignment is not valid")
-        return self.__evaluate_assignment_kernel(assignment, self)
+        return self.__evaluate_assignment_kernel(assignment, self, tree_heuristics_enabled)
 
     """
     Private methods start here:
@@ -79,33 +79,37 @@ class Logic:
     This method is the kernel to evaluate a potential assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
-    def __evaluate_assignment_kernel(self, assignment, tree):
+    def __evaluate_assignment_kernel(self, assignment, tree, tree_heuristic_enabled):
         if (tree.left is None) and (tree.right is None):
             return assignment[tree.value]
         else:
+            # I may allow caching later.
             # Enforce some DPLL heuristics:
-
-            """
-            Deducing:
-            
-            p | (p or q) and (not p or s)
-            -----------------------------
-            p, s | (p or q) and (not p or s)
-            """
-            if tree.value == "and":
-                if tree.left.value == "or" and tree.right.value == "or":
-                    if tree.right.left.value == "not":
-                        p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left)
-                        p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right)
-                        if p1 and p2:
-                            return self.__evaluate_assignment_kernel(assignment, tree.right.right)
+            if tree_heuristic_enabled:
+                """
+                Deducing:
+                
+                p | (p or q) and (not p or s)
+                -----------------------------
+                p, s | (p or q) and (not p or s)
+                """
+                if tree.value == "and":
+                    if tree.left.value == "or" and tree.right.value == "or":
+                        if tree.right.left.value == "not":
+                            p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left,
+                                                                   tree_heuristic_enabled)
+                            p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right,
+                                                                   tree_heuristic_enabled)
+                            if p1 and p2:
+                                return self.__evaluate_assignment_kernel(assignment, tree.right.right,
+                                                                         tree_heuristic_enabled)
 
             # Naive solution:
             if tree.value == "not":
-                return (not self.__evaluate_assignment_kernel(assignment, tree.right))
+                return (not self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))
             elif tree.value == "and":
-                return (self.__evaluate_assignment_kernel(assignment, tree.left) and
-                        self.__evaluate_assignment_kernel(assignment, tree.right))
+                return (self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled) and
+                        self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))
             else:
-                return (self.__evaluate_assignment_kernel(assignment, tree.left) or
-                        self.__evaluate_assignment_kernel(assignment, tree.right))
+                return (self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled) or
+                        self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))
