@@ -8,15 +8,19 @@ Rule 2     formula -> formula AND formula
 Rule 3     formula -> formula OR formula
 Rule 4     formula -> NOT formula
 Rule 5     formula -> LPAREN formula RPAREN
+Rule 6     formula -> TRUE
+Rule 7     formula -> FALSE
 
 Terminals, with rules where they appear
 
 AND                  : 2
+FALSE                : 7
 LITERAL              : 1
 LPAREN               : 5
 NOT                  : 4
 OR                   : 3
 RPAREN               : 5
+TRUE                 : 6
 error                : 
 
 Nonterminals, with rules where they appear
@@ -33,10 +37,14 @@ state 0
     (3) formula -> . formula OR formula
     (4) formula -> . NOT formula
     (5) formula -> . LPAREN formula RPAREN
+    (6) formula -> . TRUE
+    (7) formula -> . FALSE
 
     LITERAL         shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
+    TRUE            shift and go to state 5
+    FALSE           shift and go to state 6
 
     formula                        shift and go to state 1
 
@@ -46,8 +54,8 @@ state 1
     (2) formula -> formula . AND formula
     (3) formula -> formula . OR formula
 
-    AND             shift and go to state 5
-    OR              shift and go to state 6
+    AND             shift and go to state 7
+    OR              shift and go to state 8
 
 
 state 2
@@ -68,12 +76,16 @@ state 3
     (3) formula -> . formula OR formula
     (4) formula -> . NOT formula
     (5) formula -> . LPAREN formula RPAREN
+    (6) formula -> . TRUE
+    (7) formula -> . FALSE
 
     LITERAL         shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
+    TRUE            shift and go to state 5
+    FALSE           shift and go to state 6
 
-    formula                        shift and go to state 7
+    formula                        shift and go to state 9
 
 state 4
 
@@ -83,14 +95,38 @@ state 4
     (3) formula -> . formula OR formula
     (4) formula -> . NOT formula
     (5) formula -> . LPAREN formula RPAREN
+    (6) formula -> . TRUE
+    (7) formula -> . FALSE
 
     LITERAL         shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
+    TRUE            shift and go to state 5
+    FALSE           shift and go to state 6
 
-    formula                        shift and go to state 8
+    formula                        shift and go to state 10
 
 state 5
+
+    (6) formula -> TRUE .
+
+    AND             reduce using rule 6 (formula -> TRUE .)
+    OR              reduce using rule 6 (formula -> TRUE .)
+    $end            reduce using rule 6 (formula -> TRUE .)
+    RPAREN          reduce using rule 6 (formula -> TRUE .)
+
+
+state 6
+
+    (7) formula -> FALSE .
+
+    AND             reduce using rule 7 (formula -> FALSE .)
+    OR              reduce using rule 7 (formula -> FALSE .)
+    $end            reduce using rule 7 (formula -> FALSE .)
+    RPAREN          reduce using rule 7 (formula -> FALSE .)
+
+
+state 7
 
     (2) formula -> formula AND . formula
     (1) formula -> . LITERAL
@@ -98,14 +134,18 @@ state 5
     (3) formula -> . formula OR formula
     (4) formula -> . NOT formula
     (5) formula -> . LPAREN formula RPAREN
+    (6) formula -> . TRUE
+    (7) formula -> . FALSE
 
     LITERAL         shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
+    TRUE            shift and go to state 5
+    FALSE           shift and go to state 6
 
-    formula                        shift and go to state 9
+    formula                        shift and go to state 11
 
-state 6
+state 8
 
     (3) formula -> formula OR . formula
     (1) formula -> . LITERAL
@@ -113,14 +153,18 @@ state 6
     (3) formula -> . formula OR formula
     (4) formula -> . NOT formula
     (5) formula -> . LPAREN formula RPAREN
+    (6) formula -> . TRUE
+    (7) formula -> . FALSE
 
     LITERAL         shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
+    TRUE            shift and go to state 5
+    FALSE           shift and go to state 6
 
-    formula                        shift and go to state 10
+    formula                        shift and go to state 12
 
-state 7
+state 9
 
     (4) formula -> NOT formula .
     (2) formula -> formula . AND formula
@@ -131,22 +175,22 @@ state 7
     $end            reduce using rule 4 (formula -> NOT formula .)
     RPAREN          reduce using rule 4 (formula -> NOT formula .)
 
-  ! AND             [ shift and go to state 5 ]
-  ! OR              [ shift and go to state 6 ]
+  ! AND             [ shift and go to state 7 ]
+  ! OR              [ shift and go to state 8 ]
 
 
-state 8
+state 10
 
     (5) formula -> LPAREN formula . RPAREN
     (2) formula -> formula . AND formula
     (3) formula -> formula . OR formula
 
-    RPAREN          shift and go to state 11
-    AND             shift and go to state 5
-    OR              shift and go to state 6
+    RPAREN          shift and go to state 13
+    AND             shift and go to state 7
+    OR              shift and go to state 8
 
 
-state 9
+state 11
 
     (2) formula -> formula AND formula .
     (2) formula -> formula . AND formula
@@ -157,11 +201,11 @@ state 9
     $end            reduce using rule 2 (formula -> formula AND formula .)
     RPAREN          reduce using rule 2 (formula -> formula AND formula .)
 
-  ! AND             [ shift and go to state 5 ]
-  ! OR              [ shift and go to state 6 ]
+  ! AND             [ shift and go to state 7 ]
+  ! OR              [ shift and go to state 8 ]
 
 
-state 10
+state 12
 
     (3) formula -> formula OR formula .
     (2) formula -> formula . AND formula
@@ -170,13 +214,13 @@ state 10
     OR              reduce using rule 3 (formula -> formula OR formula .)
     $end            reduce using rule 3 (formula -> formula OR formula .)
     RPAREN          reduce using rule 3 (formula -> formula OR formula .)
-    AND             shift and go to state 5
+    AND             shift and go to state 7
 
   ! AND             [ reduce using rule 3 (formula -> formula OR formula .) ]
-  ! OR              [ shift and go to state 6 ]
+  ! OR              [ shift and go to state 8 ]
 
 
-state 11
+state 13
 
     (5) formula -> LPAREN formula RPAREN .
 

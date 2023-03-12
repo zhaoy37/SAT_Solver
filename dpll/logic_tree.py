@@ -1,9 +1,7 @@
 """
 Author: Yiqi (Nick) Zhao
-
 The purpose of this file is to write the class
 for the tree structure of logic formulae.
-
 Acknowledgement: The course materials from
 CS 6315 provided by Professor Taylor Johnson are used
 for reference purposes.
@@ -44,14 +42,16 @@ class Logic:
             leaves.append(self.value)
         if self.right is not None:
             leaves.extend(self.right.load_leaves())
+        leaves = [leaf for leaf in leaves if (leaf != "True" and leaf != "False")]
         return set(leaves)
+
 
     """
     This method evaluates an assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
     def evaluate(self, assignment, tree_heuristics_enabled = True):
-        # Check if the assignment dictionary contains and only contains the leaves as the keys.
+        # Check if the assignment dictionary contains and only contains the leaves (excluding true and false) as the keys.
         if self.leaves != set(assignment.keys()):
             raise Exception("The given assignment is not valid")
         return self.__evaluate_assignment_kernel(assignment, self, tree_heuristics_enabled)
@@ -81,6 +81,10 @@ class Logic:
     """
     def __evaluate_assignment_kernel(self, assignment, tree, tree_heuristic_enabled):
         if (tree.left is None) and (tree.right is None):
+            if tree.value == "True":
+                return True
+            elif tree.value == "False":
+                return False
             return assignment[tree.value]
         else:
             # I may allow caching later.

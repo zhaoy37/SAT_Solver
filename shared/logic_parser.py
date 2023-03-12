@@ -38,7 +38,9 @@ tokens = (
     "NOT",
     "LPAREN",
     "RPAREN",
-    "LITERAL"
+    "LITERAL",
+    "TRUE",
+    "FALSE"
 )
 
 # Regex definitions for the tokens.
@@ -48,6 +50,8 @@ t_NOT = r'not'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LITERAL = r'x[0-9]+'
+t_TRUE = r'True'
+t_FALSE = r'False'
 
 # Define t_error.
 def t_error(t):
@@ -91,6 +95,14 @@ def p_formula_not(p):
 def p_formula_formula_par(p):
     'formula : LPAREN formula RPAREN'
     p[0] = p[2]
+
+def p_formula_true(p):
+    'formula : TRUE'
+    p[0] = p[1]
+
+def p_formula_false(p):
+    'formula : FALSE'
+    p[0] = p[1]
 
 def p_error(p):
     print("Syntactic error is detected when parsing the logic.")
