@@ -90,14 +90,13 @@ class Logic:
             # I may allow caching later.
             # Enforce some DPLL heuristics:
             if tree_heuristic_enabled:
-                """
-                Deducing:
-                
-                p | (p or q) and (not p or s)
-                -----------------------------
-                p, s | (p or q) and (not p or s)
-                """
                 if tree.value == "and":
+                    """
+                    Deducing:
+                    p | (p or q) and (not p or s)
+                    -----------------------------
+                    p, s | (p or q) and (not p or s)
+                    """
                     if tree.left.value == "or" and tree.right.value == "or":
                         if tree.right.left.value == "not":
                             p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left,
@@ -107,6 +106,28 @@ class Logic:
                             if p1 and p2:
                                 return self.__evaluate_assignment_kernel(assignment, tree.right.right,
                                                                          tree_heuristic_enabled)
+                    """
+                    Early termination (case 1):
+                    ~p | p and q
+                    FALSE | p and q
+                    """
+                    p = self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled)
+                    if not p:
+                        return False
+                    else:
+                        return self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled)
+
+                if tree.value == "or":
+                    """
+                    Early termination (case 1):
+                    p | p or q
+                    TRUE | p or q
+                    """
+                    p = self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled)
+                    if p:
+                        return True
+                    else:
+                        return self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled)
 
             # Naive solution:
             if tree.value == "not":

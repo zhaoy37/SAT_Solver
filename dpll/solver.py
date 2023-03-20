@@ -18,7 +18,6 @@ def construct_assignment(num, leaves_set):
     return assignment
 
 
-
 # Naive tabular solution.
 def naive_tabular_solve(tree, tree_heuristic_enabled = True):
     for i in range(len(tree.leaves) ** 2):
