@@ -10,6 +10,11 @@ consider allow this to be a part of the interface/package.
 from numpy import random
 from dpll.logic_tree import Logic
 
+# Set some predetermined chances.
+chance_not = 0.1
+chance_and = 0.45
+chance_or = 0.45
+
 """
 The following functions should not be exposed to public if used for packages,
 because they may raise confusions due to the complex method names.
@@ -29,9 +34,9 @@ def generate_one_logic(num_possible_variables, depth, allow_True_False):
     elif depth == 0:
         return leaves[random.randint(0, len(leaves))]
     else:
-        if random.randint(0, 3) == 0:
+        if random.random() <= chance_not:
             return ["not", generate_one_logic(num_possible_variables, depth - 1, allow_True_False)]
-        elif random.randint(0, 3) == 1:
+        elif random.random() <= chance_not + chance_and:
             return ["and", generate_one_logic(num_possible_variables, depth - 1, allow_True_False),
                     generate_one_logic(num_possible_variables, depth - 1, allow_True_False)]
         else:

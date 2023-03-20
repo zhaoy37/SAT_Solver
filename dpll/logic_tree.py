@@ -76,6 +76,20 @@ class Logic:
                 return self.formula[0]
 
     """
+    This function finds the number of nodes of the tree.
+    """
+    def num_of_nodes(self):
+        if self.left is None and self.right is None:
+            return 1
+        else:
+            if self.left is None:
+                return 1 + self.right.num_of_nodes()
+            elif self.right is None:
+                return 1 + self.left.num_of_nodes()
+            else:
+                return 1 + self.left.num_of_nodes() + self.right.num_of_nodes()
+
+    """
     This method is the kernel to evaluate a potential assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
@@ -96,16 +110,20 @@ class Logic:
                     p | (p or q) and (not p or s)
                     -----------------------------
                     p, s | (p or q) and (not p or s)
+                    
+                    This is shown to actually slow down the solver. I will figure
+                    out how to better integrate this latter (maybe in the solver itself).
                     """
-                    if tree.left.value == "or" and tree.right.value == "or":
-                        if tree.right.left.value == "not":
-                            p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left,
-                                                                   tree_heuristic_enabled)
-                            p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right,
-                                                                   tree_heuristic_enabled)
-                            if p1 and p2:
-                                return self.__evaluate_assignment_kernel(assignment, tree.right.right,
-                                                                         tree_heuristic_enabled)
+                    # if tree.left.value == "or" and tree.right.value == "or":
+                    #     if tree.right.left.value == "not":
+                    #         p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left,
+                    #                                                tree_heuristic_enabled)
+                    #         p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right,
+                    #                                                tree_heuristic_enabled)
+                    #         if p1 and p2:
+                    #             return self.__evaluate_assignment_kernel(assignment, tree.right.right,
+                    #                                                      tree_heuristic_enabled)
+
                     """
                     Early termination (case 1):
                     ~p | p and q

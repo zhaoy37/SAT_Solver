@@ -1,32 +1,55 @@
 """
-Authors: Yiqi  (Nick) Zhao, Ziyan An
+Authors: Yiqi (Nick) Zhao
+
+The main file allows a visualization of the evaluation
+on the dpll solver created. It also gives an interface to the dpll.
+
+Acknowledgement:
+I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-executi
 """
 
 # Import necessary modules.
 from dpll.logic_tree import Logic
 from shared.logic_parser import parse_logic
 from shared.logic_generator import generate_logic_trees
-from solver import naive_tabular_solve
+from solver import naive_solve
 
 # Time some executions following this link:
-# https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-executi
 import time
 
-print("This program tests the ability of the created SAT solver:")
-tree2 = generate_logic_trees(1, 2, 10)[0]
-print("A randomly generated program is:")
-print(tree2.formula)
+def perform_intrasolver_test_single_formula_single_solution(num_variables, depth):
 
-noheuristic = time.time()
-solution = naive_tabular_solve(tree2, False)
-print("---Execution with no Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
-print(solution)
+    # To set the hyperparameter in controlling the percentage
+    # of and, or, not nodes, please refer to solver.py.
 
-heuristic = time.time()
-solution = naive_tabular_solve(tree2, True)
-print("---Execution with heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
-print(solution)
+    print("This program tests the ability of the created SAT solver:")
+    print()
+    tree2 = generate_logic_trees(1, num_variables, depth)[0]
+    print("A randomly generated tree is:")
+    print(tree2.formula)
 
-if(solution != "UNSAT"):
-    print(tree2.evaluate(solution))
+    print("The total number of nodes are:")
+    print(tree2.num_of_nodes())
+    print()
+
+    noheuristic = time.time()
+    solution = naive_solve(tree2, tree_heuristic_enabled = False)
+    print("---Execution with no Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
+    print(solution)
+
+    heuristic = time.time()
+    solution = naive_solve(tree2, tree_heuristic_enabled = True)
+    print("---Execution with heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
+    print(solution)
+
+    if(solution != "UNSAT"):
+        print("---Is the results correct?---")
+        print(bool(tree2.evaluate(solution)))
+
+
+def main():
+    print("Thank you for using the DPLL solver.")
+
+if __name__ == "__main__":
+    perform_intrasolver_test_single_formula_single_solution(num_variables = 10, depth = 5)
 
