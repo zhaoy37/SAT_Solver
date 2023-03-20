@@ -1,8 +1,6 @@
 """
 Authors: Yiqi (Nick) Zhao
-
-The main file allows a visualization of the evaluation
-on the dpll solver created. It also gives an interface to the dpll.
+The main file evaluates the dpll solver created.
 
 Acknowledgement:
 I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-executi
@@ -12,7 +10,7 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 from dpll.logic_tree import Logic
 from shared.logic_parser import parse_logic
 from shared.logic_generator import generate_logic_trees
-from solver import naive_solve
+from dpll.solver import naive_solve
 
 # Time some executions following this link:
 import time
@@ -47,9 +45,6 @@ def perform_intrasolver_test_single_formula_single_solution(num_variables, depth
         print(bool(tree2.evaluate(solution)))
 
 
-def main():
-    print("Thank you for using the DPLL solver.")
-
 if __name__ == "__main__":
+    # Change the function to be called for evaluation here.
     perform_intrasolver_test_single_formula_single_solution(num_variables = 10, depth = 5)
-
