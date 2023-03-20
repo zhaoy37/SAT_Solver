@@ -12,8 +12,9 @@ from solver import naive_tabular_solve
 # https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-python-programs-executi
 import time
 
-tree2 = generate_logic_trees(1, 2, 5)[0]
-
+print("This program tests the ability of the created SAT solver:")
+tree2 = generate_logic_trees(1, 2, 10)[0]
+print("A randomly generated program is:")
 print(tree2.formula)
 
 noheuristic = time.time()
@@ -26,5 +27,6 @@ solution = naive_tabular_solve(tree2, True)
 print("---Execution with heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
 print(solution)
 
-print(tree2.evaluate(solution))
+if(solution != "UNSAT"):
+    print(tree2.evaluate(solution))
 
