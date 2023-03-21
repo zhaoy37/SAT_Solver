@@ -20,6 +20,8 @@ def construct_assignment(num, leaves_set):
 # Naive solution.
 def naive_solve(tree, tree_heuristic_enabled = True, multiple = False):
     solutions = []
+    # This binary representation search is essentially the same as recursive backtracking.
+    # I will replace it with actual recursive backtracking later to allow some assignment heuristics.
     for i in range(len(tree.leaves) ** 2):
         cur_assignment = construct_assignment(i, tree.leaves)
         if tree.evaluate(cur_assignment, tree_heuristic_enabled):

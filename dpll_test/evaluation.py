@@ -15,7 +15,7 @@ from dpll.solver import naive_solve
 # Time some executions following this link:
 import time
 
-def perform_intrasolver_test_single_formula_single_solution(num_variables, depth):
+def perform_intrasolver_tree_heuristic_test_single_formula_single_solution(num_variables, depth):
 
     # To set the hyperparameter in controlling the percentage
     # of and, or, not nodes, please refer to solver.py.
@@ -32,12 +32,12 @@ def perform_intrasolver_test_single_formula_single_solution(num_variables, depth
 
     noheuristic = time.time()
     solution = naive_solve(tree2, tree_heuristic_enabled = False)
-    print("---Execution with no Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
+    print("---Execution with no Tree Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
     print(solution)
 
     heuristic = time.time()
     solution = naive_solve(tree2, tree_heuristic_enabled = True)
-    print("---Execution with heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
+    print("---Execution with Tree Heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
     print(solution)
 
     if(solution != "UNSAT"):
@@ -47,4 +47,4 @@ def perform_intrasolver_test_single_formula_single_solution(num_variables, depth
 
 if __name__ == "__main__":
     # Change the function to be called for evaluation here.
-    perform_intrasolver_test_single_formula_single_solution(num_variables = 10, depth = 5)
+    perform_intrasolver_tree_heuristic_test_single_formula_single_solution(num_variables = 10, depth = 5)
