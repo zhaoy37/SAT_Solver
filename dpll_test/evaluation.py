@@ -20,7 +20,7 @@ def perform_intrasolver_test_single_formula_single_solution(num_variables, depth
     # To set the hyperparameter in controlling the percentage
     # of and, or, not nodes, please refer to solver.py.
 
-    print("This program tests the ability of the created SAT solver:")
+    print("This program (ablation test) tests the ability of the created SAT solver:")
     print()
     tree2 = generate_logic_trees(1, num_variables, depth)[0]
     print("A randomly generated tree is:")

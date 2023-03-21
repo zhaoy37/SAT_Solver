@@ -6,7 +6,7 @@ for user input. following the BNF listed below.
 
 BNF for user input parsing:
 
-<formula> := literal | <formula> and <formula>
+<formula> := True | False | literal | <formula> and <formula>
             | <formula> or <formula> | not <formula> |
             (<formula>)
 

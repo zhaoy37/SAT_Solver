@@ -19,23 +19,17 @@ import time
 
 def test_on_randomly_generated_formulae():
     # Ask for user input.
-    print("Enter the number of formulae to test on:")
-    num_formula = input()
+    num_formula = input("Enter the number of formulae to test on:")
     while not num_formula.isnumeric():
-        print("Invalid input. Please re-enter:")
-        num_formula = input()
+        num_formula = input("Invalid input. Please re-enter:")
     num_formula = int(num_formula)
-    print("Enter the number of variables for each formula:")
-    user_num_variables = input()
+    user_num_variables = input("Enter the number of variables for each formula:")
     while not user_num_variables.isnumeric():
-        print("Invalid input. Please re-enter:")
-        user_num_variables = input()
+        user_num_variables = input("Invalid input. Please re-enter:")
     user_num_variables = int(user_num_variables)
-    print("Enter the depth of tree for each formula:")
-    tree_depth = input()
+    tree_depth = input("Enter the depth of tree for each formula:")
     while not tree_depth.isnumeric():
-        print("Invalid input. Please re-enter:")
-        tree_depth = input()
+        tree_depth = input("Invalid input. Please re-enter:")
     tree_depth = int(tree_depth)
 
     # To set the hyperparameter in controlling the percentage
@@ -69,15 +63,34 @@ def main():
     print("Running the DPLL solver.")
     print("Do you want to 1. specify the formula(e) or 2. test the solver on randomly generated formula(e)?")
     print("-------------------------------------------------------------")
-    print("Enter the input here:")
-    choice = input()
+    choice = input("Enter the input here:")
     while not choice.isnumeric() or (not (int(choice) == 1 or int(choice) == 2)):
-        print("Invalid input. Please re-enter:")
-        choice = input()
+        choice = input("Invalid input. Please re-enter:")
     print("-------------------------------------------------------------")
 
     if int(choice) == 1:
-        pass
+        print("Please enter the formula following the syntax below: ")
+        print("<formula> := True | False | literal | <formula> and <formula>")
+        print("| <formula> or <formula> | not <formula> |")
+        print("(<formula>)")
+        formula = input("Please enter the formula here (literal must starts with x and followed by numbers):")
+        logic = Logic(parse_logic(formula))
+        print("Do you want to see only one solution or all solutions?")
+        print("Enter 1 to see only 1 solution.")
+        print("Enter 2 to see all solutions.")
+        solution_choice = input("Enter your choice here:")
+        while not solution_choice.isnumeric() or (not (int(solution_choice) == 1 or int(solution_choice) == 2)):
+            solution_choice = input("Invalid input. Please re-enter:")
+        start_time = time.time()
+        if int(solution_choice) == 1:
+            solution = naive_solve(logic)
+            print("The solution is:", solution)
+        else:
+            solutions = naive_solve(logic, multiple = True)
+            print("The solution(s) is/are:")
+            for s in solutions:
+                print(s)
+        print("---Total time to find the solution(s): %s seconds --- " % (time.time() - start_time))
     else:
         # Case 2: Test the solver on randomly generated formula(e).
         test_on_randomly_generated_formulae()
