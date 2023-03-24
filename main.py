@@ -20,7 +20,8 @@ def main():
     if int(selection) == 1:
         dpll_kernel()
     else:
-        print("Problems under construction.")
+        print("For instructions on using the solver for some interesting problems, please see the README file")
+        print("(and our report if you want to know more details of how some problems are solved.)")
 
 if __name__ == "__main__":
     main()
