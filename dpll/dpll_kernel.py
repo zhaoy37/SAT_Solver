@@ -11,7 +11,7 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 from dpll.logic_tree import Logic
 from shared.logic_parser import parse_logic
 from shared.logic_generator import generate_logic_trees
-from solver import naive_solve
+from dpll.solver import solve
 
 # Time some executions following this link:
 import time
@@ -50,16 +50,17 @@ def test_on_randomly_generated_formulae():
         print()
 
     start_time = time.time()
+    print("---Timer Started---")
     print("---Solving the tree---")
     for i in range(len(trees)):
         tree = trees[i]
-        solution = naive_solve(tree)
+        solution = solve(tree)
         print("Solving tree", i + 1)
         print(solution)
     print("---Total time to find the solution(s): %s seconds --- " % (time.time() - start_time))
 
 
-def main():
+def dpll_kernel():
     print("Running the DPLL solver.")
     print("Do you want to 1. specify the formula(e) or 2. test the solver on randomly generated formula(e)?")
     print("-------------------------------------------------------------")
@@ -75,18 +76,21 @@ def main():
         print("(<formula>)")
         formula = input("Please enter the formula here (literal must starts with x and followed by numbers):")
         logic = Logic(parse_logic(formula))
+        print()
         print("Do you want to see only one solution or all solutions?")
         print("Enter 1 to see only 1 solution.")
         print("Enter 2 to see all solutions.")
+        print()
         solution_choice = input("Enter your choice here:")
         while not solution_choice.isnumeric() or (not (int(solution_choice) == 1 or int(solution_choice) == 2)):
             solution_choice = input("Invalid input. Please re-enter:")
         start_time = time.time()
+        print("---Timer started---")
         if int(solution_choice) == 1:
-            solution = naive_solve(logic)
+            solution = solve(logic)
             print("The solution is:", solution)
         else:
-            solutions = naive_solve(logic, multiple = True)
+            solutions = solve(logic, multiple = True)
             print("The solution(s) is/are:")
             for s in solutions:
                 print(s)
@@ -94,8 +98,3 @@ def main():
     else:
         # Case 2: Test the solver on randomly generated formula(e).
         test_on_randomly_generated_formulae()
-
-
-if __name__ == "__main__":
-    main()
-

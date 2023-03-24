@@ -10,7 +10,7 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 from dpll.logic_tree import Logic
 from shared.logic_parser import parse_logic
 from shared.logic_generator import generate_logic_trees
-from dpll.solver import naive_solve
+from dpll.solver import solve
 
 # Time some executions following this link:
 import time
@@ -31,12 +31,12 @@ def perform_intrasolver_tree_heuristic_test_single_formula_single_solution(num_v
     print()
 
     noheuristic = time.time()
-    solution = naive_solve(tree2, tree_heuristic_enabled = False)
+    solution = solve(tree2, tree_heuristic_enabled = False)
     print("---Execution with no Tree Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
     print(solution)
 
     heuristic = time.time()
-    solution = naive_solve(tree2, tree_heuristic_enabled = True)
+    solution = solve(tree2, tree_heuristic_enabled = True)
     print("---Execution with Tree Heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
     print(solution)
 

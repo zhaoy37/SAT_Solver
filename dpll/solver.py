@@ -3,10 +3,8 @@ Author: Yiqi (Nick) Zhao
 This is the core solver of DPLL.
 """
 import numpy as np
-from dpll.logic_tree import Logic
-from shared.logic_parser import parse_logic
 
-# construct the assignment.
+# construct the assignment to aid a binary assignment kernel.
 def construct_assignment(num, leaves_set):
     bin_rep = np.binary_repr(num, len(leaves_set))
     assignment = dict()
@@ -17,20 +15,51 @@ def construct_assignment(num, leaves_set):
     return assignment
 
 
-# Naive solution.
-def naive_solve(tree, tree_heuristic_enabled = True, multiple = False):
-    solutions = []
-    # This binary representation search is essentially the same as recursive backtracking.
-    # I will replace it with actual recursive backtracking later to allow some assignment heuristics.
-    for i in range(len(tree.leaves) ** 2):
-        cur_assignment = construct_assignment(i, tree.leaves)
-        if tree.evaluate(cur_assignment, tree_heuristic_enabled):
+# construct the recursive backtracking kernel.
+def solve_kernel(tree, cur_assignment, variable_list, tree_heuristics_enabled, assignment_heuristic_enabled, solutions, multiple):
+    if len(cur_assignment) == len(variable_list):
+        var_dictionary = dict()
+        index = 0
+        for variable in variable_list:
+            var_dictionary[variable] = cur_assignment[index]
+            index += 1
+        answer = tree.evaluate(var_dictionary, tree_heuristics_enabled)
+        if answer:
+            solutions.append(var_dictionary)
+            # Terminate early if only one solution is needed.
             if not multiple:
-                return cur_assignment
-            else:
-                solutions.append(cur_assignment)
-
-    if len(solutions) == 0:
-        return "UNSAT"
+                # This is a flag for early termination.
+                return True
     else:
-        return solutions
+        # Try path 0.
+        temp_assignment = cur_assignment.copy()
+        temp_assignment.append(0)
+        termination = solve_kernel(tree, temp_assignment, variable_list, tree_heuristics_enabled, assignment_heuristic_enabled, solutions, multiple)
+        # Terminate early if only one solution is needed.
+        if termination:
+            return True
+        # Try path 1.
+        temp_assignment = cur_assignment.copy()
+        temp_assignment.append(1)
+        termination = solve_kernel(tree, temp_assignment, variable_list, tree_heuristics_enabled, assignment_heuristic_enabled, solutions, multiple)
+        # Terminate early if only one solution is needed.
+        if termination:
+            return True
+
+
+# Solution.
+def solve(tree, tree_heuristic_enabled = True, assignment_heuristic_enabled = True, multiple = False):
+    # Call the recursive backtracking kernel.
+    variable_list = list(tree.leaves)
+    cur_assignment = []
+    solutions = []
+    solve_kernel(tree, cur_assignment, variable_list, tree_heuristic_enabled, assignment_heuristic_enabled, solutions, multiple)
+
+    # Detect pure literals if assignment_heuristic_enabled: To be implemented later
+    if len(solutions) == 0:
+            return "UNSAT"
+    else:
+        if multiple:
+            return solutions
+        else:
+            return solutions[0]
