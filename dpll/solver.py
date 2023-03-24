@@ -2,17 +2,6 @@
 Author: Yiqi (Nick) Zhao
 This is the core solver of DPLL.
 """
-import numpy as np
-
-# construct the assignment to aid a binary assignment kernel.
-def construct_assignment(num, leaves_set):
-    bin_rep = np.binary_repr(num, len(leaves_set))
-    assignment = dict()
-    index = 0
-    for leaf in leaves_set:
-        assignment[leaf] = int(bin_rep[index])
-        index += 1
-    return assignment
 
 
 # construct the recursive backtracking kernel.
