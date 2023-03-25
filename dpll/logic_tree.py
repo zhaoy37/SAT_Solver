@@ -106,6 +106,12 @@ class Logic:
             return self.formula
         else:
             if self.formula[0] == "not":
+                """
+                Some simplifications performed here are done for the purpose of better assignment heuristic.
+                Users are encouraged to separate this from standard tree construction to experiment on
+                the performance of tree solving with assignment heuristic. We assume a relatively negligible time
+                for tree construction as opposed to solving.
+                """
                 # Perform De Morgan's expansion to work with the pure literals assignment heuristic.
                 if isinstance(self.formula[1], list) and self.formula[1][0] == "and":
                     self.left = Logic(["not", self.formula[1][1]])
