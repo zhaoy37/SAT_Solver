@@ -65,6 +65,13 @@ class Logic:
 
     """
     This member function finds the literals of self.
+    
+    Please note that this algorithm by itself can be time-consuming. If interested,
+    users can try to isolate this member function for the assignment heuristic mode vs. 
+    the mode without assignment heuristic. This may result in different performance
+    of the dpll tree under different modes. In our algorithm, this function is called whenever the tree is constructed, 
+    and we assume a relatively negligible tree construction time as opposed to formula solving time.
+    Other users interested in this are encouraged to separate this member function for different solving modes.
     """
     def __find_pure_literals(self):
         parents = dict()
