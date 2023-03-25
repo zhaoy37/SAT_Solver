@@ -7,6 +7,8 @@ CS 6315 provided by Professor Taylor Johnson are used
 for reference purposes.
 """
 
+from shared.logic_parser import parse_logic
+
 class Logic:
 
     """
@@ -18,6 +20,7 @@ class Logic:
         self.right = None
         self.value = self.__convert_formula_to_tree()
         self.leaves = self.load_leaves()
+
 
     """
     Perform an in-oder traversal of the tree for printing.
@@ -47,6 +50,21 @@ class Logic:
 
 
     """
+    This member function finds the literals of self.
+    """
+    def find_pure_literals(self):
+        parents = dict()
+        for leaf in self.leaves:
+            parents[leaf] = []
+        # Find the parents of the leaves.
+        self.__find_parents_kernel(parents)
+        # Find the pure positive and negative literals.
+        pure_positives = [leaf for leaf in self.leaves if "not" not in parents[leaf]]
+        pure_negatives = [leaf for leaf in self.leaves if (("not" in parents[leaf]) and len(parents[leaf]) == 1)]
+        return pure_positives, pure_negatives
+
+
+    """
     This method evaluates an assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
@@ -59,6 +77,20 @@ class Logic:
     """
     Private methods start here:
     """
+
+    """
+    This member function is used in find_pure_literals.
+    It finds the parents of the leaves.
+    """
+    def __find_parents_kernel(self, parents):
+        if self.left is not None:
+            if self.left.value in self.leaves:
+                parents[self.left.value].append(self.value)
+            self.left.__find_parents_kernel(parents)
+        if self.right is not None:
+            if self.right.value in self.leaves:
+                parents[self.right.value].append(self.value)
+            self.right.__find_parents_kernel(parents)
 
     """
     Convert parsed logic to a tree recursively.

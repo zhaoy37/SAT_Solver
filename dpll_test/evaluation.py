@@ -14,37 +14,78 @@ from dpll.solver import solve
 
 # Time some executions following this link:
 import time
+import numpy as np
 
-def perform_intrasolver_tree_heuristic_test_single_formula_single_solution(num_variables, depth):
-
-    # To set the hyperparameter in controlling the percentage
-    # of and, or, not nodes, please refer to solver.py.
-
-    print("This program (ablation test) tests the ability of the created SAT solver:")
+def perform_ablation_study(num_formula, num_variables, depth, multiple):
+    print("Evaluating the DPLL Solver (Ablation study):")
+    print("-------------------------------------")
+    print("Generating random trees:")
+    trees = []
+    num_nodes = []
+    for i in range(num_formula):
+        tree2 = generate_logic_trees(1, num_variables, depth)[0]
+        num_nodes.append(tree2.num_of_nodes())
+        trees.append(tree2)
+    print("User specified values:")
+    print("The number of formula(e):", num_formula)
+    print("The depth of each tree:", depth)
+    print("The mode of multiple solutions:", bool(multiple))
     print()
-    tree2 = generate_logic_trees(1, num_variables, depth)[0]
-    print("A randomly generated tree is:")
-    print(tree2.formula)
+    print("Framework generated values:")
+    print("The average number of nodes for each tree is:", np.average(num_nodes))
+    print("The maximum number of nodes is:", max(num_nodes))
+    print("The minimum number of nodes is:", min(num_nodes))
+    print("-------------------------------------")
 
-    print("The total number of nodes are:")
-    print(tree2.num_of_nodes())
-    print()
+    # Now solve the trees with different capabilities:
+    print("-------------------------------------")
+    print("Test the solving time with no tree heuristic and no assignment heuristic enabled:")
+    no_tree_no_assignment = time.time()
+    for tree in trees:
+        if multiple:
+            solve(tree, assignment_heuristic_enabled = False, tree_heuristic_enabled = False, multiple = True)
+        else:
+            solve(tree, assignment_heuristic_enabled = False, tree_heuristic_enabled = False, multiple = False)
+    print("Execution with no tree heuristic and no assignment heuristic: %s seconds" % (time.time() - no_tree_no_assignment))
+    print("-------------------------------------")
 
-    noheuristic = time.time()
-    solution = solve(tree2, tree_heuristic_enabled = False)
-    print("---Execution with no Tree Heuristic (naive): %s seconds --- " % (time.time() - noheuristic))
-    print(solution)
+    print("-------------------------------------")
+    print("Test the solving time with no tree heuristic but assignment heuristic enabled:")
+    no_tree_assignment = time.time()
+    for tree in trees:
+        if multiple:
+            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=False, multiple=True)
+        else:
+            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=False, multiple=False)
+    print("Execution with no tree heuristic but with assignment heuristic: %s seconds" % (
+                time.time() - no_tree_assignment))
+    print("-------------------------------------")
 
-    heuristic = time.time()
-    solution = solve(tree2, tree_heuristic_enabled = True)
-    print("---Execution with Tree Heurisitc (naive): %s seconds --- " % (time.time() - heuristic))
-    print(solution)
 
-    if(solution != "UNSAT"):
-        print("---Is the results correct?---")
-        print(bool(tree2.evaluate(solution)))
+    print("-------------------------------------")
+    print("Test the solving time with tree heuristic but no assignment heuristic enabled:")
+    tree_no_assignment = time.time()
+    for tree in trees:
+        if multiple:
+            solve(tree, assignment_heuristic_enabled=False, tree_heuristic_enabled=True, multiple=True)
+        else:
+            solve(tree, assignment_heuristic_enabled=False, tree_heuristic_enabled=True, multiple=False)
+    print("Execution with tree heuristic but no assignment heuristic: %s seconds" % (
+                time.time() - tree_no_assignment))
+    print("-------------------------------------")
+
+    print("-------------------------------------")
+    print("Test the solving time with both tree heuristic and assignment heuristic enabled:")
+    tree_assignment = time.time()
+    for tree in trees:
+        if multiple:
+            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=True, multiple=True)
+        else:
+            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=True, multiple=False)
+    print("Execution with both tree heuristic and assignment heuristic: %s seconds" % (
+            time.time() - tree_assignment))
+    print("-------------------------------------")
 
 
 if __name__ == "__main__":
-    # Change the function to be called for evaluation here.
-    perform_intrasolver_tree_heuristic_test_single_formula_single_solution(num_variables = 10, depth = 5)
+    perform_ablation_study(100000, 2, 2, False)
