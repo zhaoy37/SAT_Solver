@@ -88,11 +88,7 @@ def solve(tree, tree_heuristic_enabled = True, assignment_heuristic_enabled = Tr
     variable_list = list(tree.leaves)
     cur_assignment = []
     solutions = []
-    pure_positives = []
-    pure_negatives = []
-    if assignment_heuristic_enabled:
-        pure_positives, pure_negatives = tree.find_pure_literals()
-    solve_kernel(tree, cur_assignment, variable_list, tree_heuristic_enabled, assignment_heuristic_enabled, solutions, multiple, pure_positives, pure_negatives)
+    solve_kernel(tree, cur_assignment, variable_list, tree_heuristic_enabled, assignment_heuristic_enabled, solutions, multiple, tree.pure_positives, tree.pure_negatives)
 
     # Detect pure literals if assignment_heuristic_enabled: To be implemented later
     if len(solutions) == 0:

@@ -7,7 +7,6 @@ CS 6315 provided by Professor Taylor Johnson are used
 for reference purposes.
 """
 
-from shared.logic_parser import parse_logic
 
 class Logic:
 
@@ -20,6 +19,7 @@ class Logic:
         self.right = None
         self.value = self.__convert_formula_to_tree()
         self.leaves = self.load_leaves()
+        self.pure_positives, self.pure_negatives = self.__find_pure_literals()
 
 
     """
@@ -50,21 +50,6 @@ class Logic:
 
 
     """
-    This member function finds the literals of self.
-    """
-    def find_pure_literals(self):
-        parents = dict()
-        for leaf in self.leaves:
-            parents[leaf] = []
-        # Find the parents of the leaves.
-        self.__find_parents_kernel(parents)
-        # Find the pure positive and negative literals.
-        pure_positives = [leaf for leaf in self.leaves if "not" not in parents[leaf]]
-        pure_negatives = [leaf for leaf in self.leaves if (("not" in parents[leaf]) and len(parents[leaf]) == 1)]
-        return pure_positives, pure_negatives
-
-
-    """
     This method evaluates an assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
@@ -77,6 +62,20 @@ class Logic:
     """
     Private methods start here:
     """
+
+    """
+    This member function finds the literals of self.
+    """
+    def __find_pure_literals(self):
+        parents = dict()
+        for leaf in self.leaves:
+            parents[leaf] = []
+        # Find the parents of the leaves.
+        self.__find_parents_kernel(parents)
+        # Find the pure positive and negative literals.
+        pure_positives = [leaf for leaf in self.leaves if "not" not in parents[leaf]]
+        pure_negatives = [leaf for leaf in self.leaves if (("not" in parents[leaf]) and len(parents[leaf]) == 1)]
+        return pure_positives, pure_negatives
 
     """
     This member function is used in find_pure_literals.
@@ -100,8 +99,24 @@ class Logic:
             return self.formula
         else:
             if self.formula[0] == "not":
-                self.right = Logic(self.formula[1])
-                return self.formula[0]
+                # Perform De Morgan's expansion to work with the pure literals assignment heuristic.
+                if isinstance(self.formula[1], list) and self.formula[1][0] == "and":
+                    self.left = Logic(["not", self.formula[1][1]])
+                    self.right = Logic(["not", self.formula[1][2]])
+                    return "or"
+                elif isinstance(self.formula[1], list) and self.formula[1][0] == "or":
+                    self.left = Logic(["not", self.formula[1][1]])
+                    self.right = Logic(["not", self.formula[1][2]])
+                    return "and"
+                # Perform simplification for double negation so that the tree works with the pure literals assignment heuristic.
+                elif isinstance(self.formula[1], list) and self.formula[1][0] == "not":
+                    equivalence = Logic(self.formula[1][1])
+                    self.left = equivalence.left
+                    self.right = equivalence.right
+                    return equivalence.value
+                else:
+                    self.right = Logic(self.formula[1])
+                    return self.formula[0]
             else:
                 self.left = Logic(self.formula[1])
                 self.right = Logic(self.formula[2])

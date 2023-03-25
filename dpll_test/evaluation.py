@@ -88,4 +88,4 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
 
 
 if __name__ == "__main__":
-    perform_ablation_study(100000, 2, 2, False)
+    perform_ablation_study(10000, 3, 5, False)

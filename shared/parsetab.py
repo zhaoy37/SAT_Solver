@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftORleftANDleftNOTAND FALSE LITERAL LPAREN NOT OR RPAREN TRUEformula : LITERALformula : formula AND formulaformula : formula OR formulaformula : NOT LPAREN formula AND formula RPARENformula : NOT LPAREN formula OR formula RPARENformula : NOT LITERALformula : LPAREN formula RPARENformula : TRUEformula : FALSE'
+_lr_signature = 'leftORleftANDleftNOTAND FALSE LITERAL LPAREN NOT OR RPAREN TRUEformula : LITERALformula : formula AND formulaformula : formula OR formulaformula : NOT formulaformula : LPAREN formula RPARENformula : TRUEformula : FALSE'
     
-_lr_action_items = {'LITERAL':([0,3,4,7,8,9,16,17,],[2,10,2,2,2,2,2,2,]),'NOT':([0,4,7,8,9,16,17,],[3,3,3,3,3,3,3,]),'LPAREN':([0,3,4,7,8,9,16,17,],[4,9,4,4,4,4,4,4,]),'TRUE':([0,4,7,8,9,16,17,],[5,5,5,5,5,5,5,]),'FALSE':([0,4,7,8,9,16,17,],[6,6,6,6,6,6,6,]),'$end':([1,2,5,6,10,12,13,15,20,21,],[0,-1,-8,-9,-6,-2,-3,-7,-4,-5,]),'AND':([1,2,5,6,10,11,12,13,14,15,18,19,20,21,],[7,-1,-8,-9,-6,7,-2,7,16,-7,-2,7,-4,-5,]),'OR':([1,2,5,6,10,11,12,13,14,15,18,19,20,21,],[8,-1,-8,-9,-6,8,-2,-3,17,-7,-2,-3,-4,-5,]),'RPAREN':([2,5,6,10,11,12,13,15,18,19,20,21,],[-1,-8,-9,-6,15,-2,-3,-7,20,21,-4,-5,]),}
+_lr_action_items = {'LITERAL':([0,3,4,7,8,],[2,2,2,2,2,]),'NOT':([0,3,4,7,8,],[3,3,3,3,3,]),'LPAREN':([0,3,4,7,8,],[4,4,4,4,4,]),'TRUE':([0,3,4,7,8,],[5,5,5,5,5,]),'FALSE':([0,3,4,7,8,],[6,6,6,6,6,]),'$end':([1,2,5,6,9,11,12,13,],[0,-1,-6,-7,-4,-2,-3,-5,]),'AND':([1,2,5,6,9,10,11,12,13,],[7,-1,-6,-7,-4,7,-2,7,-5,]),'OR':([1,2,5,6,9,10,11,12,13,],[8,-1,-6,-7,-4,8,-2,-3,-5,]),'RPAREN':([2,5,6,9,10,11,12,13,],[-1,-6,-7,-4,13,-2,-3,-5,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'formula':([0,4,7,8,9,16,17,],[1,11,12,13,14,18,19,]),}
+_lr_goto_items = {'formula':([0,3,4,7,8,],[1,9,10,11,12,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,13 +27,11 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> formula","S'",1,None,None,None),
-  ('formula -> LITERAL','formula',1,'p_formula_literal','logic_parser.py',80),
-  ('formula -> formula AND formula','formula',3,'p_formula_and','logic_parser.py',84),
-  ('formula -> formula OR formula','formula',3,'p_formula_or','logic_parser.py',88),
-  ('formula -> NOT LPAREN formula AND formula RPAREN','formula',6,'p_formula_not_demorgan_1','logic_parser.py',98),
-  ('formula -> NOT LPAREN formula OR formula RPAREN','formula',6,'p_formula_not_demorgan_2','logic_parser.py',103),
-  ('formula -> NOT LITERAL','formula',2,'p_formula_not_literal','logic_parser.py',108),
-  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','logic_parser.py',113),
-  ('formula -> TRUE','formula',1,'p_formula_true','logic_parser.py',117),
-  ('formula -> FALSE','formula',1,'p_formula_false','logic_parser.py',121),
+  ('formula -> LITERAL','formula',1,'p_formula_literal','logic_parser.py',72),
+  ('formula -> formula AND formula','formula',3,'p_formula_and','logic_parser.py',76),
+  ('formula -> formula OR formula','formula',3,'p_formula_or','logic_parser.py',80),
+  ('formula -> NOT formula','formula',2,'p_formula_not','logic_parser.py',84),
+  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','logic_parser.py',88),
+  ('formula -> TRUE','formula',1,'p_formula_true','logic_parser.py',92),
+  ('formula -> FALSE','formula',1,'p_formula_false','logic_parser.py',96),
 ]
