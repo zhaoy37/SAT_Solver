@@ -1,7 +1,9 @@
 """
 Author: Yiqi (Nick) Zhao
 The purpose of this file is to write the class
-for the tree structure of logic formulae.
+for the tree structure of logic formulae. This
+structure helps to prepare the attributes associated with the target formula.
+
 Acknowledgement: The course materials from
 CS 6315 provided by Professor Taylor Johnson are used
 for reference purposes.
@@ -50,14 +52,30 @@ class Logic:
 
 
     """
+    This function finds the number of nodes of the tree.
+    """
+    def num_of_nodes(self):
+        if self.left is None and self.right is None:
+            return 1
+        else:
+            if self.left is None:
+                return 1 + self.right.num_of_nodes()
+            elif self.right is None:
+                return 1 + self.left.num_of_nodes()
+            else:
+                return 1 + self.left.num_of_nodes() + self.right.num_of_nodes()
+
+
+    """
     This method evaluates an assignment.
     The assignment is in the form of a dictionary mapping variables to boolean values.
     """
-    def evaluate(self, assignment, tree_heuristics_enabled = True):
+    def evaluate(self, assignment):
         # Check if the assignment dictionary contains and only contains the leaves (excluding true and false) as the keys.
         if self.leaves != set(assignment.keys()):
             raise Exception("The given assignment is not valid")
-        return self.__evaluate_assignment_kernel(assignment, self, tree_heuristics_enabled)
+        return self.__evaluate_assignment_kernel(assignment, self)
+
 
     """
     Private methods start here:
@@ -65,13 +83,6 @@ class Logic:
 
     """
     This member function finds the literals of self.
-    
-    Please note that this algorithm by itself can be time-consuming. If interested,
-    users can try to isolate this member function for the assignment heuristic mode vs. 
-    the mode without assignment heuristic. This may result in different performance
-    of the dpll tree under different modes. In our algorithm, this function is called whenever the tree is constructed, 
-    and we assume a relatively negligible tree construction time as opposed to formula solving time.
-    Other users interested in this are encouraged to separate this member function for different solving modes.
     """
     def __find_pure_literals(self):
         parents = dict()
@@ -83,6 +94,7 @@ class Logic:
         pure_positives = [leaf for leaf in self.leaves if "not" not in parents[leaf]]
         pure_negatives = [leaf for leaf in self.leaves if (("not" in parents[leaf]) and len(parents[leaf]) == 1)]
         return pure_positives, pure_negatives
+
 
     """
     This member function is used in find_pure_literals.
@@ -98,6 +110,28 @@ class Logic:
                 parents[self.right.value].append(self.value)
             self.right.__find_parents_kernel(parents)
 
+
+    """
+    This method is the kernel to evaluate a potential assignment.
+    The assignment is in the form of a dictionary mapping variables to boolean values.
+    """
+    def __evaluate_assignment_kernel(self, assignment, tree):
+        if (tree.left is None) and (tree.right is None):
+            if tree.value == "True":
+                return True
+            elif tree.value == "False":
+                return False
+            return assignment[tree.value]
+        else:
+            if tree.value == "not":
+                return (not self.__evaluate_assignment_kernel(assignment, tree.right))
+            elif tree.value == "and":
+                return (self.__evaluate_assignment_kernel(assignment, tree.left) and
+                        self.__evaluate_assignment_kernel(assignment, tree.right))
+            else:
+                return (self.__evaluate_assignment_kernel(assignment, tree.left) or
+                        self.__evaluate_assignment_kernel(assignment, tree.right))
+
     """
     Convert parsed logic to a tree recursively.
     """
@@ -106,13 +140,6 @@ class Logic:
             return self.formula
         else:
             if self.formula[0] == "not":
-                """
-                Some simplifications performed here are done for the purpose of better assignment heuristic.
-                Users are encouraged to separate this from standard tree construction to experiment on
-                the performance of tree solving with assignment heuristic. We assume a relatively negligible time
-                for tree construction as opposed to solving.
-                """
-                # Perform De Morgan's expansion to work with the pure literals assignment heuristic.
                 if isinstance(self.formula[1], list) and self.formula[1][0] == "and":
                     self.left = Logic(["not", self.formula[1][1]])
                     self.right = Logic(["not", self.formula[1][2]])
@@ -121,7 +148,6 @@ class Logic:
                     self.left = Logic(["not", self.formula[1][1]])
                     self.right = Logic(["not", self.formula[1][2]])
                     return "and"
-                # Perform simplification for double negation so that the tree works with the pure literals assignment heuristic.
                 elif isinstance(self.formula[1], list) and self.formula[1][0] == "not":
                     equivalence = Logic(self.formula[1][1])
                     self.left = equivalence.left
@@ -134,85 +160,3 @@ class Logic:
                 self.left = Logic(self.formula[1])
                 self.right = Logic(self.formula[2])
                 return self.formula[0]
-
-    """
-    This function finds the number of nodes of the tree.
-    """
-    def num_of_nodes(self):
-        if self.left is None and self.right is None:
-            return 1
-        else:
-            if self.left is None:
-                return 1 + self.right.num_of_nodes()
-            elif self.right is None:
-                return 1 + self.left.num_of_nodes()
-            else:
-                return 1 + self.left.num_of_nodes() + self.right.num_of_nodes()
-
-    """
-    This method is the kernel to evaluate a potential assignment.
-    The assignment is in the form of a dictionary mapping variables to boolean values.
-    """
-    def __evaluate_assignment_kernel(self, assignment, tree, tree_heuristic_enabled):
-        if (tree.left is None) and (tree.right is None):
-            if tree.value == "True":
-                return True
-            elif tree.value == "False":
-                return False
-            return assignment[tree.value]
-        else:
-            # I may allow caching later.
-            # Enforce some DPLL heuristics:
-            if tree_heuristic_enabled:
-                if tree.value == "and":
-                    """
-                    Deducing:
-                    p | (p or q) and (not p or s)
-                    -----------------------------
-                    p, s | (p or q) and (not p or s)
-                    
-                    This is shown to actually slow down the solver. I will figure
-                    out how to better integrate this latter (maybe in the solver itself).
-                    """
-                    # if tree.left.value == "or" and tree.right.value == "or":
-                    #     if tree.right.left.value == "not":
-                    #         p1 = self.__evaluate_assignment_kernel(assignment, tree.left.left,
-                    #                                                tree_heuristic_enabled)
-                    #         p2 = self.__evaluate_assignment_kernel(assignment, tree.right.left.right,
-                    #                                                tree_heuristic_enabled)
-                    #         if p1 and p2:
-                    #             return self.__evaluate_assignment_kernel(assignment, tree.right.right,
-                    #                                                      tree_heuristic_enabled)
-
-                    """
-                    Early termination (case 1):
-                    ~p | p and q
-                    FALSE | p and q
-                    """
-                    p = self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled)
-                    if not p:
-                        return False
-                    else:
-                        return self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled)
-
-                if tree.value == "or":
-                    """
-                    Early termination (case 1):
-                    p | p or q
-                    TRUE | p or q
-                    """
-                    p = self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled)
-                    if p:
-                        return True
-                    else:
-                        return self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled)
-
-            # Naive solution:
-            if tree.value == "not":
-                return (not self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))
-            elif tree.value == "and":
-                return (self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled) and
-                        self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))
-            else:
-                return (self.__evaluate_assignment_kernel(assignment, tree.left, tree_heuristic_enabled) or
-                        self.__evaluate_assignment_kernel(assignment, tree.right, tree_heuristic_enabled))

@@ -7,8 +7,6 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 """
 
 # Import necessary modules.
-from dpll.logic_tree import Logic
-from shared.logic_parser import parse_logic
 from shared.logic_generator import generate_logic_trees
 from dpll.solver import solve
 
@@ -39,53 +37,73 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
 
     # Now solve the trees with different capabilities:
     print("-------------------------------------")
-    print("Test the solving time with no tree heuristic and no assignment heuristic enabled:")
-    no_tree_no_assignment = time.time()
+    print("Test the solving time with no heuristic and no assignment heuristic enabled:")
+    no_assignment = time.time()
+    single_noh_solutions = []
+    multiple_noh_solutions = []
     for tree in trees:
         if multiple:
-            solve(tree, assignment_heuristic_enabled = False, tree_heuristic_enabled = False, multiple = True)
+            multiple_noh_solutions.append(solve(tree, assignment_heuristic_enabled = False, multiple = True))
         else:
-            solve(tree, assignment_heuristic_enabled = False, tree_heuristic_enabled = False, multiple = False)
-    print("Execution with no tree heuristic and no assignment heuristic: %s seconds" % (time.time() - no_tree_no_assignment))
+            single_noh_solutions.append(solve(tree, assignment_heuristic_enabled = False, multiple = False))
+    print("Execution with no assignment heuristic: %s seconds" % (time.time() - no_assignment))
     print("-------------------------------------")
 
     print("-------------------------------------")
-    print("Test the solving time with no tree heuristic but assignment heuristic enabled:")
-    no_tree_assignment = time.time()
+    print("Test the solving time with assignment heuristic enabled:")
+    assignment = time.time()
+    single_h_solutions = []
+    multiple_h_solutions = []
     for tree in trees:
         if multiple:
-            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=False, multiple=True)
+            multiple_h_solutions.append(solve(tree, assignment_heuristic_enabled=True, multiple=True))
         else:
-            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=False, multiple=False)
-    print("Execution with no tree heuristic but with assignment heuristic: %s seconds" % (
-                time.time() - no_tree_assignment))
+            single_h_solutions.append(solve(tree, assignment_heuristic_enabled=True,  multiple=False))
+    print("Execution with assignment heuristic: %s seconds" % (
+                time.time() - assignment))
     print("-------------------------------------")
 
+    # Now evaluate the accuracy.
+    print()
+    if not multiple:
+        print("Evaluating the accuracy (This only evaluates the accuracy on problems that are SAT, for a more complete version, use Z3 to prove UNSAT):")
+        print("-------------------------------------")
+        correct_num = 0
+        total = 0
+        for i in range(len(trees)):
+            if single_noh_solutions[i] != "UNSAT":
+                correct_num += trees[i].evaluate(single_noh_solutions[i])
+                total += 1
+        print("Accuracy for No Heuristic:", correct_num * 100 / total, "%")
 
-    print("-------------------------------------")
-    print("Test the solving time with tree heuristic but no assignment heuristic enabled:")
-    tree_no_assignment = time.time()
-    for tree in trees:
-        if multiple:
-            solve(tree, assignment_heuristic_enabled=False, tree_heuristic_enabled=True, multiple=True)
-        else:
-            solve(tree, assignment_heuristic_enabled=False, tree_heuristic_enabled=True, multiple=False)
-    print("Execution with tree heuristic but no assignment heuristic: %s seconds" % (
-                time.time() - tree_no_assignment))
-    print("-------------------------------------")
+        correct_num = 0
+        total = 0
+        for i in range(len(trees)):
+            if single_h_solutions[i] != "UNSAT":
+                correct_num += trees[i].evaluate(single_h_solutions[i])
+                total += 1
+        print("Accuracy for Heuristic:", correct_num * 100 / total, "%")
+    else:
+        print("Evaluating the accuracy (This only evaluates the accuracy on problems that are SAT, for a more complete version, use Z3 to prove UNSAT):")
+        print("-------------------------------------")
+        correct_num = 0
+        total = 0
+        for i in range(len(trees)):
+            if multiple_noh_solutions[i] != "UNSAT":
+                for j in range(len(multiple_noh_solutions[i])):
+                    correct_num += trees[i].evaluate(multiple_noh_solutions[i][j])
+                    total += 1
+        print("Accuracy for No Heuristic:", correct_num * 100 / total, "%")
 
-    print("-------------------------------------")
-    print("Test the solving time with both tree heuristic and assignment heuristic enabled:")
-    tree_assignment = time.time()
-    for tree in trees:
-        if multiple:
-            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=True, multiple=True)
-        else:
-            solve(tree, assignment_heuristic_enabled=True, tree_heuristic_enabled=True, multiple=False)
-    print("Execution with both tree heuristic and assignment heuristic: %s seconds" % (
-            time.time() - tree_assignment))
-    print("-------------------------------------")
+        correct_num = 0
+        total = 0
+        for i in range(len(trees)):
+            if multiple_h_solutions[i] != "UNSAT":
+                for j in range(len(multiple_noh_solutions[i])):
+                    correct_num += trees[i].evaluate(multiple_h_solutions[i][j])
+                    total += 1
+        print("Accuracy for Heuristic:", correct_num * 100 / total, "%")
 
 
 if __name__ == "__main__":
-    perform_ablation_study(10000, 3, 5, False)
+    perform_ablation_study(100, 5, 12, False)
