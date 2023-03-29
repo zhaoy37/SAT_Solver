@@ -13,7 +13,7 @@ Imagine that you are provided with a boolean formula P and asked to determine if
 
 The implication of SAT solving is theoretically supported by the *Cook-Levin Theorem*, which states that Boolean SAT is NP-complete. Equivalently, any problem in NP can be reduced in polynomial time by a deterministic Turing Machine to a SAT problem. Therefore, many classical NP-complete problems in algorithms, such as graph coloring and sudoku, can be encoded into a SAT Problem representation and solved via a SAT solver. However, for abstraction purposes, such problems can be better represented using SMT.
 
-The SMT problem is similar to the SAT Problem with the exception that the formulas are many-sorted. In our project, we only consider the SMT problem over integer predicates with no support for arithmetic operators that are not in the set of ${=, \le, \ge}$, because this representation scheme is all we need to solve the problems in the /problems folder. However, such scheme can be easily expanded to a broader set of operators and predicate domains.
+The SMT problem is similar to the SAT Problem with the exception that the formulas are many-sorted. In our project, we only consider the SMT problem over integer predicates with no support for arithmetic operators that are not in the set of ${=, \le, \ge, \lt, \gt, \neq}$, because this representation scheme is all we need to solve the problems in the /problems folder. However, such scheme can be easily expanded to a broader set of operators and predicate domains.
 
 For more details on how to use the SMT solver we created, including how to provide SMT encodings to the solver, please refer to the Theory section. In a nutshell, in our SMT solver, we encode SMT problems as SAT problem representation with each SAT variable represents one SMT clause, and we solve the corresponding SAT problem and use recursive backtracking to find the SMT assignments that fits a solution to the SAT problem.
 
@@ -30,18 +30,46 @@ Internally, the solver constructs the SMT encoding in the following way: 1) Each
 
 ## Theory
 ### Theory of SMT Solving
-In this section, we discusss the details of our SMT solver. The solver is limited to predicates over integers. Also, the set of operators allowed for each SMT clause include $=, \le, \ge$. Using the negation operator in the SAT representation, the set of operators allowed for each SMT clause is extended to $=, \le, \ge, \lt, \gt, \neq$. Also, the solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
 
-To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The function accepts 5 parameters: 
+**I said that we are using both of our SAT solvers for this. Currently, it only works for DPLL. We need to integrate ROBDD to this later.**
+
+In this section, we discuss the details of our SMT solver. The solver is limited to predicates over integers. Also, the set of operators allowed for each SMT clause include $=, \le, \ge, \lt, \gt, \neq$. The solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
+
+To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The function accepts 5 required parameters (emphasized in bold below): 
 
 #### sat_formula: 
 The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
 
 `<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>];
-<atom> := r'x[0-9]+'
+<atom> := r"x[0-9]+"
 `
 
+Semantically, each `<atom>` maps to one SMT clause.
 
-Semantically, (still working on this).
+#### encodings:
+The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula follows the following BNF:
+
+`<smt_formula> := [<operator>, <atom1>, <atom2>]; <operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"; <atom1> := <var> | <constant>; <atom2> := <var> |<constant>; <var> := {string}; <constant> := {any integer bounded by the user-specified lower and upper bound.}`
+
+Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for $\eq$, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2.
+
+#### smt_vars:
+This is the list of all the variables `<var>`used in the SMT encoding.
+
+#### lowerbound:
+The lower bound of `<constant>`used in the SMT encoding.
+
+#### upperbound:
+The upper bound of `<constant>`used in the SMT encoding.
+
+As an example, to solve $(y1 \le 2) \wedge (y2 \eq 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
+
+Internally, the SMT solver first finds all possible solutions to the SAT encoding. Consider the example execution: `solve_SMT(["and", "x1", ["not", "x2"]], {"x1" : ["le", "y1", 2], "x2" : ["ge", "y2", 1]}, ["y1", "y2"], 0, 10)`. The SMT solver first uses dpll (default) or robdd to solve the SAT problem `["and", "x1", ["not", "x2"]]`. The only possible solution to the SAT encoding is {"x1" : True, "x2": False}.
+
+Then, the algorithm inverts the false SAT_encoding(s). In the aforementioned example execution, the algorithm generates the following mapping: `{"x1": True, "x2": True} -> {"x1" : ["le", "y1", 2], "x2" : ["lt", "y2", 1]}`.
+
+Lastly, the algorithm uses recursive backtracking to search through the search space of possible assignments, the space of the close interval from the preselected lowerbound to the upperbound for each SMT variable.
+
+
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we borrowed some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315.
