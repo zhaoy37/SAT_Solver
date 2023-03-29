@@ -5,7 +5,7 @@ This file provides an example for the user to use the SMT solver created in this
 the graph coloring problem.
 """
 
-from dpll_SMT.dpll_smt import solve_SMT
+from SMT_Solver.smt import solve_SMT
 
 def solve_graph_coloring(graph, num_colors):
     # Formulate the SMT representation:
