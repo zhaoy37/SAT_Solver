@@ -8,6 +8,9 @@ the graph coloring problem.
 from SMT_Solver.smt import solve_SMT
 
 def solve_graph_coloring(graph, num_colors):
+    if num_colors > len(list(graph.keys())):
+        raise Exception("The number of colors cannot be larger than the number of nodes in the graph.")
+
     # Formulate the SMT representation:
 
     # First, formulate the SMT encoding:
@@ -22,6 +25,9 @@ def solve_graph_coloring(graph, num_colors):
             smt_variables.add(connected_node)
             index += 1
     smt_variables = list(smt_variables)
+
+    if len(smt_variables) == 0:
+        raise Exception("The number of SMT Variables cannot be 0 for graph coloring.")
 
     # Now, formulate the SAT encoding:
     sat_encoding = []
