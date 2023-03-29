@@ -20,8 +20,9 @@ def main():
     if int(selection) == 1:
         dpll_kernel()
     else:
-        print("For instructions on using an SMT solver for some interesting problems, please see the README file")
+        print("For instructions on using the SMT solver (we created) for some interesting problems, please see the README file.")
         print("(and our report if you want to know more details of how some problems are solved.)")
+        print("Some examples are provided in the directory: problems. Specifically, the examples are in examples.py")
 
 if __name__ == "__main__":
     main()

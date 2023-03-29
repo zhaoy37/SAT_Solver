@@ -83,7 +83,10 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
         # Perform recursive descent.
         cur_assignment = []
         success, solution = solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment)
-        return solution
+        if success:
+            return solution
+        else:
+            return "UNSAT"
 
 # Example:
 # print(solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10))
