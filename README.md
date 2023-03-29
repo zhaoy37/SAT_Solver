@@ -22,10 +22,26 @@ We will proceed to introduce some interesting problems we solve using our create
 ### Graph Coloring
 Graph coloring is an NP-complete problem. Specifically, we focus on vertex-coloring: Given a graph and a number of colors allowed, assign each node in the graph a color such that there does not exist a pair of adjacent nodes with the same color.
 
-To use our solver, call the `solve_graph_coloring` function from /`problems/graph_coloring/graph_coloring_solver`. The two arguments are `graph`, which is an adjacency list representation of a graph, and `num_colors`, which denotes the **maximum number** allowed to color the graph. The function returns the assignment of chromatic numbers to each node if the problem is solvable (if the node does not appear in the assignment, it can be any color within the set of all chromatic numbers). In the case of an unsolvable problem, the solver returns "UNSAT". 
+To use our solver, call the `solve_graph_coloring` function from /`problems/graph_coloring/graph_coloring_solver`. The two arguments are `graph`, which is an adjacency list representation of a graph, and `num_colors`, which denotes the **maximum number** of colors allowed to color the graph. The function returns the assignment of chromatic numbers to each node if the problem is solvable (if the node does not appear in the assignment, it can be any color within the set of all chromatic numbers). In the case of an unsolvable problem, the solver returns "UNSAT". 
 
 
 Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3)Use the SMT solver to solve the encoded SMT problem.
 
+
+## Theory
+### Theory of SMT Solving
+In this section, we discusss the details of our SMT solver. The solver is limited to predicates over integers. Also, the set of operators allowed for each SMT clause include $=, \le, \ge$. Using the negation operator in the SAT representation, the set of operators allowed for each SMT clause is extended to $=, \le, \ge, \lt, \gt, \neq$. Also, the solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
+
+To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The function accepts 5 parameters: 
+
+#### sat_formula: 
+The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
+
+`<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>];
+<atom> := r'x[0-9]+'
+`
+
+
+Semantically, (still working on this).
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we borrowed some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315.
