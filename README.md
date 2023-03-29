@@ -51,7 +51,7 @@ The SMT encoding is a dictionary mapping each atom from the SAT encoding to an S
 
 `<smt_formula> := [<operator>, <atom1>, <atom2>]; <operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"; <atom1> := <var> | <constant>; <atom2> := <var> |<constant>; <var> := {string}; <constant> := {any integer bounded by the user-specified lower and upper bound.}`
 
-Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for $\eq$, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2.
+Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2.
 
 #### smt_vars:
 This is the list of all the variables `<var>`used in the SMT encoding.
@@ -62,7 +62,7 @@ The lower bound of `<constant>`used in the SMT encoding.
 #### upperbound:
 The upper bound of `<constant>`used in the SMT encoding.
 
-As an example, to solve $(y1 \le 2) \wedge (y2 \eq 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
+As an example, to solve $(y1 \le 2) \wedge (y2 = 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
 
 Internally, the SMT solver first finds all possible solutions to the SAT encoding. Consider the example execution: `solve_SMT(["and", "x1", ["not", "x2"]], {"x1" : ["le", "y1", 2], "x2" : ["ge", "y2", 1]}, ["y1", "y2"], 0, 10)`. The SMT solver first uses dpll (default) or robdd to solve the SAT problem `["and", "x1", ["not", "x2"]]`. The only possible solution to the SAT encoding is {"x1" : True, "x2": False}.
 
