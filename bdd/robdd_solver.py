@@ -49,6 +49,7 @@ def print_obdd(obdd_root, ordering, truth_table=False):
         [print(p, end='\n') for p in path]
 
 
+
 def construct_obdd(ordering, logic, vis=False):
     """
     Construct an OBDD from a given ordering and a logic expression.
