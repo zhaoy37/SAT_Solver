@@ -97,92 +97,63 @@ def solve_kernel_with_no_heuristic(target, variable_list, multiple, solutions):
                 return
 
 
+def further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions):
+    if simplified == "True":
+        # Complete assignment.
+        for i in range(index + 1, len(variable_list)):
+            new_assignment[variable_list[i]] = 1
+        solutions.append(new_assignment)
+        return True
+    elif simplified == "False":
+        # The assignment must be false.
+        return False
+    else:
+        return solve_kernel_with_heuristic(simplified, variable_list, new_assignment,
+                                           pure_positives, pure_negatives, solutions)
+
+
+def pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, ordering):
+    # Assign ordering[0] to the variable and try to simplify.
+    new_assignment = cur_assignment.copy()
+    new_assignment[variable] = ordering[0]
+    simplified = simplify(target, new_assignment)
+    # Case True following assigning ordering[0] to the variable: Return the correct answer.
+    if simplified == "True":
+        # Complete assignment.
+        for i in range(index + 1, len(variable_list)):
+            new_assignment[variable_list[i]] = 1
+        solutions.append(new_assignment)
+        return True
+    # Case False following assigning ordering[0] to the variable: Try switch to ordering[1] and re-evaluate.
+    elif simplified == "False":
+        new_assignment[variable] = ordering[1]
+        simplified = simplify(target, new_assignment)
+        # If the solver attains true, return the correct answer.
+        return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions)
+    else:
+        # The solver is inconclusive after assigning ordering[0] to the variable. Try to further simplify the formula.
+        if solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives,
+                                       pure_negatives, solutions):
+            return True
+        else:
+            # In this case, the solver resolves to false/inconclusive for assigning ordering[0] to the variable.
+            new_assignment[variable] = ordering[1]
+            simplified = simplify(target, new_assignment)
+            return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions)
+
+
 def solve_kernel_with_heuristic(target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions):
     if len(cur_assignment.keys()) >= len(variable_list):
+        # Base case: Reaches the end of assignment.
         return False
     else:
         index = len(cur_assignment.keys())
         variable = variable_list[index]
+        # Perform the heuristic on pure literals.
         if variable in pure_positives:
-            # Simplify.
-            new_assignment = cur_assignment.copy()
-            new_assignment[variable] = 1
-            simplified = simplify(target, new_assignment)
-            if simplified == "True":
-                # Complete assignment.
-                for i in range(index + 1, len(variable_list)):
-                    new_assignment[variable_list[i]] = 1
-                solutions.append(new_assignment)
-                return True
-            # I can further simplify here.
-            else:
-                if simplified == "False":
-                    new_assignment = cur_assignment.copy()
-                    new_assignment[variable] = 0
-                    simplified = simplify(target, new_assignment)
-                    if simplified == "True":
-                        # Complete assignment.
-                        for i in range(index + 1, len(variable_list)):
-                            new_assignment[variable_list[i]] = 1
-                        solutions.append(new_assignment)
-                        return True
-                    return solve_kernel_with_heuristic(simplified, variable_list, new_assignment,
-                                                       pure_positives, pure_negatives, solutions)
-                else:
-                    if solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives,
-                                                   pure_negatives, solutions):
-                        return True
-                    else:
-                        new_assignment = cur_assignment.copy()
-                        new_assignment[variable] = 0
-                        simplified = simplify(target, new_assignment)
-                        if simplified == "True":
-                            # Complete assignment.
-                            for i in range(index + 1, len(variable_list)):
-                                new_assignment[variable_list[i]] = 1
-                            solutions.append(new_assignment)
-                            return True
-                        return solve_kernel_with_heuristic(simplified, variable_list, new_assignment,
-                                                           pure_positives, pure_negatives, solutions)
+            return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [1, 0])
         else:
-            # Simplify.
-            new_assignment = cur_assignment.copy()
-            new_assignment[variable] = 0
-            simplified = simplify(target, new_assignment)
-            if simplified == "True":
-                # Complete assignment.
-                for i in range(index + 1, len(variable_list)):
-                    new_assignment[variable_list[i]] = 1
-                solutions.append(new_assignment)
-                return True
-            # I can further simplify here.
-            else:
-                if simplified == "False":
-                    new_assignment = cur_assignment.copy()
-                    new_assignment[variable] = 1
-                    simplified = simplify(target, new_assignment)
-                    if simplified == "True":
-                        # Complete assignment.
-                        for i in range(index + 1, len(variable_list)):
-                            new_assignment[variable_list[i]] = 1
-                        solutions.append(new_assignment)
-                        return True
-                    return solve_kernel_with_heuristic(simplified, variable_list, new_assignment,
-                                                       pure_positives, pure_negatives, solutions)
-                else:
-                    if solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions):
-                        return True
-                    else:
-                        new_assignment = cur_assignment.copy()
-                        new_assignment[variable] = 1
-                        simplified = simplify(target, new_assignment)
-                        if simplified == "True":
-                            # Complete assignment.
-                            for i in range(index + 1, len(variable_list)):
-                                new_assignment[variable_list[i]] = 1
-                            solutions.append(new_assignment)
-                            return True
-                        return solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions)
+            return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [0, 1])
 
 
 # Solution.

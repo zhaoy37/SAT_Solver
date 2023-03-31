@@ -92,8 +92,11 @@ def dpll_kernel():
         else:
             solutions = solve(logic, multiple = True)
             print("The solution(s) is/are:")
-            for s in solutions:
-                print(s)
+            if solutions == "UNSAT":
+                print(solutions)
+            else:
+                for s in solutions:
+                    print(s)
         print("---Total time to find the solution(s): %s seconds --- " % (time.time() - start_time))
     else:
         # Case 2: Test the solver on randomly generated formula(e).
