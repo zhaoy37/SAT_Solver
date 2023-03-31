@@ -44,7 +44,7 @@ def view_rodbb(g):
     labels = nx.get_node_attributes(G, 'var') 
     for k, val in labels.items():
         if k> 1:
-            labels[k] = 'y'+str(val)
+            labels[k] = 'x'+str(val)
     nx.draw(G, pos=pos, node_size=500, with_labels=True, 
             node_color=color_map, alpha=0.6, 
             labels=labels)
