@@ -1,8 +1,5 @@
 from bdd.robdd_graph import OBDD_node, ROBDDNode
-from shared.logic_parser import parse_logic
-import matplotlib.pyplot as plt
 from bdd.logic_eval import eval
-import networkx as nx
 import numpy as np
 import copy
 

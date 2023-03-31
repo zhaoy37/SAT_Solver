@@ -1,7 +1,5 @@
-import plotly
 import numpy as np
 import networkx as nx
-import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 from bdd.robdd_graph import ROBDD_graph
 
