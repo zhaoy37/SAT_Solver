@@ -25,7 +25,8 @@ def robdd_kernel():
         formula = input("Please enter the formula here (literal must starts with x and followed by numbers):")
     else:
         print("Testing pre-defined logic expression:", end=" ")
-        formula = "((x0 or (not x1)) and (x1 or x2))"
+        # formula = "((x0 or (not x1)) and (x1 or x2))"
+        formula = "(((not x0) and (not x1) and (not x2)) or (x0 and x1) or (x1 and x2))"
         logic = parse_logic(formula)
         print(formula)
         print("Testing pre-defined variable ordering: x2, x1, x0")
