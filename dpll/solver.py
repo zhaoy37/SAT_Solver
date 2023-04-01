@@ -97,7 +97,7 @@ def solve_kernel_with_no_heuristic(target, variable_list, multiple, solutions):
                 return
 
 
-def further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions):
+def further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions, multiple):
     if simplified == "True":
         # Complete assignment.
         for i in range(index + 1, len(variable_list)):
@@ -109,10 +109,46 @@ def further_search(index, simplified, variable_list, new_assignment, pure_positi
         return False
     else:
         return solve_kernel_with_heuristic(simplified, variable_list, new_assignment,
-                                           pure_positives, pure_negatives, solutions)
+                                           pure_positives, pure_negatives, solutions, multiple)
 
 
-def pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, ordering):
+def solve_multiple(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, multiple):
+    # The pure literal heuristic does not matter any more since the task now is to find all possible solutions.
+    new_assignment = cur_assignment.copy()
+    new_assignment[variable] = 0
+    simplified = simplify(target, new_assignment)
+    # In the case that the solver finds True:
+    if simplified == "True":
+        # Generates all possible binary assignments that occur after the partial assignment.
+        bin_length = len(variable_list) - (index + 1)
+        for i in range(2 ** bin_length):
+            bin_rep = np.binary_repr(i, width=len(variable_list))
+            temp_assignment = new_assignment.copy()
+            for j in range(index + 1, len(variable_list)):
+                temp_assignment[variable_list[j]] = int(bin_rep[j])
+            if temp_assignment not in solutions:
+                solutions.append(temp_assignment)
+
+    solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions, multiple)
+
+    new_assignment[variable] = 1
+    simplified = simplify(target, new_assignment)
+    # In the case that the solver finds True:
+    if simplified == "True":
+        # Generates all possible binary assignments that occur after the partial assignment.
+        bin_length = len(variable_list) - (index + 1)
+        for i in range(2 ** bin_length):
+            bin_rep = np.binary_repr(i, width=len(variable_list))
+            temp_assignment = new_assignment.copy()
+            for j in range(index + 1, len(variable_list)):
+                temp_assignment[variable_list[j]] = int(bin_rep[j])
+            if temp_assignment not in solutions:
+                solutions.append(temp_assignment)
+
+    solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions, multiple)
+
+
+def pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, ordering, multiple):
     # Assign ordering[0] to the variable and try to simplify.
     new_assignment = cur_assignment.copy()
     new_assignment[variable] = ordering[0]
@@ -129,35 +165,38 @@ def pure_literal_solve(index, variable, target, variable_list, cur_assignment, p
         new_assignment[variable] = ordering[1]
         simplified = simplify(target, new_assignment)
         # If the solver attains true, return the correct answer.
-        return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions)
+        return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions, multiple)
     else:
         # The solver is inconclusive after assigning ordering[0] to the variable. Try to further simplify the formula.
         if solve_kernel_with_heuristic(simplified, variable_list, new_assignment, pure_positives,
-                                       pure_negatives, solutions):
+                                       pure_negatives, solutions, multiple):
             return True
         else:
             # In this case, the solver resolves to false/inconclusive for assigning ordering[0] to the variable.
             new_assignment[variable] = ordering[1]
             simplified = simplify(target, new_assignment)
-            return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions)
+            return further_search(index, simplified, variable_list, new_assignment, pure_positives, pure_negatives, solutions, multiple)
 
 
-def solve_kernel_with_heuristic(target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions):
+def solve_kernel_with_heuristic(target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, multiple):
     if len(cur_assignment.keys()) >= len(variable_list):
         # Base case: Reaches the end of assignment.
         return False
     else:
         index = len(cur_assignment.keys())
         variable = variable_list[index]
-        # Perform the heuristic on pure literals.
-        if variable in pure_positives:
-            return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [1, 0])
+        if multiple:
+            return solve_multiple(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, multiple)
         else:
-            return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [0, 1])
+            # Perform the heuristic on pure literals.
+            if variable in pure_positives:
+                return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [1, 0], multiple)
+            else:
+                return pure_literal_solve(index, variable, target, variable_list, cur_assignment, pure_positives, pure_negatives, solutions, [0, 1], multiple)
 
 
 # Solution.
-def solve(tree, assignment_heuristic_enabled = True, multiple = False):
+def solve(tree, heuristic_enabled = True, multiple = False):
     # Call the recursive backtracking kernel.
     variable_list = list(tree.leaves)
     solutions = []
@@ -165,13 +204,10 @@ def solve(tree, assignment_heuristic_enabled = True, multiple = False):
     cur_assignment = dict()
     target = tree.formula
     # Right now, multiple only works for the naive mode. I will add multiple option for the heuristic mode later.
-    if (not assignment_heuristic_enabled):
+    if (not heuristic_enabled):
         solve_kernel_with_no_heuristic(target, variable_list, multiple, solutions)
     else:
-        if multiple:
-            solve_kernel_with_no_heuristic(target, variable_list, multiple, solutions)
-        else:
-            solve_kernel_with_heuristic(target, variable_list, cur_assignment, tree.pure_positives, tree.pure_negatives, solutions)
+        solve_kernel_with_heuristic(target, variable_list, cur_assignment, tree.pure_positives, tree.pure_negatives, solutions, multiple)
 
     # Detect pure literals if assignment_heuristic_enabled: To be implemented later
     if len(solutions) == 0:

@@ -37,29 +37,29 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
 
     # Now solve the trees with different capabilities:
     print("-------------------------------------")
-    print("Test the solving time with no heuristic and no assignment heuristic enabled:")
+    print("Test the solving time with no heuristic and no heuristic enabled:")
     no_assignment = time.time()
     single_noh_solutions = []
     multiple_noh_solutions = []
     for tree in trees:
         if multiple:
-            multiple_noh_solutions.append(solve(tree, assignment_heuristic_enabled = False, multiple = True))
+            multiple_noh_solutions.append(solve(tree, heuristic_enabled = False, multiple = True))
         else:
-            single_noh_solutions.append(solve(tree, assignment_heuristic_enabled = False, multiple = False))
-    print("Execution with no assignment heuristic: %s seconds" % (time.time() - no_assignment))
+            single_noh_solutions.append(solve(tree, heuristic_enabled = False, multiple = False))
+    print("Execution with no heuristic: %s seconds" % (time.time() - no_assignment))
     print("-------------------------------------")
 
     print("-------------------------------------")
-    print("Test the solving time with assignment heuristic enabled:")
+    print("Test the solving time with heuristic enabled:")
     assignment = time.time()
     single_h_solutions = []
     multiple_h_solutions = []
     for tree in trees:
         if multiple:
-            multiple_h_solutions.append(solve(tree, assignment_heuristic_enabled=True, multiple=True))
+            multiple_h_solutions.append(solve(tree, heuristic_enabled=True, multiple=True))
         else:
-            single_h_solutions.append(solve(tree, assignment_heuristic_enabled=True,  multiple=False))
-    print("Execution with assignment heuristic: %s seconds" % (
+            single_h_solutions.append(solve(tree, heuristic_enabled=True,  multiple=False))
+    print("Execution with heuristic: %s seconds" % (
                 time.time() - assignment))
     print("-------------------------------------")
 
@@ -104,6 +104,17 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
                     total += 1
         print("Accuracy for Heuristic:", correct_num * 100 / total, "%")
 
+        print()
+        print("Cross checking the completeness of solutions:")
+        print("-------------------------------------")
+        correct_num = 0
+        total = 0
+        for i in range(len(multiple_noh_solutions)):
+            if multiple_noh_solutions[i] != "UNSAT":
+                correct_num += (len(multiple_noh_solutions[i]) == len(multiple_h_solutions[i]))
+                total += 1
+        print("Accuracy on completeness of all possible solutions:", correct_num * 100 / total, "%")
+
 
 if __name__ == "__main__":
-    perform_ablation_study(100, 5, 12, False)
+    perform_ablation_study(100, 5, 12, True)
