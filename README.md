@@ -28,6 +28,14 @@ To use our solver, call the `solve_graph_coloring` function from `/problems/grap
 Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3)Use the SMT solver to solve the encoded SMT problem.
 
 
+### N-Queens Problem
+In the N-queens problem, given an n by n sized chess board, the algorithm is asked to place n queens on the baord such that no two queen attack each other. 
+
+To use our solver, call the `solve_n_queens` function from `/problems/n_queens/n_queens_solver`. The parameter is `num_queens`, which represents the number of queens to be palced (which is equivalent to the length of a side of the square chess board). The function, if the problem is solvable, will return a matrix representing the board, where the 1s denote the placement of the queens and 0s denote empty positions. If the given problem is not solvable, the solver will return "UNSAT".
+
+Inside the solver, each SMT variable represents a column, and the assignmnent to that variable represents the row index of the queen in that column. Then, in the SMT encodings, the solver is supported with representations that no two queen can be in the same row and no two queens can be in the same diagonal. The SAT encoding further abstracts the SMT encodings by connecting the SMT encodings with conjunctions. If the problem is solvable, with the solution, the algorithm transforms the solution into a matrix representation of the chess board.
+
+
 ## Theory
 ### Theory of SMT Solving
 
