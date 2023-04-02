@@ -33,7 +33,7 @@ Internally, the solver constructs the SMT encoding in the following way: 1) Each
 
 **I said that we are using both of our SAT solvers for this. Currently, it only works for DPLL. We need to integrate ROBDD to this later.**
 
-In this section, we discuss the details of our SMT solver. The solver is limited to predicates over integers. Also, the set of operators allowed for each SMT clause include $=, \le, \ge, \lt, \gt, \neq$. The solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
+In this section, we discuss the details of our SMT solver. The solver is limited to predicates over integers. The set of operators allowed for each SMT clause include $=, \le, \ge, \lt, \gt, \neq, +, -, *, //$, where // denotes integer division. The solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
 
 To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The function accepts 5 required parameters (emphasized in bold below): 
 
@@ -47,22 +47,25 @@ The SAT encoding of the SMT clauses follows the following BNF (where r denotes t
 Semantically, each `<atom>` maps to one SMT clause.
 
 #### encodings:
-The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula follows the following BNF:
+The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula permits the following BNF:
 
-`<smt_formula> := [<operator>, <atom1>, <atom2>]; <operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"; <atom1> := <var> | <constant>; <atom2> := <var> |<constant>; <var> := {string}; <constant> := {any integer bounded by the user-specified lower and upper bound.}`
+`<smt_formula> := [<operator>, <atom1>, <atom2>]; <operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"; <atom1> := <var> | <constant>; <atom2> := <var> |<constant>; <var> := {any string} | <expression>; <expression> = "<subvar> <arith> <subvar>"; <arith> := {+, -, *, //}; <subvar> := {any literal or integer}; <constant> := {any integer}`
 
-Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2.
+Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2. Moreover, the expression "<subvar> <arith> <subvar>" can be taken literally. For example, "y1 + y2" is y1 + y2; "y1 + 3" is y1 + 3.
 
 #### smt_vars:
-This is the list of all the variables `<var>`used in the SMT encoding.
+This is the list of all the variables used in the SMT encoding.
 
 #### lowerbound:
-The lower bound of `<constant>`used in the SMT encoding.
+The lower bound of `<constant>`used in the SMT encoding. Semantically, this is the upper bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
 
 #### upperbound:
-The upper bound of `<constant>`used in the SMT encoding.
+The upper bound of `<constant>`used in the SMT encoding. Semantically, this is the lower bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
+
 
 As an example, to solve $(y1 \le 2) \wedge (y2 = 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
+
+To solve $(y1 - 2 = y2) \wedge (y2 + y1 > 5)$ with the bounds $0, \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10)`.
 
 Internally, the SMT solver first finds all possible solutions to the SAT encoding. Consider the example execution: `solve_SMT(["and", "x1", ["not", "x2"]], {"x1" : ["le", "y1", 2], "x2" : ["ge", "y2", 1]}, ["y1", "y2"], 0, 10)`. The SMT solver first uses dpll (default) or robdd to solve the SAT problem `["and", "x1", ["not", "x2"]]`. The only possible solution to the SAT encoding is {"x1" : True, "x2": False}.
 

@@ -7,16 +7,48 @@ This program solves SMT (integer signature) using a build DPLL SAT Solver.
 from dpll.logic_tree import Logic
 from dpll.solver import solve
 
+
+def realize(variable, assignment):
+    if isinstance(variable, int):
+        return variable
+
+    variable_list = variable.split()
+    if len(variable_list) == 1:
+        if variable.isnumeric():
+            return int(variable)
+        else:
+            return assignment[variable]
+    else:
+        # Allow +, -, *, //
+        operator = variable_list[1]
+
+        if variable_list[0].isnumeric():
+            var1 = int(variable_list[0])
+        else:
+            var1 = assignment[variable_list[0]]
+
+        if variable_list[2].isnumeric():
+            var2 = int(variable_list[2])
+        else:
+            var2 = assignment[variable_list[2]]
+
+        if operator == "+":
+            return (var1 + var2)
+        elif operator == "-":
+            return (var1 - var2)
+        elif operator == "*":
+            return (var1 * var2)
+        else:
+            return (var1 // var2)
+
+
 def evaluate_assignment(converted, assignment):
     for formula in converted:
-        var1 = formula[1]
-        if formula[1] in assignment:
-            var1 = assignment[formula[1]]
-        var2 = formula[2]
-        if formula[2] in assignment:
-            var2 = assignment[formula[2]]
-
+        # Realize the variables.
+        var1 = realize(formula[1], assignment)
+        var2 = realize(formula[2], assignment)
         operator = formula[0]
+        # Perform checking.
         if operator == "lt":
             if var1 >= var2:
                 return False
@@ -37,6 +69,7 @@ def evaluate_assignment(converted, assignment):
                 return False
     return True
 
+
 # This is the kernel to the SMT solver.
 def solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment):
     if len(converted) == len(cur_assignment):
@@ -55,7 +88,8 @@ def solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment
 
 
 # This is just recursive backtracking for constraint satisfaction problem without DPLL(T).
-# Currently, the SMT solver only supports single solution (because I only need 1 for the NP-complete problem to be solved).
+# Currently, the SMT solver only supports single solution
+# (because I only need 1 for the NP-complete problem to be solved).
 # The users are encouraged to extend the SMT solver to allow multiple solutions.
 def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
     # First, solve the sat_formula.
@@ -89,4 +123,4 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
     return "UNSAT"
 
 # Example:
-# print(solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10))
+print(solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10))
