@@ -4,42 +4,48 @@ Name: Yiqi (Nick) Zhao
 This file gives the users some examples for using our created SMT solver to solve some NP-complete problems.
 """
 
-"""
-Import the solvers we created.
-"""
-from graph_coloring.graph_coloring_solver import solve_graph_coloring
 
-"""
-Problem 1: Graph coloring.
-"""
-# Construct a graph.
-# If you want to use our solver, please enter your graph in adjacency list like the example below.
+def main():
+    """
+    Import the solvers we created.
+    """
+    from graph_coloring.graph_coloring_solver import solve_graph_coloring
 
-# Let the graph be:
-graph = {
-    "y1" : ["y2", "y3", "y4"],
-    "y2": ["y3"],
-    "y3": [],
-    "y4": []
-}
+    """
+    Problem 1: Graph coloring.
+    """
+    # Construct a graph.
+    # If you want to use our solver, please enter your graph in adjacency list like the example below.
 
-# There needs to be at least one connection.
+    # Let the graph be:
+    graph = {
+        "y1" : ["y2", "y3", "y4"],
+        "y2": ["y3"],
+        "y3": [],
+        "y4": []
+    }
 
-# This graph is:
-#        y1
-#       / | \
-#      y2 y4 |
-#      |     |
-#      ------y3
+    # There needs to be at least one connection.
 
-# Now, solve the problem with our solver.
+    # This graph is:
+    #        y1
+    #       / | \
+    #      y2 y4 |
+    #      |     |
+    #      ------y3
 
-# First, solve the problem with only 2 colors. This should return UNSAT:
-print("Solving Graph Coloring Problem: Example 1 --> Expected: UNSAT")
-print("Solution from our solver:", solve_graph_coloring(graph, 2))
-print()
+    # Now, solve the problem with our solver.
 
-# Now, solve the problem with 3 colors. This is solvable.
-print("Solving Graph Coloring Problem: Example 2 --> Expected: This should be solvable.")
-print("Solution from our solver:", solve_graph_coloring(graph, 3))
-print()
+    # First, solve the problem with only 2 colors. This should return UNSAT:
+    print("Solving Graph Coloring Problem: Example 1 --> Expected: UNSAT")
+    print("Solution from our solver:", solve_graph_coloring(graph, 2))
+    print()
+
+    # Now, solve the problem with 3 colors. This is solvable.
+    print("Solving Graph Coloring Problem: Example 2 --> Expected: This should be solvable.")
+    print("Solution from our solver:", solve_graph_coloring(graph, 3))
+    print()
+
+
+if __name__ == "__main__":
+    main()
