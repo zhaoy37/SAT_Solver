@@ -72,7 +72,7 @@ def evaluate_assignment(converted, assignment):
 
 # This is the kernel to the SMT solver.
 def solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment):
-    if len(converted) == len(cur_assignment):
+    if len(smt_vars) == len(cur_assignment):
         choice_assignment = dict()
         for i in range(len(smt_vars)):
             choice_assignment[smt_vars[i]] = cur_assignment[i]
@@ -106,13 +106,17 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
             else:
                 if encoding[0] == "le":
                     encoding[0] = "gt"
-                    converted.append(encoding)
                 elif encoding[0] == "ge":
                     encoding[0] = "lt"
-                    converted.append(encoding)
+                elif encoding[0] == "gt":
+                    encoding[0] = "le"
+                elif encoding[0] == "lt":
+                    encoding[0] = "ge"
+                elif encoding[0] == "nq":
+                    encoding[0] = "eq"
                 else:
                     encoding[0] = "nq"
-                    converted.append(encoding)
+                converted.append(encoding)
 
         # Perform recursive descent.
         cur_assignment = []
@@ -122,5 +126,6 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
 
     return "UNSAT"
 
-# Example:
-print(solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10))
+# Examples:
+#print(solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10))
+#print(solve_SMT(["and", "x1", "x2"], {"x1": ["nq", "y1 - y2", "y1 + y2"], "x2": ["eq", "y2 + y1", "y1"]}, ["y1", "y2"], 0, 10))
