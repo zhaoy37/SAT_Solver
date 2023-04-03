@@ -48,16 +48,32 @@ To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The 
 #### sat_formula: 
 The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
 
-`<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>];
-<atom> := r"x[0-9]+"
-`
+`<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>]`
+
+`<atom> := r"x[0-9]+"`
 
 Semantically, each `<atom>` maps to one SMT clause.
 
 #### encodings:
 The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula permits the following BNF:
 
-`<smt_formula> := [<operator>, <atom1>, <atom2>]; <operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"; <atom1> := <var> | <constant>; <atom2> := <var> |<constant>; <var> := {any string} | <expression>; <expression> = "<subvar> <arith> <subvar>"; <arith> := {+, -, *, //}; <subvar> := {any literal or integer}; <constant> := {any integer}`
+`<smt_formula> := [<operator>, <atom1>, <atom2>]`
+ 
+`<operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"`
+
+`<atom1> := <var> | <constant>`
+
+`<atom2> := <var> |<constant>`
+
+`<var> := {any string} | <expression>`
+
+`<expression> = "<subvar> <arith> <subvar>"`
+
+`<arith> := {+, -, *, //}`
+
+`<subvar> := {any literal or integer}`
+
+`<constant> := {any integer}`
 
 Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2. Moreover, the expression "<subvar> <arith> <subvar>" can be taken literally. For example, "y1 + y2" is y1 + y2; "y1 + 3" is y1 + 3.
 
