@@ -125,7 +125,3 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
             return solution
 
     return "UNSAT"
-
-# Examples:
-#print(solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10))
-#print(solve_SMT(["and", "x1", "x2"], {"x1": ["nq", "y1 - y2", "y1 + y2"], "x2": ["eq", "y2 + y1", "y1"]}, ["y1", "y2"], 0, 10))
