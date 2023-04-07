@@ -3,7 +3,7 @@ Author: Yiqi (Nick) Zhao
 
 This file tests the SMT solver.
 
-# I used the tutorial here.
+# I used the tutorial here: https://github.com/cgoldberg/python-unittest-tutorial
 """
 
 from SMT_Solver.smt import solve_SMT
