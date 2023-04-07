@@ -100,7 +100,7 @@ Lastly, the algorithm uses recursive backtracking to search through the search s
 We choose the above method because it is intuitive. Since the SMT solver is not the focus of the project but rather an abstraction of the SAT solver, we do not focus on the optimization of the SMT solver interface. The algorithm we use is widely used for solving Constraint Satisfaction Problems (CSP), which can be alternatively solved with the min-conflicts algorithm or with recursive backtracking that also integrates the heuristics such as least constrained values. One algorithm that solves a broader set of SMT signatures and possibly with a lower time complexity is DPLL(T), which is the SMT variant of DPLL for SAT Problems. Users are encouraged to replace our SMT solver with other alternatives.
 
 ## Tests
-To test out the programs, please run the files in the /test sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu.
+To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu.
 
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we borrowed some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.
