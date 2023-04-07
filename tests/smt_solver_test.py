@@ -60,6 +60,14 @@ class SMTTest(unittest.TestCase):
         y2 = solution6["y2"]
         self.assertTrue(y1 <= 5 or y2 <= 3)
 
+    def test_case_7(self):
+        solution7 = solve_SMT(["and", "x1", "x2"],{"x1": ["eq", "y1 + y2", "y4"], "x2": ["eq", "y4 + y3", 10]},
+                              ["y1", "y2", "y3", "y4"], 0, 10)
+        y1 = solution7["y1"]
+        y2 = solution7["y2"]
+        y3 = solution7["y3"]
+        self.assertTrue(y1 + y2 + y3 == 10)
+
 
 if __name__ == '__main__':
     unittest.main()
