@@ -8,6 +8,10 @@ the Subset Sum Problem.
 from SMT_Solver.smt import solve_SMT
 
 def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10):
+    for value in target_list:
+        if value <= 0:
+            raise Exception("List element must be positive.")
+
     if len(target_list) == 0:
         return "UNSAT"
 

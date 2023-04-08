@@ -11,6 +11,9 @@ from dpll.solver import solve
 def realize(variable, assignment):
     if isinstance(variable, int):
         return variable
+    elif isinstance(variable, str):
+        if variable[0] == 'x':
+            raise Exception("SMT variables cannot start with x.")
 
     variable_list = variable.split()
     if len(variable_list) == 1:

@@ -68,6 +68,10 @@ class SMTTest(unittest.TestCase):
         y3 = solution7["y3"]
         self.assertTrue(y1 + y2 + y3 == 10)
 
+    def test_exception(self):
+        self.assertRaises(Exception, solve_SMT, ["and", "x1", "x2"],
+                          {"x1": ["eq", "y1", 3], "x2": ["eq", "x3", 10]}, ["y1", "x3"], 0, 10)
+
 
 if __name__ == '__main__':
     unittest.main()

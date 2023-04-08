@@ -10,6 +10,18 @@ from problems.graph_coloring.graph_coloring_solver import solve_graph_coloring
 
 import unittest
 
+graph = {
+    "y1": ["y2", "y3"],
+    "y2": ["y4"],
+    "y4": ["y5"]
+}
+
+# The graph looks like this:
+"""
+y1 ---- y2----y4----y5
+|-------y3
+"""
+
 class GraphColoringTest(unittest.TestCase):
 
     """
@@ -18,17 +30,6 @@ class GraphColoringTest(unittest.TestCase):
     """
 
     def test_graph_SAT(self):
-        graph = {
-            "y1" : ["y2", "y3"],
-            "y2" : ["y4"],
-            "y4" : ["y5"]
-        }
-
-        # The graph looks like this:
-        """
-        y1 ---- y2----y4----y5
-        |-------y3
-        """
         solution = solve_graph_coloring(graph, 2)
         y1 = solution["y1"]
         y2 = solution["y2"]
@@ -41,33 +42,11 @@ class GraphColoringTest(unittest.TestCase):
         self.assertTrue(y4 != y5)
 
     def test_graph_UNSAT(self):
-        graph = {
-            "y1": ["y2", "y3"],
-            "y2": ["y4"],
-            "y4": ["y5"]
-        }
-
-        # The graph looks like this:
-        """
-        y1 ---- y2----y4----y5
-        |-------y3
-        """
         solution = solve_graph_coloring(graph, 1)
         self.assertTrue(solution == "UNSAT")
 
     # Test two directions.
     def test_graph_SAT_2(self):
-        graph = {
-            "y1": ["y2", "y3"],
-            "y2": ["y4"],
-            "y4": ["y2", "y5"]
-        }
-
-        # The graph looks like this:
-        """
-        y1 ---- y2----y4----y5
-        |-------y3
-        """
         solution = solve_graph_coloring(graph, 2)
         y1 = solution["y1"]
         y2 = solution["y2"]
@@ -81,19 +60,14 @@ class GraphColoringTest(unittest.TestCase):
 
     # Test two directions.
     def test_graph_UNSAT_2(self):
-        graph = {
-            "y1": ["y2", "y3"],
-            "y2": ["y4"],
-            "y4": ["y2", "y5"]
-        }
-
-        # The graph looks like this:
-        """
-        y1 ---- y2----y4----y5
-        |-------y3
-        """
         solution = solve_graph_coloring(graph, 1)
         self.assertTrue(solution == "UNSAT")
+
+    def test_exception_1(self):
+        self.assertRaises(Exception, solve_graph_coloring, graph, 4)
+
+    def test_exception_2(self):
+        self.assertRaises(Exception, solve_graph_coloring, {"x1" : []}, 1)
 
 
 if __name__ == '__main__':
