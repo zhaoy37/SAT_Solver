@@ -15,7 +15,7 @@ The implication of SAT solving is theoretically supported by the *Cook-Levin The
 
 The SMT problem is similar to the SAT Problem with the exception that the formulas are many-sorted. In our project, we only consider the SMT problem over integer predicates with no support for arithmetic operators that are not in the set of ${=, \le, \ge, \lt, \gt, \neq}$, because this representation scheme is all we need to solve the problems in the /problems folder. However, such scheme can be easily expanded to a broader set of operators and predicate domains.
 
-For more details on how to use the SMT solver we created, including how to provide SMT encodings to the solver, please refer to the Theory section. In a nutshell, in our SMT solver, we encode SMT problems as SAT problem representation with each SAT variable represents one SMT clause, and we solve the corresponding SAT problem and use recursive backtracking to find the SMT assignments that fits a solution to the SAT problem.
+For more details on how to use the SMT solver we creat, including how to provide SMT encodings to the solver, please refer to the Theory section. In a nutshell, in our SMT solver, we encode SMT problems as SAT problem representation with each SAT variable represents one SMT clause, and we solve the corresponding SAT problem and use recursive backtracking to find the SMT assignments that fits a solution to the SAT problem.
 
 We will proceed to introduce some interesting problems we solve using our created SMT solver. To see the codes on solving the problems, please refer to the /problems sub-directory and the example.py file inside the sub-directory.
 
@@ -35,7 +35,7 @@ To use our solver, call the `solve_n_queens` function from `/problems/n_queens/n
 Inside the solver, each SMT variable represents a column, and the assignmnent to that variable represents the row index of the queen in that column. Then, in the SMT encodings, the solver is supported with representations that no two queen can be in the same row and no two queens can be in the same diagonal. The SAT encoding further abstracts the SMT encodings by connecting the SMT encodings with conjunctions. If the problem is solvable, with the solution, the algorithm transforms the solution into a matrix representation of the chess board.
 
 ### Subset Sum
-Subset Sum, another NP-Complete algorithm, is stated as follows: Given a list, L, of positive integers, find the subset of the list that sum up to a given value, X. Using the SMT solver, we created a solver for Subset Sum (which is very slow from an application perspective but nonetheless is designed for educational purposes).
+Subset Sum, another NP-Complete algorithm, is stated as follows: Given a list, L, of positive integers, find the subset of the list that sum up to a given value, X. Using the SMT solver, we create a solver for Subset Sum (which is very slow from an application perspective but nonetheless is designed for educational purposes).
 
 Please note that **this implementation can be inconclusive** because of the search space of the SMT solver (whose details are discussed in the next section).
 
@@ -109,8 +109,18 @@ We choose the above method because it is intuitive. Since the SMT solver is not 
 
 One other essential technique is that although operators {+, -, *, //} connect between only two variables, the users can easily modify the representation for more complicated integer formulas by introducing some temporary variables. For instance, if the user wants to find the solution of `y1 + y2 + y3 = 10` with `0 <= y1, y2, y3 <= 10`, they can call: `solve_SMT(["and", "x1", "x2"],{"x1": ["eq", "y1 + y2", "y4"], "x2": ["eq", "y4 + y3", 10]},["y1", "y2", "y3", "y4"], 0, 10)`.
 
+### Theory of SAT Solving: DPLL
+In this section, we discuss the theory of DPLL and how to use the DPLL solver we create. The Davis-Putnam-Logemann-Loveland algorithm (DPLL) is a widely used algorithm in SAT solving. Its basic idea is recursive backtracking search of atom values that meet the satisfiability with some special heuristics. For the rest of this section, we describe how we structure our DPLL SAT solver to implement the search algorithm and the special heuristics.
+
+An input formula is in a format of a list (A SAT formula in human language can be parsed via `/shared/logic_parser.py` to the formula in this format). The syntax and semantics of the list representation is identical to the sat formula described in the `sat_formula` part of the previous subsection. The input to the parser is a human-understandable SAT formula with atoms encoded with `r"x[0-9]+"`.
+
+Apart from the solver itself, we also offer a kernel for interacting with the solver, which can be called in `main.py`. The DPLL kernel locates in `/dpll/dpll_kernel.py`. To facilitate evaluation purposes, we also offer a generator that generates SAT formulas in tree representations. The generator can be found in `/shared/logic_generator.py`. The user can think of SAT formulas like trees with "and", "or", "not" represent the non-leaf nodes and the atoms represent the leaf nodes (we will actually discuss this detail of the data structure later in this section). To change the probability each type of non-leaf node occurs, the users can set the probabilities at the top of the program file for the logic generator using the hyperparameters `chance_not`, which denotes the probability that a "not" node occurs, `chance_and`, which denotes the probability that an "and" node occurs, and `chance_or`, which denotes the probability that an "or" node occurs. The user can call `generate_logic_trees` to generate random logic trees following a set of parameters: 1) `num_logics` represent the number of logic trees to be generated. 2) `num_variables` represents the cardinality of SAT atoms in the tree. For instance the cardinality of atoms of `x1 and x2 or x1` is 2. 3) `depth` denotes the depth of each generated tree. The depth is positively correlated with the number of nodes of each SAT tree. 4) `disallow_repetition`, which is optional, denotes if the user allows or disallow repetitions of trees generated. 5) `allow_True_False` representes if the user allows or disallows the presence of pure values True and/or False in the leaf level.
+
+ 		
+
+
 ## Tests
 To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu. For details on comparing different solvers and more details on the theories, please refer to the report attached with this repository. **(To be added later)**
 
 ## Acknowledgements
-Throughout the tutorial and the codes for this project, we borrowed some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.
+Throughout the tutorial and the codes for this project, we used some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.

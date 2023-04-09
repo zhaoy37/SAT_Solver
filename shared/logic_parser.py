@@ -1,11 +1,8 @@
 """
 Author: Yiqi (Nick) Zhao
 The purpose of this file is to create the parser
-for user input. following the BNF listed below.
-BNF for user input parsing:
-<formula> := True | False | literal | <formula> and <formula>
-            | <formula> or <formula> | not <formula> |
-            (<formula>)
+for user input.
+
 The output of the program should be some abstract syntax tree (AST) for the logic.
 Acknowledgement: Some parts of the codes
 come from the PLY documentation: https://www.dabeaz.com/ply/ply.html#ply_nn4
