@@ -58,9 +58,9 @@ The SAT encoding of the SMT clauses follows the following BNF (where r denotes t
 
 `<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>]`
 
-`<atom> := r"x[0-9]+"`
+`<atom> := r"x[0-9]+" | True | False`
 
-Semantically, each `<atom>` maps to one SMT clause.
+Semantically, each `<atom>` maps to one SMT clause (True and False are not used in sat_formula for SMT encoding but can be used for SAT formula representations in the next subsection in SAT solving).
 
 #### encodings:
 The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula permits the following BNF:
@@ -112,9 +112,15 @@ One other essential technique is that although operators {+, -, *, //} connect b
 ### Theory of SAT Solving: DPLL
 In this section, we discuss the theory of DPLL and how to use the DPLL solver we create. The Davis-Putnam-Logemann-Loveland algorithm (DPLL) is a widely used algorithm in SAT solving. Its basic idea is recursive backtracking search of atom values that meet the satisfiability with some special heuristics. For the rest of this section, we describe how we structure our DPLL SAT solver to implement the search algorithm and the special heuristics.
 
-An input formula is in a format of a list (A SAT formula in human language can be parsed via `/shared/logic_parser.py` to the formula in this format). The syntax and semantics of the list representation is identical to the sat formula described in the `sat_formula` part of the previous subsection. The input to the parser is a human-understandable SAT formula with atoms encoded with `r"x[0-9]+"`.
+An input formula is in a format of a list (A SAT formula in human language can be parsed via `/shared/logic_parser.py` to the formula in this format). The syntax and semantics of the list representation is identical to the sat formula described in the `sat_formula` part of the previous subsection. The input to the parser is a human-understandable SAT formula with atoms encoded with `r"x[0-9]+"`. To call the DPLL solver, the user can call the `solve` function in `/dpll/solver/`, which takes the parameter of a tree representation of a given SAT formula (please see the next paragraph for detail). To use the DPLL solver, the parameter `heuristic_enabled` should be True. Another parameter, `multiple` is created to allow the user to choose if the solver provides single or multiple solution(s).
 
 Apart from the solver itself, we also offer a kernel for interacting with the solver, which can be called in `main.py`. The DPLL kernel locates in `/dpll/dpll_kernel.py`. To facilitate evaluation purposes, we also offer a generator that generates SAT formulas in tree representations. The generator can be found in `/shared/logic_generator.py`. The user can think of SAT formulas like trees with "and", "or", "not" represent the non-leaf nodes and the atoms represent the leaf nodes (we will actually discuss this detail of the data structure later in this section). To change the probability each type of non-leaf node occurs, the users can set the probabilities at the top of the program file for the logic generator using the hyperparameters `chance_not`, which denotes the probability that a "not" node occurs, `chance_and`, which denotes the probability that an "and" node occurs, and `chance_or`, which denotes the probability that an "or" node occurs. The user can call `generate_logic_trees` to generate random logic trees following a set of parameters: 1) `num_logics` represent the number of logic trees to be generated. 2) `num_variables` represents the cardinality of SAT atoms in the tree. For instance the cardinality of atoms of `x1 and x2 or x1` is 2. 3) `depth` denotes the depth of each generated tree. The depth is positively correlated with the number of nodes of each SAT tree. 4) `disallow_repetition`, which is optional, denotes if the user allows or disallow repetitions of trees generated. 5) `allow_True_False` representes if the user allows or disallows the presence of pure values True and/or False in the leaf level.
+
+Now, we briefly discuss the heuristics used in DPLL before we introduce the solver implementation: There are two parts of the search algorithm in DPLL. In the recursive backtracking search, the algorithm first decides an assignment. Then, it deduces the assignment by substituting the atoms in the SAT formula with the assignment. If the valuation returns False, the algorithm backtracks to try another assignment if such new assignment is possible. If the algorithm runs out of assignments, the algorithm returns UNSAT. The heuristics in DPLL revolve around heuristics in deciding and deducing.
+
+One heuristic in deducing is *Early termination*, which refers to terminating the algorithm if any realization of a variable leads to True or False of a SAT formula regardless the choice of any other variables. If the algorithmn returns False in the early termination, faster backtracking is encouraged. If the algorithm returns True in the early termination, on the other hand, faster path to a solution is found. To give a concrete example, `$(A \vee B) \wedge (A \vee \neg C)$` is satisfied by `{A = True}`.
+
+One heuristic for deciding assignments is *Pure literals*.
 
  		
 
