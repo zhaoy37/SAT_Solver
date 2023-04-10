@@ -132,8 +132,9 @@ With the concepts clarified, we want to introduce how our solver approaches SAT 
 
 When a list representation of a formula is given to the solver, the solver first converts this formula into a binary tree data structure with leaf nodes representing terminal variables and True or False and non-leaf nodes represent negations, conjunctions, and disjunctions. The purpose of the tree is to facilitate the pure-literals heuristics (We assume that the tree construction time is negligible comparing to the solving time in our evaluations). Specifically, using the rules of double negations and De Morgan's Law, we move the negation nodes further down as parents of leaf nodes. Then, we can determine if a node is pure positive or not and if it is pure negative or not.
 
-In the solver, we 
+In the solver, we enforce early terminations and unit clauses. Specifically, we simplify the list representation of SAT formulas as we assign values to the variables in the formulas recursively. If the simplified logic is True at any time, we return any possible assignment (if only one solution is needed) or keep track of the solutions (if multiple is need). If the simplified logic is False, we backtrack early before the variables run out. Otherwise, we keep simplifying the formula through the search space until we run out variables and backtrack appropriately. The simplifications are based on rules of early terminations and unit clauses. The also prioritizes any assignment to True for pure positive variables.
 
+In the solver file, we also offer options to try out the naive recursive backtracking implementation of the solver. The user can do so by setting `heuristic_enabled` to False in the `solve` function in `/dpll/solver.py`.
  		
 
 
