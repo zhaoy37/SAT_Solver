@@ -8,6 +8,11 @@ the independent set problem.
 from SMT_Solver.smt import solve_SMT
 
 def solve_independent_set(graph, target_cardinality):
+
+    # Check target_cardinality.
+    if target_cardinality < 1:
+        raise Exception("Target Cardinality must be at least 1.")
+
     # First, formulate the SMT encoding:
     smt_variables = set()
     smt_encoding = dict()
@@ -21,6 +26,8 @@ def solve_independent_set(graph, target_cardinality):
             index += 1
 
     graph_nodes = list(graph.keys())
+    if len(graph_nodes) == 0:
+        raise Exception("Number of nodes in the graph cannot be 0.")
 
     # Set the bounds.
     for node in graph_nodes:
