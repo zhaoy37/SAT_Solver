@@ -20,29 +20,32 @@ def solve_independent_set(graph, target_cardinality):
             smt_variables.add(connected_node)
             index += 1
 
-
-    # Assert that the sum is equal to target_cardinality.
-    smt_variables = list(smt_variables)
+    graph_nodes = list(graph.keys())
 
     # Set the bounds.
-    for node in smt_variables:
+    for node in graph_nodes:
         smt_encoding["x" + str(index)] = ["le", node, 1]
         index += 1
         smt_encoding["x" + str(index)] = ["ge", node, 0]
         index += 1
+        smt_variables.add(node)
 
-    cur_y = smt_variables[0]
-    cur_y_index = len(smt_variables)
-    for i in range(len(smt_variables)):
+    # Assert that the sum is equal to target_cardinality.
+    cur_y = graph_nodes[0]
+    cur_y_index = len(graph_nodes)
+    for i in range(len(graph_nodes)):
         while("y" + str(cur_y_index) in smt_variables):
             cur_y_index += 1
         temp_y = "y" + str(cur_y_index)
         if i > 0:
-            smt_encoding["x" + str(index)] = ["eq", cur_y + " + " + smt_variables[i], temp_y]
+            smt_encoding["x" + str(index)] = ["eq", cur_y + " + " + graph_nodes[i], temp_y]
             cur_y = temp_y
-            smt_variables.append(cur_y)
+            smt_variables.add(cur_y)
+            smt_variables.add(graph_nodes[i])
+            smt_variables.add(temp_y)
         index += 1
     smt_encoding["x" + str(index)] = ["eq", cur_y, target_cardinality]
+    smt_variables = list(smt_variables)
 
     # Now, formulate the SAT encoding:
     sat_encoding = []
@@ -71,11 +74,13 @@ def solve_independent_set(graph, target_cardinality):
     return answer
 
 
-graph = {
-        "y1" : ["y2", "y3", "y4"],
-        "y2": ["y3"],
-        "y3": [],
-        "y4": []
-    }
+def find_maximum_independent_set(graph):
+    i = 1
+    solution = solve_independent_set(graph, i)
+    prev_solution = solution
+    while solution != "UNSAT":
+        i += 1
+        prev_solution = solution
+        solution = solve_independent_set(graph, i)
 
-print(solve_independent_set(graph, 2))
+    return prev_solution

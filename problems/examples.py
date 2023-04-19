@@ -10,7 +10,7 @@ Import the solvers we created.
 from graph_coloring.graph_coloring_solver import solve_graph_coloring
 from n_queens.n_queens_solver import solve_n_queens
 from subset_sum.subset_sum_solver import solve_subset_sum
-
+from independent_set.independent_set_solver import solve_independent_set, find_maximum_independent_set
 
 def main():
     """
@@ -83,6 +83,17 @@ def main():
     print("Solving the subset sum problem: [1, 2] -> 4 --> Expected: UNSAT")
     print(solve_subset_sum([1, 2], 4))
     print()
+
+    """
+    Problem 4: Independent Set
+    """
+    print("----------Problem 4----------")
+    print("Solving independent set problem with cardinality 1 on the same graph for Problem 1. --> Expected: SAT")
+    print(solve_independent_set(graph, 1))
+    print("Solving independent set problem with cardinality 3 on the same graph for Problem 1. --> Expected: UNSAT")
+    print(solve_independent_set(graph, 3))
+    print("Finding the maximum independent set --> Expected: SAT")
+    print(find_maximum_independent_set(graph))
 
 
 if __name__ == "__main__":
