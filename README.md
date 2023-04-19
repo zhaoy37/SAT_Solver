@@ -43,6 +43,18 @@ To use the solver, call the `solve_subset_sum` function from `/problems/subset_s
 
 Internally, the solver encodes each index of the list to a variable, y_i, with potential values in {0, 1}. Then, the SMT_encoding denotes that `sum(y_i * L[i]) == target_sum`. The SAT_encoding connects the SMT representations via conjunctions.
 
+### Independent Set
+Independent Set is an NP-Complete Problem. We frame our variant of the Independent Set problem below:
+
+Find a set A, a subset of V, in an undirected graph G = (V, E), where every node in A is not adjacent to any other node in A and the cardinality of A is k.
+
+We also frame the maximum independent set problem as the problem to find A with largest possible k.
+
+To use our solver to solve the independent set problem, call the `solve_independent_set` function from `/problems/independent_set_solver.py`. There are two parameters: 1) `graph` denotes the adjacency list representation of the undirected graph G. Please refer to `/problems/examples.py` to see an example. 2) `target_cardinality` denotes the cardinality, k, of the independent set, A. If the problem is solvable, the function will return a list of nodes, which is a candidate solution for A. Otherwise, "UNSAT" will be returned.
+
+We also create a solver for the maximum independent set problem: To solve the maximum independent set problem, call the `find_maximum_independent_set` function from `problems/independent_set_solver.py`. The only parameter is `graph`, which has the same meaning as the graph in the independent set problem solver.
+
+For the independent set problem solver, the algorithm treats each node to take either values of 0 and 1. The constraints are that the sum of the values of two adjacent nodes is less then 2, and the sum of all the nodes in the graph equals the target cardinality. The SMT representation is then solved using our solver for SMT problems. For the maximum independent set problem solver, the algorithm keeps calling the independent set problem solver with incrementally larger value of target cardinality with a incrementation of 1 until "UNSAT" is returned. Then, the algorithm returns the solution with target cardinality one smaller than the cardinality that triggers the infeasibility.
 
 ## Theory
 ### Theory of SMT Solving
