@@ -25,7 +25,7 @@ Graph coloring is an NP-complete problem. Specifically, we focus on vertex-color
 To use our solver, call the `solve_graph_coloring` function from `/problems/graph_coloring/graph_coloring_solver.py`. The two arguments are `graph`, which is an adjacency list representation of a graph, and `num_colors`, which denotes the **maximum number** of colors allowed to color the graph. The function returns the assignment of chromatic numbers to each node if the problem is solvable (if the node does not appear in the assignment, it can be any color within the set of all chromatic numbers). In the case of an unsolvable problem, the solver returns "UNSAT". 
 
 
-Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3)Use the SMT solver to solve the encoded SMT problem.
+Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3) Use the SMT solver to solve the encoded SMT problem.
 
 ### N-Queens Problem
 In the N-queens problem, given an n by n sized chess board, the algorithm is asked to place n queens on the baord such that no two queen attack each other. 
