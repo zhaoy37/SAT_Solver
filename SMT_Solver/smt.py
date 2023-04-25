@@ -99,6 +99,9 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
     tree = Logic(sat_formula)
     sat_solutions = solve(tree, multiple = True)
 
+    if sat_solutions == "UNSAT":
+        return "UNSAT"
+
     for sat_solution in sat_solutions:
         # Convert all negative clauses to positive ones.
         converted = []
