@@ -117,4 +117,4 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
 
 
 if __name__ == "__main__":
-    perform_ablation_study(1000, 5, 8, True)
+    perform_ablation_study(1000, 3, 5, False)

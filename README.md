@@ -153,5 +153,8 @@ In the solver file, we also offer options to try out the naive recursive backtra
 ## Tests
 To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu. For details on comparing different solvers and more details on the theories, please refer to the report attached with this repository. **(To be added later)**
 
+## Important notes
+1. If the generator takes forever to generate logics, it is possible that the number of depths is too small comparing to the number of variables, leading to impossible generation of SAT formula(s) that meet the requirement.
+
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we used some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.
