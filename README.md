@@ -39,7 +39,7 @@ Subset Sum, another NP-Complete problem, is stated as follows: Given a list, L, 
 
 Please note that **this implementation can be inconclusive** because of the search space of the SMT solver (whose details are discussed in the next section).
 
-To use the solver, call the `solve_subset_sum` function from `/problems/subset_sum/subset_sum_solver.py`. There are two required parameters: 1) `target_list` denotes the list of nonnegative integers, L. 2) `target_sum` denotes the target, X, of the subset to be summed up to. There are two optional parameters. The `lower_bound` and the `upperbound` allow the user to control the scope of the search space for the SMT solver, which increases the possibility of finding the solution but also increases the time complexity as the search space scope increases. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns a dictionary mapping each index of the list L to a number 1 or 0, where 1 represents the presence of the variable given by that index in the solution subset and 0 represents the non-existence.
+To use the solver, call the `solve_subset_sum` function from `/problems/subset_sum/subset_sum_solver.py`. There are two required parameters: 1) `target_list` denotes the list of nonnegative integers, L. 2) `target_sum` denotes the target, X, of the subset to be summed up to. There are two optional parameters. The `lower_bound` and the `upper_bound` allow the user to control the scope of the search space for the SMT solver, which increases the possibility of finding the solution but also increases the time complexity as the search space scope increases. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns a dictionary mapping each index of the list L to a number 1 or 0, where 1 represents the presence of the variable given by that index in the solution subset and 0 represents the non-existence.
 
 Internally, the solver encodes each index of the list to a variable, y_i, with potential values in {0, 1}. Then, the SMT_encoding denotes that `sum(y_i * L[i]) == target_sum`. The SAT_encoding connects the SMT representations via conjunctions.
 
@@ -55,6 +55,17 @@ To use our solver to solve the independent set problem, call the `solve_independ
 We also create a solver for the maximum independent set problem: To solve the maximum independent set problem, call the `find_maximum_independent_set` function from `problems/independent_set_solver.py`. The only parameter is `graph`, which has the same meaning as the graph in the independent set problem solver.
 
 For the independent set problem solver, the algorithm treats each node to take either values of 0 and 1. The constraints are that the sum of the values of two adjacent nodes is less then 2, and the sum of all the nodes in the graph equals the target cardinality. The SMT representation is then solved using our solver for SMT problems. For the maximum independent set problem solver, the algorithm keeps calling the independent set problem solver with incrementally larger value of target cardinality with a incrementation of 1 until "UNSAT" is returned. Then, the algorithm returns the solution with target cardinality one smaller than the cardinality that triggers the infeasibility.
+
+### Partition Problem
+The Partition Problem is NP-complete, and is defined below for our solver implementation:
+
+Given a list L, of integers, partition L into two sublists such that the sum of one sublist equals the sum of the other sublist.
+
+We only focus on integer lists because the SMT solver we implement only work for integer predicates. Please note that **this implementation can be inconclusive**, just like that for the Subset Sum, because of the search space of the SMT solve (whose details are disucssed in the next section).
+
+To use the solver, call the `solve_partition` function from `/problems/partition/partition_solver.py`. There is one required parameter, *target_list*, which is the list, L, to be analyzed. The `lower_bound` and the `upper_bound` allow the user to control the scope of the search space, as described in the subsection on Subset Sum. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns two sublists that form the partition of the target list.
+
+Internally, the solver encodes each index of the list to a variable (y_i) with a potential values in {0, 1}. Then, the SMT_encoding represents `sum(y_i * L[i]) * 2 == sum(L[i])`. Thus, All variables that have the same assigned value form one group. The algorithm treats the two groups as the partition of the target list.
 
 ## Theory
 ### Theory of SMT Solving

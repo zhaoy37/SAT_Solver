@@ -8,6 +8,10 @@ the Partition Problem.
 from SMT_Solver.smt import solve_SMT
 
 def solve_partition(target_list, lower_bound = 0, upper_bound = 10):
+
+    if len(target_list) == 0:
+        return "UNSAT"
+
     # Formulate the SMT encoding.
     smt_variables = set()
     smt_encoding = dict()
@@ -72,6 +76,3 @@ def solve_partition(target_list, lower_bound = 0, upper_bound = 10):
                 group_1.append(target_list[list_vars[node]])
 
     return group_0, group_1
-
-if __name__ == "__main__":
-    print(solve_partition([1, 5, 4]))
