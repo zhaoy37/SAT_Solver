@@ -5,13 +5,16 @@ References:
 Implementation for the main OBDD, ROBDD solver.
 """
 
-from bdd.robdd_graph import OBDD_node, ROBDDNode
+from bdd.robdd_graph import OBDD_node, ROBDDNode, ROBDD_graph
+from bdd.rodbb_visualization import view_rodbb
 from shared.logic_parser import parse_logic
 import matplotlib.pyplot as plt
 from bdd.logic_eval import eval
 import networkx as nx
 import numpy as np
 import copy
+import networkx as nx
+import itertools
 
 
 def allPaths(node):  
@@ -24,6 +27,7 @@ def allPaths(node):
         else:
             yield from (arr for arr in allPaths(node.left))
             yield from (arr for arr in allPaths(node.right))
+
 
 
 def print_truth_table(path, ordering):
@@ -42,6 +46,7 @@ def print_truth_table(path, ordering):
         for j in range(np_rep.shape[1]-1):
             print(' '+str(np_rep[i,j,1])+' |', end=' ')
         print('      '+str(np_rep[i,-1,1]), end='     |\n')
+
 
 
 def print_obdd(obdd_root, ordering, truth_table=False):
@@ -128,12 +133,14 @@ def robddPaths(g):
 def convert_robdd_graph(obdd, g):
     if obdd.leaf:
         curr_node = ROBDDNode(var=obdd.var, path=[obdd.val[-1]])
-        if not g.has_node(curr_node):
+        find_node = g.has_node(curr_node)
+        if not find_node:
             g.add_node(curr_node)
-        return curr_node
+        find_node = g.has_node(curr_node)
+        return find_node
     else:
-        left = convert_robdd_graph(obdd.left, g)
-        right = convert_robdd_graph(obdd.right, g)
+        left = convert_robdd_graph(obdd.left, g)    ## returns left node
+        right = convert_robdd_graph(obdd.right, g)  ## returns right node
         llst = list(left.path)
         rlst = list(right.path)
         l_one = g._one_connect(left)
@@ -142,22 +149,80 @@ def convert_robdd_graph(obdd, g):
             llst = list(l_one.path)
         if r_one:
             rlst = list(r_one.path)
-        llst.insert(0, obdd.val['l'][obdd.var])
-        rlst.insert(0, obdd.val['r'][obdd.var])
+        l_sert = [t for t in obdd.val['l'] if t[0] == obdd.var][0]
+        r_sert = [t for t in obdd.val['r'] if t[0] == obdd.var][0]
+        llst.insert(0, l_sert)
+        rlst.insert(0, r_sert)
+        # print("lrlist ", llst, rlst)
         new_node = ROBDDNode(var=obdd.var, path=[llst, rlst])
         
         find_node = g.has_node(new_node)
         if not find_node:
             g.add_node(new_node)
-        find_node = g.has_node(new_node)
-        if left == right:
-            if not g.connected(find_node, left):
-                g.connect(find_node, left)
-        else:
-            if not g.connected(find_node, left):
-                g.connect(find_node, left)
-            if not g.connected(find_node, right):
-                g.connect(find_node, right)
+            find_node = g.has_node(new_node)
+            if left == right:
+                if not g.connected(find_node, left):
+                    g.connect(find_node, left)
+            else:
+                if not g.connected(find_node, left):
+                    g.connect(find_node, left)
+                if not g.connected(find_node, right):
+                    g.connect(find_node, right)
 
         return find_node
         
+
+
+def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list):
+            result.extend(flatten(item))
+        else:
+            result.append(item)
+    return result
+
+
+
+def solve(sat_formula):
+    logic = sat_formula
+
+    flatten_ls = flatten(sat_formula)
+    variables = []
+    for f in flatten_ls:
+        if 'x' in f:
+            variables.append(int(f[1:]))
+    ordering = [i for i in range(max(variables)+1)]
+    
+    obdd = construct_obdd(ordering, logic, vis=False)
+    g = ROBDD_graph(directed=True, init_val=ordering[0])
+    robdd_res = convert_robdd_graph(obdd, g)
+    g.reduce()
+    # print("View result:")
+    # robddPaths(g)
+    # print("Creating graph representation.")
+    G, edge_labels = view_rodbb(g, ordering, view=False, label=True)
+
+    target_node = None
+    source_node = None
+    for node in G.nodes():
+        if G.nodes[node]['var'] == -1:
+            target_node = node
+        if G.nodes[node]['var'] == ordering[0]:
+            source_node = node
+    
+    paths_to_t = []
+    for path in nx.all_simple_paths(G, source_node, target_node):
+        paths_to_t.append(path)
+
+    all_solutions = []
+    for sol in paths_to_t:
+        one_sol = {}
+        connections = [(sol[i], sol[i+1]) for i in range(len(sol)-1)]
+        for c in connections:
+            varb = 'x'+str(G.nodes[c[0]]['var'])
+            valu = 1 if edge_labels[c] == 'high' else 0
+            one_sol[varb] = valu
+        all_solutions.append(one_sol)
+    
+    return all_solutions

@@ -1,11 +1,12 @@
 """
-Author: Yiqi (Nick) Zhao
+Author: Yiqi (Nick) Zhao, Ziyan An (for the robdd part)
 
 This program solves SMT (integer signature) using a build DPLL SAT Solver.
 """
 
 from dpll.logic_tree import Logic
 from dpll.solver import solve
+from bdd.robdd_solver import solve as robdd_solve
 
 
 def realize(variable, assignment):
@@ -99,6 +100,9 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
     tree = Logic(sat_formula)
     sat_solutions = solve(tree, multiple = True)
 
+    if sat_solutions == "UNSAT":
+        return "UNSAT"
+
     for sat_solution in sat_solutions:
         # Convert all negative clauses to positive ones.
         converted = []
@@ -128,3 +132,39 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound):
             return solution
 
     return "UNSAT"
+
+
+def solve_SMT_ROBDD(sat_formula, encodings, smt_vars, lowerbound, upperbound):
+    # First, solve the sat_formula.
+    sat_solutions = robdd_solve(sat_formula)
+
+    for sat_solution in sat_solutions:
+        # Convert all negative clauses to positive ones.
+        converted = []
+        for sat_formula in encodings:
+            encoding = encodings[sat_formula]
+            if sat_solution[sat_formula]:
+                converted.append(encoding)
+            else:
+                if encoding[0] == "le":
+                    encoding[0] = "gt"
+                elif encoding[0] == "ge":
+                    encoding[0] = "lt"
+                elif encoding[0] == "gt":
+                    encoding[0] = "le"
+                elif encoding[0] == "lt":
+                    encoding[0] = "ge"
+                elif encoding[0] == "nq":
+                    encoding[0] = "eq"
+                else:
+                    encoding[0] = "nq"
+                converted.append(encoding)
+
+        # Perform recursive descent.
+        cur_assignment = []
+        success, solution = solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment)
+        if success:
+            return solution
+
+    return "UNSAT"
+

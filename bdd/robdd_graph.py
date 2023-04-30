@@ -62,9 +62,10 @@ class ROBDD_graph(object):
     """
     A class for ROBDD graph representation.
     """
-    def __init__(self, directed=True):
+    def __init__(self, directed=True, init_val=0):
         self._graph = {}            ## keys: node; values: references to node
         self._directed = directed   ## ROBDD is represented as a directed graph
+        self.init_val = init_val    ## variable that ROBDD starts from
 
     def has_node(self, test_node):
         """
@@ -95,7 +96,7 @@ class ROBDD_graph(object):
     def _one_connect(self, node):
         """
         Test 1. if the node is included in the graph;
-        2. if the node 
+        2. if the node the connected to only one child.
         """
         ref = self.has_node(node)       ## test if the node is in the graph.
         if len(self._graph[ref])==1 and self._graph[ref][0].var == -1:
@@ -105,7 +106,7 @@ class ROBDD_graph(object):
         
     def reduce(self):
         """
-        Reduce an ROBDD graph.
+        Reduce an ROBDD graph such that there are no repeat nodes. 
         """
         all_nodes = self._graph.keys()
         all_refs = self._graph.values()
@@ -113,8 +114,17 @@ class ROBDD_graph(object):
         unique_r = list(set(sum(all_refs, [])))
         to_delete = unique_n.difference(unique_r)
         for d in to_delete:
-            if d.var != 0:
+            if d.var != self.init_val:
                 del self._graph[d]
+        single_connect_node = {}
+        for k, v in self._graph.items():
+            if k.var >= 0 and len(v) == 1:
+                single_connect_node[k] = v[0]
+        for k, v in self._graph.items():
+            self._graph[k] = [single_connect_node[ci] if ci in single_connect_node else ci for ci in v]
+        for k in single_connect_node.keys():
+            del self._graph[k]
+        
 
     def connect(self, node1, node2):
         """
@@ -126,6 +136,7 @@ class ROBDD_graph(object):
         else:
             ref = self.has_node(node2)
             self._graph[node1].append(ref)
+
         if not self._directed:  
             if self._one_connect(node1):
                 self._graph[node2].append(self._one_connect(node1)) 

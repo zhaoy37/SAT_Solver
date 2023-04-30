@@ -17,11 +17,9 @@ plt.rcParams['interactive']
 
 
 def map_to_color(G):
-    usable_colors = ['red', 'blue', 'green', 'orange', 'purple']
-    ColorLegend = {'Obsolete': 2,'Initialisation': 1,'Draft': 4,'Release': 3} 
+    usable_colors = ['red', 'blue', 'green', 'orange', 'purple', 'olive', 'plum', 'Turquoise', 'Wheat', 'yellow']
     node_var = list(G.nodes(data="var"))
     color_map = []
-    print(node_var)
     for n in node_var:
         if n[0]<= 1:
             color_map.append('pink')
@@ -29,7 +27,8 @@ def map_to_color(G):
             color_map.append(usable_colors[n[-1]])
     return color_map
 
-def view_rodbb(g):
+
+def view_rodbb(g, ordering, view=True, label=False):
     G = nx.DiGraph()
     node_id = 0
     node_map = {}
@@ -37,14 +36,32 @@ def view_rodbb(g):
     for k, v in g._graph.items():
         node_map[k] = node_id
         if k.var == -1:
-            G.add_nodes_from([(node_id, {'var':k.path[0][-1], 'color':'red'})])
+            G.add_nodes_from([(node_id, {'var':k.path[0][-1]-2, 'color':'red'})])
         else:
             G.add_nodes_from([(node_id, {'var':k.var, 'color':'blue'})])
-        if v: 
-            G.add_edge(node_id, node_map[v[0]])
-            edge_labels[(node_id, node_map[v[0]])] = 'low'
-            G.add_edge(node_id, node_map[v[1]])
-            edge_labels[(node_id, node_map[v[1]])] = 'high'
+        
+        if v:   ## len(v) must equal to 2.
+            try:
+                G.add_edge(node_id, node_map[v[0]])
+                edge_labels[(node_id, node_map[v[0]])] = 'low'
+            except:
+                node_id += 1 
+                node_map[v[0]] = node_id
+                G.add_nodes_from([(node_id, {'var':v[0].var, 'color':'blue'})])
+                G.add_edge(node_id-1, node_map[v[0]])
+                edge_labels[(node_id-1, node_map[v[0]])] = 'low'
+            
+            try:
+                G.add_edge(node_id, node_map[v[1]])
+                edge_labels[(node_id, node_map[v[1]])] = 'high'
+            except:
+                node_id += 1 
+                node_map[v[1]] = node_id
+                G.add_nodes_from([(node_id, {'var':v[1].var, 'color':'blue'})])
+                G.add_edge(node_id-1, node_map[v[1]])
+                edge_labels[(node_id-1, node_map[v[1]])] = 'high'
+                
+
         node_id += 1 
 
     color_map = map_to_color(G)
@@ -53,11 +70,16 @@ def view_rodbb(g):
     for k, val in labels.items():
         if k> 1:
             labels[k] = 'x'+str(val)
+        else:
+            labels[k] = str(val+2)
     nx.draw(G, pos=pos, node_size=500, with_labels=True, 
             node_color=color_map, alpha=0.6, 
             labels=labels)
     nx.draw_networkx_edge_labels(G, pos=pos, 
             edge_labels= edge_labels,
             font_color='pink')
-
-    plt.show()
+    if view:
+        plt.show()
+    if label:
+        return G, edge_labels
+    return G
