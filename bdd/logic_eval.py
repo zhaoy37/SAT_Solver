@@ -5,6 +5,7 @@ Reference: https://pythonnumericalmethods.berkeley.edu/notebooks/chapter01.05-Lo
 
 Implementations for logic evaluation. 
 """
+import random
 
 def AND(x, y):
     if x == 1 and y == 1: 
@@ -46,6 +47,34 @@ def eval(logic, value):
     
     elif logic[0] == "not":     ## evaluates 'not'
         left_val = eval(logic[1], value)
+        return NOT(left_val)
+    
+    else:
+        raise ValueError("Unrecognized formula type: " + logic[0])
+    
+
+def logic_eval_dict(logic, value):
+    """
+    Recursively evaluate a logic expression. 
+    """
+    if isinstance(logic, str):
+        try:
+            return value[logic]
+        except:
+            return random.choice([1, 0])
+
+    if logic[0] == "and":       ## evaluates 'and' 
+        left_val = logic_eval_dict(logic[1], value)
+        right_val = logic_eval_dict(logic[2], value)
+        return AND(left_val, right_val)
+    
+    elif logic[0] == "or":      ## evaluates 'or'
+        left_val = logic_eval_dict(logic[1], value)
+        right_val = logic_eval_dict(logic[2], value)
+        return OR(left_val, right_val)
+    
+    elif logic[0] == "not":     ## evaluates 'not'
+        left_val = logic_eval_dict(logic[1], value)
         return NOT(left_val)
     
     else:

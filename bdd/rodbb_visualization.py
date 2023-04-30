@@ -64,22 +64,23 @@ def view_rodbb(g, ordering, view=True, label=False):
 
         node_id += 1 
 
-    color_map = map_to_color(G)
-    pos = nx.spring_layout(G, scale=20, k=3/np.sqrt(G.order()))
-    labels = nx.get_node_attributes(G, 'var') 
-    for k, val in labels.items():
-        if k> 1:
-            labels[k] = 'x'+str(val)
-        else:
-            labels[k] = str(val+2)
-    nx.draw(G, pos=pos, node_size=500, with_labels=True, 
-            node_color=color_map, alpha=0.6, 
-            labels=labels)
-    nx.draw_networkx_edge_labels(G, pos=pos, 
-            edge_labels= edge_labels,
-            font_color='pink')
     if view:
+        color_map = map_to_color(G)
+        pos = nx.spring_layout(G, scale=20, k=3/np.sqrt(G.order()))
+        labels = nx.get_node_attributes(G, 'var') 
+        for k, val in labels.items():
+            if k> 1:
+                labels[k] = 'x'+str(val)
+            else:
+                labels[k] = str(val+2)
+        nx.draw(G, pos=pos, node_size=500, with_labels=True, 
+                node_color=color_map, alpha=0.6, 
+                labels=labels)
+        nx.draw_networkx_edge_labels(G, pos=pos, 
+                edge_labels= edge_labels,
+                font_color='pink')
         plt.show()
+    
     if label:
         return G, edge_labels
     return G

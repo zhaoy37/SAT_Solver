@@ -13,6 +13,7 @@ from bdd.logic_eval import eval
 import networkx as nx
 import numpy as np
 import copy
+import timeit
 import networkx as nx
 import itertools
 
@@ -184,7 +185,10 @@ def flatten(lst):
 
 
 
-def solve(sat_formula):
+def solve(sat_formula, get_time=False, multiple=True):
+    """
+    The input is a parsed logic formula...
+    """
     logic = sat_formula
 
     flatten_ls = flatten(sat_formula)
@@ -195,25 +199,40 @@ def solve(sat_formula):
     ordering = [i for i in range(max(variables)+1)]
     
     obdd = construct_obdd(ordering, logic, vis=False)
+    start_time = timeit.default_timer()
     g = ROBDD_graph(directed=True, init_val=ordering[0])
     robdd_res = convert_robdd_graph(obdd, g)
     g.reduce()
-    # print("View result:")
-    # robddPaths(g)
-    # print("Creating graph representation.")
     G, edge_labels = view_rodbb(g, ordering, view=False, label=True)
 
+    all_node_attr = []
     target_node = None
-    source_node = None
-    for node in G.nodes():
-        if G.nodes[node]['var'] == -1:
+    for node, attrs in G.nodes.data():
+        if G.nodes[node]['color'] == 'blue':
+            all_node_attr.append(G.nodes[node]['var'])
+        elif G.nodes[node]['var'] == -1:
             target_node = node
-        if G.nodes[node]['var'] == ordering[0]:
-            source_node = node
+
+    source_node = None
+    if len(all_node_attr) < 1:
+        source_node = target_node 
+    else:
+        for node in G.nodes():
+            if G.nodes[node]['var'] == min(all_node_attr):
+                source_node = node
     
+    if not target_node and not source_node:
+        if get_time:
+            return "UNSAT", timeit.default_timer()-start_time
+        return "UNSAT"
+
     paths_to_t = []
-    for path in nx.all_simple_paths(G, source_node, target_node):
+    if not multiple:
+        path = nx.shortest_path(G, source_node, target_node)
         paths_to_t.append(path)
+    else:
+        for path in nx.all_simple_paths(G, source_node, target_node):
+            paths_to_t.append(path)
 
     all_solutions = []
     for sol in paths_to_t:
@@ -225,4 +244,6 @@ def solve(sat_formula):
             one_sol[varb] = valu
         all_solutions.append(one_sol)
     
+    if get_time:
+        return all_solutions, timeit.default_timer()-start_time
     return all_solutions

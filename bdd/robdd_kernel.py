@@ -78,6 +78,7 @@ def robdd_kernel():
         print("Testing pre-defined logic expression:", end=" ")
         # formula = "((x0 or (not x1)) and (x1 or x2))"
         formula = "(((not x0) and (not x1) and (not x2)) or (x0 and x1) or (x1 and x2))"
+        formula = "(((x2 and x2) or (x0 and (not x1))) or ((x1 or (not x0)) and (x0 or x1)))"
         # formula = "(x0 and x1) or (x2 and x3) or (x4 and x5) or (x6 and x7)"
         logic = parse_logic(formula)
         print("Your logic formula:", formula)

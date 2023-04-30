@@ -5,9 +5,9 @@ This file provides an example for the user to use the SMT solver created in this
 the Partition Problem.
 """
 
-from SMT_Solver.smt import solve_SMT
+from SMT_Solver.smt import *
 
-def solve_partition(target_list, lower_bound = 0, upper_bound = 10):
+def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'robdd'):
 
     if len(target_list) == 0:
         return "UNSAT"
@@ -60,8 +60,11 @@ def solve_partition(target_list, lower_bound = 0, upper_bound = 10):
                 sat_encoding = sat_node
             else:
                 sat_encoding = ["and", sat_node, sat_encoding]
-
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    
+    if method == 'robdd':
+        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    else:
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
 
     if solution == "UNSAT":
         return solution

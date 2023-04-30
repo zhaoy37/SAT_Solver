@@ -6,9 +6,10 @@ the independent set problem.
 """
 import sys
 sys.path.append('..')
-from SMT_Solver.smt import solve_SMT
+from SMT_Solver.smt import *
 
-def solve_independent_set(graph, target_cardinality):
+
+def solve_independent_set(graph, target_cardinality, method='robdd'):
 
     # Check target_cardinality.
     if target_cardinality < 1:
@@ -69,7 +70,10 @@ def solve_independent_set(graph, target_cardinality):
     lower_bound = 0
     upper_bound = target_cardinality
 
-    solution =  solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    if method == 'robdd':
+        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    else:
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
 
     if solution == "UNSAT":
         return "UNSAT"
@@ -82,13 +86,13 @@ def solve_independent_set(graph, target_cardinality):
     return answer
 
 
-def find_maximum_independent_set(graph):
+def find_maximum_independent_set(graph, method='robdd'):
     i = 1
-    solution = solve_independent_set(graph, i)
+    solution = solve_independent_set(graph, i, method=method)
     prev_solution = solution
     while solution != "UNSAT":
         i += 1
         prev_solution = solution
-        solution = solve_independent_set(graph, i)
+        solution = solve_independent_set(graph, i, method=method)
 
     return prev_solution

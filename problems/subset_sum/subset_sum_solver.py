@@ -7,9 +7,10 @@ the Subset Sum Problem.
 
 import sys
 sys.path.append('..')
-from SMT_Solver.smt import solve_SMT
+from SMT_Solver.smt import *
 
-def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10):
+
+def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10, method='robdd'):
     for value in target_list:
         if value <= 0:
             raise Exception("List element must be positive.")
@@ -71,7 +72,10 @@ def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10)
             else:
                 sat_encoding = ["and", sat_node, sat_encoding]
 
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    if method == 'robdd':
+        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    else:
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
     if solution == "UNSAT":
         return "UNSAT"
 

@@ -9,7 +9,7 @@ sys.path.append('..')
 import numpy as np
 from SMT_Solver.smt import *
 
-def solve_n_queens(num_queens, method='bdd'):
+def solve_n_queens(num_queens, method='robdd'):
     # For the queens to not attack each other, they must be already in different columns.
     # The algorithm needs to find the row position of each queen in different columns.
 
@@ -58,7 +58,7 @@ def solve_n_queens(num_queens, method='bdd'):
 
     if solution == "UNSAT":
         return solution
-
+    
     # Now, configure the board:
     # Use numpy array for better visualization.
     board = np.array([[0] * num_queens] * num_queens)
