@@ -154,7 +154,6 @@ def convert_robdd_graph(obdd, g):
         r_sert = [t for t in obdd.val['r'] if t[0] == obdd.var][0]
         llst.insert(0, l_sert)
         rlst.insert(0, r_sert)
-        # print("lrlist ", llst, rlst)
         new_node = ROBDDNode(var=obdd.var, path=[llst, rlst])
         
         find_node = g.has_node(new_node)
@@ -227,12 +226,28 @@ def solve(sat_formula, get_time=False, multiple=True):
         return "UNSAT"
 
     paths_to_t = []
+    
     if not multiple:
-        path = nx.shortest_path(G, source_node, target_node)
-        paths_to_t.append(path)
-    else:
-        for path in nx.all_simple_paths(G, source_node, target_node):
+        try:
+            path = nx.shortest_path(G, source_node, target_node)
             paths_to_t.append(path)
+        except:
+            # print(source_node, target_node)
+            # for node in G.nodes(data=True):
+            #     print(node)
+            # G, edge_labels = view_rodbb(g, ordering, view=True, label=True)
+            if get_time:
+                return "UNSAT", timeit.default_timer()-start_time
+            return "UNSAT"
+    else:
+        try:
+            for path in nx.all_simple_paths(G, source_node, target_node):
+                paths_to_t.append(path)
+        except:
+            if get_time:
+                return "UNSAT", timeit.default_timer()-start_time
+            return "UNSAT"
+    
 
     all_solutions = []
     for sol in paths_to_t:

@@ -53,7 +53,7 @@ def eval(logic, value):
         raise ValueError("Unrecognized formula type: " + logic[0])
     
 
-def logic_eval_dict(logic, value):
+def logic_eval_dict(logic, value, verbose=False):
     """
     Recursively evaluate a logic expression. 
     """
@@ -61,7 +61,7 @@ def logic_eval_dict(logic, value):
         try:
             return value[logic]
         except:
-            return random.choice([1, 0])
+            return 1
 
     if logic[0] == "and":       ## evaluates 'and' 
         left_val = logic_eval_dict(logic[1], value)

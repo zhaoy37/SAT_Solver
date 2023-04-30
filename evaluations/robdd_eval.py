@@ -8,7 +8,9 @@ from bdd.robdd_solver import solve
 from bdd.logic_eval import logic_eval_dict
 from shared.logic_parser import parse_logic
 import time
+import random
 import numpy as np
+random.seed(0)
 
 
 def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=True):
@@ -28,7 +30,6 @@ def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=Tru
     print("Evaluating multiple solutions:", bool(multiple))
 
     # Now solve the trees with different capabilities:
-    print("Test the solving time with no heuristic and no heuristic enabled:")
     
     solutions = []
     for logic in formulae:
@@ -50,6 +51,8 @@ def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=Tru
         total = 0
         for i in range(len(formulae)):
             if solutions[i] != "UNSAT":
+                # if int(logic_eval_dict(formulae[i], solutions[i])) != 1:
+                #     print(logic_eval_dict(formulae[i], solutions[i], verbose=True), single_logics[i], solutions[i])
                 correct_num += logic_eval_dict(formulae[i], solutions[i])
                 total += 1
         if total != 0:
@@ -64,8 +67,8 @@ def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=Tru
         for i in range(len(formulae)):
             if solutions[i] != "UNSAT":
                 for single_sol in solutions[i]:
-                    if int(logic_eval_dict(formulae[i], single_sol)) != 1:
-                        print(logic_eval_dict(formulae[i], single_sol), single_logics[i], single_sol)
+                    # if int(logic_eval_dict(formulae[i], single_sol)) != 1:
+                        # print(logic_eval_dict(formulae[i], single_sol, verbose=True), single_logics[i], single_sol)
                     correct_num += int(logic_eval_dict(formulae[i], single_sol))
                     total += 1
         if total != 0:
@@ -83,8 +86,10 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
     print("Generating {} random logic with {} variables, depth={}...".format(num_formula, num_variables, depth))
     
     formulae = []
+    single_logics = []
     for i in range(num_formula):
         single_logic = random_logic_gen(n=num_variables, components=depth)
+        single_logics.append(single_logic)
         parsed = parse_logic(single_logic)
         formulae.append(parsed)
     print("Success.")
@@ -94,11 +99,14 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
     
     single_solutions = []
     multi_solutions = []
-    for logic in formulae:
+    for idx,logic in enumerate(formulae):
         sol, elp_time = solve(logic, get_time=True, multiple=True)
         if sol!="UNSAT":
-            single_solutions.append(sol[0])
-            multi_solutions.append(sol)
+            try:
+                single_solutions.append(sol[0])
+                multi_solutions.append(sol)
+            except:
+                continue
         else:
             single_solutions.append("UNSAT")
             multi_solutions.append("UNSAT")
@@ -107,7 +115,6 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
     print("Execution time: %s seconds" % elp_time)
 
     # Now evaluate the accuracy.
-    
     print("Cross checking the completeness of solutions:")
     correct_num = 0
     total = 0
@@ -124,17 +131,62 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
 
 
 if __name__ == "__main__":
-    ## test
-    # formula = "(((x2 and x0) and (x0 or x2)) or (((not x2) and x1) or (x2 and x2)))"
-    # parsed = parse_logic(formula)
-    # sol, elp_time = solve(parsed, get_time=True, multiple=True)
-    # print(sol)
-    # for single_sol in sol:
-    #     if int(logic_eval_dict(parsed, single_sol)) != 1:
-    #         print('wrong')
-    #     print(logic_eval_dict(parsed, single_sol), parsed, single_sol)
 
+    ## testing on more logic formulae
+    perform_ablation_study(1, 3, 3, False)
+    perform_ablation_study(1, 3, 3, True)
+    cross_check(1)
+
+    perform_ablation_study(10, 3, 3, False)
+    perform_ablation_study(10, 3, 3, True)
+    cross_check(10)
+
+    perform_ablation_study(50, 3, 3, False)
+    perform_ablation_study(50, 3, 3, True)
+    cross_check(50)
 
     perform_ablation_study(100, 3, 3, False)
     perform_ablation_study(100, 3, 3, True)
     cross_check(100)
+
+    perform_ablation_study(500, 3, 3, False)
+    perform_ablation_study(500, 3, 3, True)
+    cross_check(500)
+
+    perform_ablation_study(1000, 3, 3, False)
+    perform_ablation_study(1000, 3, 3, True)
+    cross_check(1000)
+
+    perform_ablation_study(10, 5, 5, False)
+    perform_ablation_study(10, 5, 5, True)
+    cross_check(10, 5, 5)
+
+    ## testing on more logic components 
+    perform_ablation_study(10, 5, 5, False)
+    perform_ablation_study(10, 5, 5, True)
+    cross_check(10, 5, 5)
+
+    perform_ablation_study(10, 5, 6, False)
+    perform_ablation_study(10, 5, 6, True)
+    cross_check(10, 5, 6)
+
+    perform_ablation_study(10, 5, 7, False)
+    perform_ablation_study(10, 5, 7, True)
+    cross_check(10, 5, 7)
+
+    ## testing on more variables
+    perform_ablation_study(10, 2, 1, False)
+    perform_ablation_study(10, 2, 1, True)
+    cross_check(10, 2, 1)
+
+    perform_ablation_study(10, 3, 3, False)
+    perform_ablation_study(10, 3, 3, True)
+    cross_check(10, 3, 3)
+
+    perform_ablation_study(10, 5, 7, False)
+    perform_ablation_study(10, 5, 7, True)
+    cross_check(10, 5, 7)
+
+    perform_ablation_study(10, 7, 6, False)
+    perform_ablation_study(10, 7, 6, True)
+    cross_check(10, 7, 6)
