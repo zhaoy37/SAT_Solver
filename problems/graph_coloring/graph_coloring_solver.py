@@ -4,10 +4,12 @@ Author: Yiqi (Nick) Zhao.
 This file provides an example for the user to use the SMT solver created in this project in solving
 the graph coloring problem.
 """
+import sys
+sys.path.append('..')
+from SMT_Solver.smt import *
 
-from SMT_Solver.smt import solve_SMT
 
-def solve_graph_coloring(graph, num_colors):
+def solve_graph_coloring(graph, num_colors, method='robdd'):
     if num_colors > len(list(graph.keys())):
         raise Exception("The maximum number of colors cannot be larger than the number of nodes in the graph.")
 
@@ -43,4 +45,7 @@ def solve_graph_coloring(graph, num_colors):
     # Find the lower and upper bound.
     lower_bound = 0
     upper_bound = num_colors - 1
+    
+    if method == 'robdd':
+        return solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
     return solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)

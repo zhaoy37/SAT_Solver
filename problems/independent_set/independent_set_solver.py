@@ -4,7 +4,8 @@ Author: Yiqi (Nick) Zhao.
 This file provides an example for the user to use the SMT solver created in this project in solving
 the independent set problem.
 """
-
+import sys
+sys.path.append('..')
 from SMT_Solver.smt import solve_SMT
 
 def solve_independent_set(graph, target_cardinality):

@@ -4,11 +4,12 @@ Author: Yiqi (Nick) Zhao.
 This file provides an example for the user to use the SMT solver created in this project in solving
 the N-Queens problem.
 """
-
+import sys
+sys.path.append('..')
 import numpy as np
-from SMT_Solver.smt import solve_SMT
+from SMT_Solver.smt import *
 
-def solve_n_queens(num_queens):
+def solve_n_queens(num_queens, method='bdd'):
     # For the queens to not attack each other, they must be already in different columns.
     # The algorithm needs to find the row position of each queen in different columns.
 
@@ -50,7 +51,10 @@ def solve_n_queens(num_queens):
     # Find the lower and upper bound.
     lower_bound = 0
     upper_bound = num_queens - 1
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound)
+    if method == 'robdd':
+        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound)
+    else:
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound)
 
     if solution == "UNSAT":
         return solution

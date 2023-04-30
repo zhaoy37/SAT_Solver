@@ -5,6 +5,8 @@ This file provides an example for the user to use the SMT solver created in this
 the Subset Sum Problem.
 """
 
+import sys
+sys.path.append('..')
 from SMT_Solver.smt import solve_SMT
 
 def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10):
