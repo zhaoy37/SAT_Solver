@@ -11,6 +11,7 @@ from graph_coloring.graph_coloring_solver import solve_graph_coloring
 from n_queens.n_queens_solver import solve_n_queens
 from subset_sum.subset_sum_solver import solve_subset_sum
 from independent_set.independent_set_solver import solve_independent_set, find_maximum_independent_set
+from partition.partition_solver import solve_partition
 
 def main():
     """
@@ -94,6 +95,19 @@ def main():
     print(solve_independent_set(graph, 3))
     print("Finding the maximum independent set --> Expected: SAT")
     print(find_maximum_independent_set(graph))
+    print()
+
+    """
+    Problem 5: Partition
+    """
+    print("----------Problem 5----------")
+    print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
+    print("This may take a while.")
+    print(solve_partition([1, 5, 4]))
+    print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
+    print(solve_partition([3, 3]))
+    print("Solving the Partition Problem: [1, 2] --> Expected: UNSAT")
+    print(solve_partition([1, 2]))
 
 
 if __name__ == "__main__":

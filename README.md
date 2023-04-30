@@ -25,21 +25,21 @@ Graph coloring is an NP-complete problem. Specifically, we focus on vertex-color
 To use our solver, call the `solve_graph_coloring` function from `/problems/graph_coloring/graph_coloring_solver.py`. The two arguments are `graph`, which is an adjacency list representation of a graph, and `num_colors`, which denotes the **maximum number** of colors allowed to color the graph. The function returns the assignment of chromatic numbers to each node if the problem is solvable (if the node does not appear in the assignment, it can be any color within the set of all chromatic numbers). In the case of an unsolvable problem, the solver returns "UNSAT". 
 
 
-Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3)Use the SMT solver to solve the encoded SMT problem.
+Internally, the solver constructs the SMT encoding in the following way: 1) Each SMT clause dictates that the chromatic number of a node cannot be equal to that of one of its adjacent node. 2) Form the SAT representation of the SMT clauses by taking conjunctions of the SMT clauses, which cover all possible edges of the graph. 3) Use the SMT solver to solve the encoded SMT problem.
 
 ### N-Queens Problem
-In the N-queens problem, given an n by n sized chess board, the algorithm is asked to place n queens on the baord such that no two queen attack each other. 
+In the N-queens problem, given an n by n sized chess board, the algorithm is asked to place n queens on the board such that no two queen attack each other. 
 
 To use our solver, call the `solve_n_queens` function from `/problems/n_queens/n_queens_solver.py`. The parameter is `num_queens`, which represents the number of queens to be palced (which is equivalent to the length of a side of the square chess board). The function, if the problem is solvable, will return a matrix representing the board, where the 1s denote the placement of the queens and 0s denote empty positions. If the given problem is not solvable, the solver will return "UNSAT".
 
 Inside the solver, each SMT variable represents a column, and the assignmnent to that variable represents the row index of the queen in that column. Then, in the SMT encodings, the solver is supported with representations that no two queen can be in the same row and no two queens can be in the same diagonal. The SAT encoding further abstracts the SMT encodings by connecting the SMT encodings with conjunctions. If the problem is solvable, with the solution, the algorithm transforms the solution into a matrix representation of the chess board.
 
 ### Subset Sum
-Subset Sum, another NP-Complete algorithm, is stated as follows: Given a list, L, of positive integers, find the subset of the list that sum up to a given value, X. Using the SMT solver, we create a solver for Subset Sum (which is very slow from an application perspective but nonetheless is designed for educational purposes).
+Subset Sum, another NP-Complete problem, is stated as follows: Given a list, L, of positive integers, find the subset of the list that sum up to a given value, X. Using the SMT solver, we create a solver for Subset Sum (which is very slow from an application perspective but nonetheless is designed for educational purposes).
 
 Please note that **this implementation can be inconclusive** because of the search space of the SMT solver (whose details are discussed in the next section).
 
-To use the solver, call the `solve_subset_sum` function from `/problems/subset_sum/subset_sum_solver.py`. There are two required parameters: 1) `target_list` denotes the list of nonnegative integers, L. 2) `target_sum` denotes the target, X, of the subset to be summed up to. There are two optional parameters. The `lower_bound` and the `upperbound` allow the user to control the scope of the search space for the SMT solver, which increases the possibility of finding the solution but also increases the time complexity as the search space scope increases. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns a dictionary mapping each index of the list L to a number 1 or 0, where 1 represents the presence of the variable given by that index in the solution subset and 0 represents the non-existence.
+To use the solver, call the `solve_subset_sum` function from `/problems/subset_sum/subset_sum_solver.py`. There are two required parameters: 1) `target_list` denotes the list of nonnegative integers, L. 2) `target_sum` denotes the target, X, of the subset to be summed up to. There are two optional parameters. The `lower_bound` and the `upper_bound` allow the user to control the scope of the search space for the SMT solver, which increases the possibility of finding the solution but also increases the time complexity as the search space scope increases. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns a dictionary mapping each index of the list L to a number 1 or 0, where 1 represents the presence of the variable given by that index in the solution subset and 0 represents the non-existence.
 
 Internally, the solver encodes each index of the list to a variable, y_i, with potential values in {0, 1}. Then, the SMT_encoding denotes that `sum(y_i * L[i]) == target_sum`. The SAT_encoding connects the SMT representations via conjunctions.
 
@@ -55,6 +55,17 @@ To use our solver to solve the independent set problem, call the `solve_independ
 We also create a solver for the maximum independent set problem: To solve the maximum independent set problem, call the `find_maximum_independent_set` function from `problems/independent_set_solver.py`. The only parameter is `graph`, which has the same meaning as the graph in the independent set problem solver.
 
 For the independent set problem solver, the algorithm treats each node to take either values of 0 and 1. The constraints are that the sum of the values of two adjacent nodes is less then 2, and the sum of all the nodes in the graph equals the target cardinality. The SMT representation is then solved using our solver for SMT problems. For the maximum independent set problem solver, the algorithm keeps calling the independent set problem solver with incrementally larger value of target cardinality with a incrementation of 1 until "UNSAT" is returned. Then, the algorithm returns the solution with target cardinality one smaller than the cardinality that triggers the infeasibility.
+
+### Partition Problem
+The Partition Problem is NP-complete, and is defined below for our solver implementation:
+
+Given a list L, of integers, partition L into two sublists such that the sum of one sublist equals the sum of the other sublist.
+
+We only focus on integer lists because the SMT solver we implement only work for integer predicates. Please note that **this implementation can be inconclusive**, just like that for the Subset Sum, because of the search space of the SMT solve (whose details are disucssed in the next section).
+
+To use the solver, call the `solve_partition` function from `/problems/partition/partition_solver.py`. There is one required parameter, *target_list*, which is the list, L, to be analyzed. The `lower_bound` and the `upper_bound` allow the user to control the scope of the search space, as described in the subsection on Subset Sum. When the solver returns "UNSAT", the algorithm reports inconclusiveness. Otherwise, upon a successful completion, the solver returns two sublists that form the partition of the target list.
+
+Internally, the solver encodes each index of the list to a variable (y_i) with a potential values in {0, 1}. Then, the SMT_encoding represents `sum(y_i * L[i]) * 2 == sum(L[i])`. Thus, All variables that have the same assigned value form one group. The algorithm treats the two groups as the partition of the target list.
 
 ## Theory
 ### Theory of SMT Solving
@@ -132,9 +143,9 @@ Now, we briefly discuss the heuristics used in DPLL before we introduce the solv
 
 One heuristic in assigning is *Early termination*, which refers to terminating the algorithm if any realization of a variable leads to True or False of a SAT formula regardless the choice of any other variables. If the algorithmn returns False in the early termination, faster backtracking is encouraged. If the algorithm returns True in the early termination, on the other hand, faster path to a solution is found. To give a concrete example, $(A \vee B) \wedge (A \vee \neg C)$ is satisfied by `{A = True}`.
 
-One heuristic for deciding assignments is *Pure literals*, which states that if all occurrences of a symbol in the clause have the same sign accross the clause, we can guess that the symbol is True (if the symbol is positive) or False (if the symbol is negative). This can be done with the assumption that any "not" nodes far away from the leaf nodes are transformed to become the parents of the leaf nodes using the rules of De Morgan's Law and double negations. For instance, in $(A \vee B) \wedge (A \vee \neg C) \wedge (C \vee \neg B)$, the symbol A is pure and positive. By the heuristic, we should prioritize the decision of setting A to True in the search algorithm.
+One heuristic for deciding assignments is *Pure literals*, which states that if all occurrences of a symbol in the clause (assuming a negation normal form) have the same sign accross the clause, we can guess that the symbol is True (if the symbol is positive) or False (if the symbol is negative). This can be done with the assumption that any "not" nodes far away from the leaf nodes are transformed to become the parents of the leaf nodes using the rules of De Morgan's Law and double negations. For instance, in $(A \vee B) \wedge (A \vee \neg C) \wedge (C \vee \neg B)$, the symbol A is pure and positive. By the heuristic, we should prioritize the decision of setting A to True over setting A to False in the search algorithm.
 
-Another heuristic in assigning is *Unit Clauses*, which states that for any clause left with a single literal, we can simplify the clause by realizing that symbol. More broadly speaking, assignments to variables can lead to simplifications and thus a reduction of search space. For instance, in the case of `{A = False}` with $(A \vee B) \wedge (A \vee \neg C)$, the clause can be simplified to $(B) \wedge (\neg C)$. With this new clause the search space for B and C is reduced.
+Another heuristic in assigning is *Unit Clauses*, which states that for any clause left with a single literal, we can simplify the clause by realizing that symbol. More broadly speaking, assignments to variables can lead to simplifications. For instance, in the case of `{A = False}` with $(A \vee B) \wedge (A \vee \neg C)$, the clause can be simplified to $(B) \wedge (\neg C)$.
 
 The above heuristics are what we implement in the DPLL solver. There are some more advanced heuristics that can increase the efficiency of the solver that we did not implement and are discussed below.
 
@@ -152,6 +163,9 @@ In the solver file, we also offer options to try out the naive recursive backtra
 
 ## Tests
 To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu. For details on comparing different solvers and more details on the theories, please refer to the report attached with this repository. **(To be added later)**
+
+## Important notes
+1. If the generator takes forever to generate logics, it is possible that the number of depths is too small comparing to the number of variables, leading to impossible generation of SAT formula(s) that meet the requirement.
 
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we used some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.
