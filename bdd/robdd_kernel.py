@@ -10,6 +10,7 @@ from bdd.rodbb_visualization import view_rodbb
 from bdd.robdd_graph import ROBDD_graph
 from bdd.robdd_solver import *
 from bdd.robdd_logic_generate import *
+from dpll.logic_tree import Logic
 import pprint
 import time
 
@@ -29,7 +30,6 @@ def user_prompt_generat_formulae():
     return gen_logic, num_param, num_comp
 
 
-
 def robdd_kernel():
     print("Running ROBDD solver.")
     print("Do you want to:  1. specify the formula(e) or \n \
@@ -47,6 +47,8 @@ def robdd_kernel():
         print("Please enter the formula following the syntax below: ")
         print("<formula> := True | False | literal | <formula> and <formula>")
         print("\t | <formula> or <formula> | not <formula> | (<formula>)")
+        print("Please note that when trying this solver, you must start with x0, and any"
+              "other variables must be incrementing the suffix one by one.")
         print("For example, try: ((x0 and x1) or ((not x0) and (not x1)))")
         formula = input("Please enter the formula here (literal must starts with x and followed by numbers):")
         logic = parse_logic(formula)
@@ -55,7 +57,16 @@ def robdd_kernel():
         print("Please enter the ordering of parameters.")
         user_input = input("For example, enter `0 1 2` for the order (x0, x1, x2):")
         try:
-            ordering = [int(n) for n in user_input.split()] 
+            ordering = [int(n) for n in user_input.split()]
+            leaves = [int(leaf[1]) for leaf in set(Logic(logic).leaves)]
+            if len(leaves) != len(ordering):
+                raise Exception("The number of variables does not match the number of leaves")
+            for leaf in leaves:
+                if leaf not in ordering:
+                    raise Exception("One specified variable was not provided with an order.")
+            for i in range(0, max(ordering) + 1):
+                if i not in ordering:
+                    raise Exception(f"Missing an ordering in the range of [0, {max(ordering)}] or ordering does not start with 0.")
         except:
             raise ValueError("Unauthorized text:", user_input)
         print("Your parameter ordering:", ordering)
