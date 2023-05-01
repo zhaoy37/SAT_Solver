@@ -32,17 +32,20 @@ def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=Tru
     # Now solve the trees with different capabilities:
     
     solutions = []
+    total_time = 0
     for logic in formulae:
         if multiple:
             sol, elp_time = solve(logic, get_time=True, multiple=True)
             solutions.append(sol)
+            total_time += elp_time
         else:
             sol, elp_time = solve(logic, get_time=True, multiple=False)
+            total_time += elp_time
             if sol!="UNSAT":
                 solutions.append(sol[0])
             else:
                 solutions.append("UNSAT")
-    print("Execution time: %s seconds" % elp_time)
+    print("Execution time: %s seconds" % total_time)
 
     # Now evaluate the accuracy.
     if not multiple:
@@ -99,8 +102,10 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
     
     single_solutions = []
     multi_solutions = []
+    total_time = 0
     for idx,logic in enumerate(formulae):
         sol, elp_time = solve(logic, get_time=True, multiple=True)
+        total_time += elp_time
         if sol!="UNSAT":
             try:
                 single_solutions.append(sol[0])
@@ -112,7 +117,7 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
             multi_solutions.append("UNSAT")
 
 
-    print("Execution time: %s seconds" % elp_time)
+    print("Execution time: %s seconds" % total_time)
 
     # Now evaluate the accuracy.
     print("Cross checking the completeness of solutions:")

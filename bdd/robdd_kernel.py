@@ -77,9 +77,9 @@ def robdd_kernel():
     elif int(choice) == 2:
         print("Testing pre-defined logic expression:", end=" ")
         # formula = "((x0 or (not x1)) and (x1 or x2))"
-        formula = "(((not x0) and (not x1) and (not x2)) or (x0 and x1) or (x1 and x2))"
-        formula = "(((x2 and x2) or (x0 and (not x1))) or ((x1 or (not x0)) and (x0 or x1)))"
-        # formula = "(x0 and x1) or (x2 and x3) or (x4 and x5) or (x6 and x7)"
+        # formula = "(((not x0) and (not x1) and (not x2)) or (x0 and x1) or (x1 and x2))"
+        # formula = "(((x2 and x2) or (x0 and (not x1))) or ((x1 or (not x0)) and (x0 or x1)))"
+        formula = "(x0 and x1) or (x2 and x3) or (x4 and x5) or (x6 and x7)"
         logic = parse_logic(formula)
         print("Your logic formula:", formula)
         print("-----------------------------------------------------------------------------------")
@@ -87,8 +87,8 @@ def robdd_kernel():
         ## robdd is tested on two orderings for the formula. 
         ## results should be the same.
         print("Testing pre-defined variable ordering: ", end='')
-        # ordering = [0, 2, 4, 6, 1, 3, 5, 7]
-        ordering = [0, 1, 2]
+        ordering = [7, 6, 5, 4, 3, 2, 1, 0]
+        # ordering = [0, 1, 2]
         print(ordering)
         obdd = construct_obdd(ordering, logic, vis=True)
 
@@ -104,8 +104,8 @@ def robdd_kernel():
         
         print("-----------------------------------------------------------------------------------")
         print("Testing pre-defined variable ordering: ", end='')
-        # ordering = [0, 1, 2, 3, 4, 5, 6, 7]   ## tree will be constructed in the order of x0, x1, x2
-        ordering = [2, 1, 0]
+        ordering = [0, 1, 2, 3, 4, 5, 6, 7]   ## tree will be constructed in the order of x0, x1, x2
+        # ordering = [2, 1, 0]
         print(ordering)
         obdd = construct_obdd(ordering, logic, vis=True)
         
