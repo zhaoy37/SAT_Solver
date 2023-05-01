@@ -9,7 +9,7 @@ sys.path.append('..')
 from SMT_Solver.smt import *
 
 
-def solve_graph_coloring(graph, num_colors, method='robdd'):
+def solve_graph_coloring(graph, num_colors, method='dpll'):
     if num_colors > len(list(graph.keys())):
         raise Exception("The maximum number of colors cannot be larger than the number of nodes in the graph.")
 

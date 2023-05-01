@@ -7,7 +7,7 @@ the Partition Problem.
 
 from SMT_Solver.smt import *
 
-def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'robdd'):
+def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'dpll'):
 
     if len(target_list) == 0:
         return "UNSAT"

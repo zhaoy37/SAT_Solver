@@ -9,7 +9,7 @@ sys.path.append('..')
 from SMT_Solver.smt import *
 
 
-def solve_independent_set(graph, target_cardinality, method='robdd'):
+def solve_independent_set(graph, target_cardinality, method='dpll'):
 
     # Check target_cardinality.
     if target_cardinality < 1:

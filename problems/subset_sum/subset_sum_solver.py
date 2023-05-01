@@ -10,7 +10,7 @@ sys.path.append('..')
 from SMT_Solver.smt import *
 
 
-def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10, method='robdd'):
+def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10, method='dpll'):
     for value in target_list:
         if value <= 0:
             raise Exception("List element must be positive.")
