@@ -65,7 +65,7 @@ def main(method='dpll'):
     print()
     print("Solving the N-Queens problem: Example 2 (N = 8) --> Expected: This should be solvable. It may take a while.")
     print("Solution from the solver:")
-    # print(solve_n_queens(8, method=method))
+    print(solve_n_queens(8, method=method))
     print()
 
     """
