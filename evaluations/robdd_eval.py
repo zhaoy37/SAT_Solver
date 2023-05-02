@@ -157,11 +157,11 @@ if __name__ == "__main__":
     perform_ablation_study(1000, 3, 3, True)
     cross_check(1000)
 
+    ## testing on more logic components 
     perform_ablation_study(10, 5, 5, False)
     perform_ablation_study(10, 5, 5, True)
     cross_check(10, 5, 5)
 
-    ## testing on more logic components 
     perform_ablation_study(10, 5, 5, False)
     perform_ablation_study(10, 5, 5, True)
     cross_check(10, 5, 5)

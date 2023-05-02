@@ -159,7 +159,24 @@ In the solver, we enforce early terminations and unit clauses. Specifically, we 
 
 In the solver file, we also offer options to try out the naive recursive backtracking implementation of the solver. The user can do so by setting `heuristic_enabled` to False in the `solve` function in `/dpll/solver.py`.
  		
+### Usage of SAT Solving: ROBDD
+In this section, we will discuss the Reduced-Ordered Binary Decision Diagram (ROBDD) and how to use the ROBDD tool we have created. ROBDD provides an ordered canonical form of logic representation and is an improvement over Binary Decision Trees (BDTs). Different parameter orderings can lead to different versions of ROBDDs for the same logic formula. The complexity and memory consumption of a ROBDD depend not only on the number of parameters but also on their ordering.
 
+In the EduSAT tool, we provide implementations of both BDT and ROBDD and demonstrate the process of reducing a BDT by building its corresponding ROBDD. The base implementation of BDT and ROBDD is located in the `/bdd` directory. To run the interactive user interface for BDT and ROBDD, go to `main.py` and select option `3` for BDDs. The main function will redirect you to the `/bdd/robdd_kernel.py` script and generate user prompts for three additional use cases.
+
+- The **first** option allows the user to input custom logic formulas. To input a legal logic formula, the user must follow the template we have defined above. **Please note that the minimum parameter/variable ordering must be 0 and match the actual parameters in the formula you have entered for the script to work.** We are working on improving error checking and assertions to prevent illegal inputs. Based on the user input, we generate a BDT and an ROBDD with the root node specified by the user.
+
+- The **second** option allows the user to try our framework with pre-defined examples. This option enables the user to explore what is offered in the ROBDD kernel quickly. Specifically, we provide an example and two ways of ordering the parameters. For each ordering, we generate a truth table and a graph visualization.
+
+- The **third** option evokes a script located at `/bdd/robdd_logic_generate.py` to first randomly generate a formula, then construct the corresponding BDT and ROBDD. The user will be prompted to enter the number of parameters, parameter ordering, and depth of the formula. Please note that here, the depth of a logic formula is defined as the number of nested connections (with $\wedge$ or $\vee$).
+
+The workflow behind building BDTs and ROBDDs is as follows:
+- when we receive a legal logic formula and an acceptable parameter ordering, the kernel first parses the formula, then calls the `construct_obdd(ordering, logic, vis)` function, where `ordering` specifies the parameter ordering, `logic` specifies the logic expression, and `vis` specifies whether to generate a truth table. 
+- Next, we initialize a **graph** data structure that we refer to later for ROBDD. We then call the function `convert_robdd_graph(obdd, g)`, where `obdd` is the ordered BDT constructed in the previous step, and `g` is the ROBDD graph object. 
+- The function `convert_robdd_graph(obdd, g)` modifies the graph object directly, which is further reduced using the `g.reduce()` method. Finally, we generate visualizations of ROBDDs using the Python `networkx` library. Note that we are working on interactive visualizations of ROBDD.
+- The implementation of solving SAT problems with ROBDD is located at `/SMT_Solver/smt.py` in the function `solve_SMT_ROBDD`. The underlying logic for finding solutions is implemented at `/bdd/robdd_solver.py` in the function `solve`.
+
+We encourage users to refer to our paper for more theoretical discussions on BDT and ROBDD.
 
 ## Tests
 To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu. For details on comparing different solvers and more details on the theories, please refer to the report attached with this repository. **(To be added later)**
