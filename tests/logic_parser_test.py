@@ -6,7 +6,7 @@ This file tests the logic parser.
 # I used the tutorial here: https://github.com/cgoldberg/python-unittest-tutorial
 """
 
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 
 import unittest
 

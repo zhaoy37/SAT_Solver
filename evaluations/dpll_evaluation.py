@@ -7,7 +7,7 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 """
 
 # Import necessary modules.
-from shared.logic_generator import generate_logic_trees
+from resources.logic_generator import generate_logic_trees
 from dpll.solver import solve
 
 # Time some executions following this link:

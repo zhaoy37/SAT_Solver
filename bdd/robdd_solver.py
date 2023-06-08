@@ -7,7 +7,7 @@ Implementation for the main OBDD, ROBDD solver.
 
 from bdd.robdd_graph import OBDD_node, ROBDDNode, ROBDD_graph
 from bdd.rodbb_visualization import view_rodbb
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 import matplotlib.pyplot as plt
 from bdd.logic_eval import eval
 import networkx as nx

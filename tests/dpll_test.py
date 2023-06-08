@@ -7,7 +7,7 @@ This file tests the DPLL SAT Solver (and the logic tree).
 """
 
 from dpll.solver import solve
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 from dpll.logic_tree import Logic
 import numpy as np
 

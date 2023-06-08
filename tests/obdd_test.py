@@ -9,7 +9,7 @@ import os
 import sys
 sys.path.append('../')
 import unittest
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 from bdd.robdd_graph import ROBDD_graph
 from bdd.robdd_solver import convert_robdd_graph, construct_obdd, robddPaths, allPaths
 

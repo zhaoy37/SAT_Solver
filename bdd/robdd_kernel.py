@@ -5,7 +5,7 @@ References:
 Implementations for input prompts and user interactions.
 """
 
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 from bdd.rodbb_visualization import view_rodbb
 from bdd.robdd_graph import ROBDD_graph
 from bdd.robdd_solver import *

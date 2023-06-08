@@ -6,7 +6,7 @@ sys.path.append('..')
 from bdd.robdd_logic_generate import *
 from bdd.robdd_solver import solve
 from bdd.logic_eval import logic_eval_dict
-from shared.logic_parser import parse_logic
+from resources.logic_parser import parse_logic
 import time
 import random
 import numpy as np

@@ -9,8 +9,8 @@ I used: https://stackoverflow.com/questions/1557571/how-do-i-get-time-of-a-pytho
 
 # Import necessary modules.
 from dpll.logic_tree import Logic
-from shared.logic_parser import parse_logic
-from shared.logic_generator import generate_logic_trees
+from resources.logic_parser import parse_logic
+from resources.logic_generator import generate_logic_trees
 from dpll.solver import solve
 
 # Time some executions following this link:
