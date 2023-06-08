@@ -176,7 +176,7 @@ def solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment
 
 # This is the kernel for solving SMT using min-conflicts from Constraint Satisfaction Problem.
 # This algorithm can result in UNSAT even there exists a solution if the argument max_steps is too small.
-def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, max_steps = 999999):
+def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, max_steps = 99999):
     # Initially, randomly assign values to smt_vars.
     cur_assignment = dict()
     for var in smt_vars:
@@ -191,15 +191,24 @@ def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, m
         rand_index = random.randint(0, len(conflicted_vars) - 1)
         conflicted_var = conflicted_vars[rand_index]
         # Search for the value that minimizes the number of conflicts.
-        best_value = lowerbound
+        conflicts_values= dict()
         best_num_conflicts = float("inf")
         for value in range(lowerbound, upperbound + 1):
             temp_assignment = cur_assignment.copy()
             temp_assignment[conflicted_var] = value
             num_conflicts = find_num_conflicts(converted, temp_assignment)
             if num_conflicts < best_num_conflicts:
-                best_value = value
                 best_num_conflicts = num_conflicts
+
+            if num_conflicts not in conflicts_values:
+                conflicts_values[num_conflicts] = [value]
+            else:
+                conflicts_values[num_conflicts].append(value)
+
+        # Break any tie randomly.
+        possible_values = conflicts_values[best_num_conflicts]
+        rand_index = random.randint(0, len(possible_values) - 1)
+        best_value = possible_values[rand_index]
         cur_assignment[conflicted_var] = best_value
 
     return False, {}
@@ -211,7 +220,7 @@ The main solver starts here.
 # Currently, the SMT solver only supports single solution
 # (because I only need 1 for the NP-complete problem to be solved).
 # The users are encouraged to extend the SMT solver to allow multiple solutions.
-def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method = "backtracking"):
+def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method = "minconflicts"):
     """
     The list of all possible methods include:
 

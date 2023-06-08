@@ -70,11 +70,17 @@ Internally, the solver encodes each index of the list to a variable (y_i) with a
 ## Theory
 ### Theory of SMT Solving
 
-**I said that we are using both of our SAT solvers for this. Currently, it only works for DPLL. We need to integrate ROBDD to this later (which I think we already did).**
+In this section, we discuss the details of our SMT solvers. The solvers are limited to predicates over integers. The set of operators allowed for each SMT clause include $=, \le, \ge, \lt, \gt, \neq, +, -, *, //$, where // denotes integer division. The solvers only provide single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solvers to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver.
 
-In this section, we discuss the details of our SMT solver. The solver is limited to predicates over integers. The set of operators allowed for each SMT clause include $=, \le, \ge, \lt, \gt, \neq, +, -, *, //$, where // denotes integer division. The solver only provides single solutions (because that are all we need for solving the problems described in Applications). It is relatively simple to extend the solver to provide multiple solutions. Since the focus of this project is SAT rather than SMT, we only encode features we actually need in the SMT solver without making it overcomplicated. Users are encouraged to optimize and further improve our SMT solver (We use recursive backtracking, but DPLL(T) is a faster algorithm for solving SMT problems).
+To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. Currently, we support three algorithms in the SMT solver, which can be envoked by setting the optional argument `method` in the function:
 
-To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. The function accepts 5 required parameters (emphasized in bold below): 
+1. Setting `method` to "backtracking" envokes the naive backtracking approach with a DPLL SAT Solver.
+
+2. Setting `method` to "robdd" envokes the naive backtracking approach with a ROBDD SAT Solver.
+
+3. Setting `method` to "minconflicts" (which is the default) envokes the min-conflicts solver from the common min-conflicts algorithm from the Constraint Satisfaction Problem (CSP). The SAT solving approach is DPLL. Please note that this kernel can result in UNSAT even if there exists a solution if the number of termination steps is not sufficiently large (which may result in inability to find a solution if SAT). However, this kernel is often faster than the naive backtracking approach if the problem is solvable.
+
+The function accepts `solve_SMT` 5 required parameters (emphasized in bold below): 
 
 #### sat_formula: 
 The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
@@ -126,9 +132,13 @@ Internally, the SMT solver first finds all possible solutions to the SAT encodin
 
 Then, the algorithm inverts the false SAT_encoding(s). In the aforementioned example execution, the algorithm generates the following mapping: `{"x1": True, "x2": True} -> {"x1" : ["le", "y1", 2], "x2" : ["lt", "y2", 1]}`.
 
-Lastly, the algorithm uses recursive backtracking to search through the search space of possible assignments, the space of the close intervals from the preselected lowerbound to the upperbound for each SMT variable. In the aforementioned example execution, the algorithm will try the sequence of assignnments {"y1" : 0, "y2" : 0}, {"y1" : 0, "y2" : 1} ... until  {"x1": True, "x2": True} is the mapping`{"x1" : ["le", "y1", 2], "x2" : ["lt", "y2", 1]} -> {"x1": True, "x2": True}` is satisfied. The solver concludes unsatisfiability when the search space runs out for all possible solutions to the SAT encoding.
+Lastly, the algorithm calls on the kernel for SMT solving.
 
-We choose the above method because it is intuitive. Since the SMT solver is not the focus of the project but rather an abstraction of the SAT solver, we do not focus on the optimization of the SMT solver interface. The algorithm we use is widely used for solving Constraint Satisfaction Problems (CSP), which can be alternatively solved with the min-conflicts algorithm or with recursive backtracking that also integrates the heuristics such as least constrained values. One algorithm that solves a broader set of SMT signatures and possibly with a lower time complexity is DPLL(T), which is the SMT variant of DPLL for SAT Problems. Users are encouraged to replace our SMT solver with other alternatives.
+When calling the kernel "robdd" or "backtracking", the solver uses recursive backtracking to search through the search space of possible assignments, the space of the close intervals from the preselected lowerbound to the upperbound for each SMT variable. In the aforementioned example execution, the algorithm will try the sequence of assignnments {"y1" : 0, "y2" : 0}, {"y1" : 0, "y2" : 1} ... until  {"x1": True, "x2": True} is the mapping`{"x1" : ["le", "y1", 2], "x2" : ["lt", "y2", 1]} -> {"x1": True, "x2": True}` is satisfied. The solver concludes unsatisfiability when the search space runs out for all possible solutions to the SAT encoding.
+
+When calling the kernel "minconflicts", the solver uses the min-conflicts algorithm commonly used for solving Constraint Satisfaction Problem. The algorithm first randomly initializes the values (given the bounds) for the set of all SMT variables. While the assignment does not satisfy the formula, the algorithm randomly pick a variable from all the set of SMT variables that result in conflict(s), and find the value that best reduces the conflicts associated with that variable to update the assignment (the value found is equivalent to the value that best reduces the conflicts in the existing state of the assignment). The algorithm terminates when an assignment is found to satisfy the SMT formula or when the maximum number of iteration steps is achieved. Please note that "UNSAT" may be found even if there exists a solution if the maximum iteration steps is not sufficiently large. However, this approach is generally faster than the naive backtracking approach given that a solution exists for the SMT problem.
+
+One algorithm, which we want to focus on in the future, that solves a broader set of SMT signatures and possibly with a lower time complexity is DPLL(T), which is the SMT variant of DPLL for SAT Problems. Users are encouraged to replace our SMT solver with other alternatives.
 
 One other essential technique is that although operators {+, -, *, //} connect between only two variables, the users can easily modify the representation for more complicated integer formulas by introducing some temporary variables. For instance, if the user wants to find the solution of `y1 + y2 + y3 = 10` with `0 <= y1, y2, y3 <= 10`, they can call: `solve_SMT(["and", "x1", "x2"],{"x1": ["eq", "y1 + y2", "y4"], "x2": ["eq", "y4 + y3", 10]},["y1", "y2", "y3", "y4"], 0, 10)`.
 
