@@ -62,7 +62,7 @@ def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'dp
                 sat_encoding = ["and", sat_node, sat_encoding]
     
     if method == 'robdd':
-        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = "robdd")
     else:
         solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
 

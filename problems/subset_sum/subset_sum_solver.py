@@ -73,7 +73,7 @@ def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10,
                 sat_encoding = ["and", sat_node, sat_encoding]
 
     if method == 'robdd':
-        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = "robdd")
     else:
         solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
     if solution == "UNSAT":

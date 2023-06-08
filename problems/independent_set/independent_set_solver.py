@@ -71,7 +71,7 @@ def solve_independent_set(graph, target_cardinality, method='dpll'):
     upper_bound = target_cardinality
 
     if method == 'robdd':
-        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = "robdd")
     else:
         solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
 
@@ -86,7 +86,7 @@ def solve_independent_set(graph, target_cardinality, method='dpll'):
     return answer
 
 
-def find_maximum_independent_set(graph, method='robdd'):
+def find_maximum_independent_set(graph, method='dpll'):
     i = 1
     solution = solve_independent_set(graph, i, method=method)
     prev_solution = solution

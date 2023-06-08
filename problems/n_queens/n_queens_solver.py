@@ -52,7 +52,7 @@ def solve_n_queens(num_queens, method='dpll'):
     lower_bound = 0
     upper_bound = num_queens - 1
     if method == 'robdd':
-        solution = solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound)
+        solution = solve_SMT(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound, method = "robdd")
     else:
         solution = solve_SMT(sat_encoding, smt_encoding, smt_vars, lower_bound, upper_bound)
 

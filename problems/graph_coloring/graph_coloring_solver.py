@@ -47,5 +47,5 @@ def solve_graph_coloring(graph, num_colors, method='dpll'):
     upper_bound = num_colors - 1
     
     if method == 'robdd':
-        return solve_SMT_ROBDD(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+        return solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = "robdd")
     return solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
