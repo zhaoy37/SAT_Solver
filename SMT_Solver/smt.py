@@ -52,12 +52,15 @@ def find_num_conflicts(converted, assignment):
     # by the variable of interest (The argmin should be equivalent).
     num_conflicts = 0
     for formula in converted:
+        conflict_flag = False
         # Realize the variables.
-        var1 = realize(formula[1], assignment)
-        var2 = realize(formula[2], assignment)
+        try:
+            var1 = realize(formula[1], assignment)
+            var2 = realize(formula[2], assignment)
+        except ZeroDivisionError:
+            conflict_flag = True
         operator = formula[0]
 
-        conflict_flag = False
         # Perform checking.
         if operator == "lt":
             if var1 >= var2:
@@ -85,11 +88,14 @@ def find_conflicted_variables(converted, assignment):
 
     # This function is used for the min-conflicts kernel and find the variables in conflicts.
     for formula in converted:
-        var1 = realize(formula[1], assignment)
-        var2 = realize(formula[2], assignment)
+        conflict_flag = False
+        try:
+            var1 = realize(formula[1], assignment)
+            var2 = realize(formula[2], assignment)
+        except ZeroDivisionError:
+            conflict_flag = True
         operator = formula[0]
 
-        conflict_flag = False
         # Perform checking.
         if operator == "lt":
             if var1 >= var2:
@@ -128,8 +134,12 @@ def find_conflicted_variables(converted, assignment):
 def evaluate_assignment(converted, assignment):
     for formula in converted:
         # Realize the variables.
-        var1 = realize(formula[1], assignment)
-        var2 = realize(formula[2], assignment)
+        try:
+            var1 = realize(formula[1], assignment)
+            var2 = realize(formula[2], assignment)
+        except ZeroDivisionError:
+            return False
+
         operator = formula[0]
         # Perform checking.
         if operator == "lt":
