@@ -2,9 +2,6 @@
 Author: Yiqi (Nick) Zhao
 
 This file allows random generations of logics.
-
-It is primarily used for testing now, but we may
-consider allow this to be a part of the interface/package.
 """
 
 from numpy import random
