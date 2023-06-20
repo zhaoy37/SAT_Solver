@@ -58,7 +58,8 @@ def find_num_conflicts(converted, assignment):
             var1 = realize(formula[1], assignment)
             var2 = realize(formula[2], assignment)
         except ZeroDivisionError:
-            conflict_flag = True
+            num_conflicts += 1
+            continue
         operator = formula[0]
 
         # Perform checking.
@@ -93,7 +94,17 @@ def find_conflicted_variables(converted, assignment):
             var1 = realize(formula[1], assignment)
             var2 = realize(formula[2], assignment)
         except ZeroDivisionError:
-            conflict_flag = True
+            vars_of_interest = []
+            if type(formula[1]) == str:
+                vars_of_interest.extend(formula[1].split())
+            if type(formula[2]) == str:
+                vars_of_interest.extend(formula[2].split())
+
+            for var in vars_of_interest:
+                if (var not in ["+", "-", "*", "/", "//"]) and (not var.isnumeric()):
+                    conflicted.add(var)
+            continue
+
         operator = formula[0]
 
         # Perform checking.
@@ -197,6 +208,9 @@ def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, m
             return True, cur_assignment
         # Find all conflicted variables.
         conflicted_vars = list(find_conflicted_variables(converted, cur_assignment))
+        if len(conflicted_vars) == 0:
+            # There is no conflicted variable but the assignment evaluates to False.
+            return False, {}
         # Randomly choose one conflicted variable.
         rand_index = random.randint(0, len(conflicted_vars) - 1)
         conflicted_var = conflicted_vars[rand_index]
