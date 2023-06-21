@@ -254,7 +254,6 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
     """
     # First, solve the sat_formula.
     tree = Logic(sat_formula)
-
     if method == "robdd":
         sat_solutions = robdd_solve(sat_formula)
         #Todo: to be improved later.
@@ -267,9 +266,9 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
     for sat_solution in sat_solutions:
         # Convert all negative clauses to positive ones.
         converted = []
-        for sat_formula in encodings:
-            encoding = encodings[sat_formula]
-            if sat_solution[sat_formula]:
+        for sat_atom in encodings:
+            encoding = encodings[sat_atom].copy()
+            if sat_solution[sat_atom]:
                 converted.append(encoding)
             else:
                 if encoding[0] == "le":
@@ -285,7 +284,6 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
                 else:
                     encoding[0] = "nq"
                 converted.append(encoding)
-
         # Perform recursive descent (or other algorithms)
         cur_assignment = []
         if method == "backtracking" or method == "robdd":
@@ -299,8 +297,7 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
 
 
 if __name__ == "__main__":
-    # y1 - 2 = y2, y2 + y1 > 5
-    solution1 = solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]},
-                          ["y1", "y2"], 0, 10, method="minconflicts")
+    #{'y1': 2, 'y0': 1}
+    solution1 = solve_SMT(['and', ['not', 'x1'], ['or', 'x0', 'x0']], {'x1': ['eq', 'y0', 1], 'x0': ['lt', 'y0 * y0', 'y1']}, ["y0", "y1"], 0, 10)
     print("Solution:", solution1)
 
