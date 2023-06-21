@@ -145,8 +145,7 @@ class SMTTest(unittest.TestCase):
         self.assertTrue(y1 <= 5 or y2 <= 3)
 
     def test_case_6m(self):
-        solution6 = solve_SMT(["or", "x1", "x2"], {"x1": ["le", "y1", 5], "x2": ["le", "y2", 3]}, ["y1", "y2"], 0, 10,
-                              method="robdd")
+        solution6 = solve_SMT(["or", "x1", "x2"], {"x1": ["le", "y1", 5], "x2": ["le", "y2", 3]}, ["y1", "y2"], 0, 10)
         y1 = solution6["y1"]
         y2 = solution6["y2"]
         self.assertTrue(y1 <= 5 or y2 <= 3)
