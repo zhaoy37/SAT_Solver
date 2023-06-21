@@ -5,7 +5,6 @@ Reference: https://pythonnumericalmethods.berkeley.edu/notebooks/chapter01.05-Lo
 
 Implementations for logic evaluation. 
 """
-import random
 
 def AND(x, y):
     if x == 1 and y == 1: 

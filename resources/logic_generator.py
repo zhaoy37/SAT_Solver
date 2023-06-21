@@ -4,7 +4,7 @@ Author: Yiqi (Nick) Zhao
 This file allows random generations of logics.
 """
 
-from numpy import random
+import random
 from dpll.logic_tree import Logic
 
 # Set some predetermined chances.
@@ -29,7 +29,7 @@ def generate_one_logic(num_possible_variables, depth, allow_True_False):
     if depth < 0:
         raise Exception("Depth too low for generating a logic.")
     elif depth == 0:
-        return leaves[random.randint(0, len(leaves))]
+        return leaves[random.randint(0, len(leaves) - 1)]
     else:
         if random.random() <= chance_not:
             return ["not", generate_one_logic(num_possible_variables, depth - 1, allow_True_False)]
