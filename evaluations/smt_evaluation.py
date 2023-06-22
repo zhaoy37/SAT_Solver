@@ -95,5 +95,5 @@ def perform_smt_evaluation(num_clauses, num_sat_variables, num_smt_variables, de
 
 
 if __name__ == "__main__":
-    perform_smt_evaluation(10, 2, 2, 2, 0, 10)
+    perform_smt_evaluation(10, 2, 2, 2, -10, 10)
 

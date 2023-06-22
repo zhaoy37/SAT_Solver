@@ -77,13 +77,5 @@ def generate_random_SMT_clauses(num_clauses, num_sat_variables, num_smt_variable
     return smt_clauses
 
 if __name__ == "__main__":
-    sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound = generate_a_random_SMT_clause(2, 2, 2, 0, 10)
+    sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound = generate_a_random_SMT_clause(2, 2, 2, -10, 10)
     print(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
-    print(solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound))
-
-    sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound = ['and', ['or', 'x0', 'x1'], ['or', 'x1', 'x1']], {'x0': ['lt', '6 // y1', 'y0'], 'x1': ['le', 9, 6]}, ['y1', 'y0'], 0, 10
-    print(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
-    print(solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound))
-
-    print(solve_SMT("x1", {"x1": ["le", "y0 - 1", "y0"]}, {"y0"}, 0, 10))
-    print(len(generate_random_SMT_clauses(100, 2, 2, 2, 0, 10)))

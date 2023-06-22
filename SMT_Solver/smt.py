@@ -1,13 +1,21 @@
 """
-Author: Yiqi (Nick) Zhao, Ziyan An (for the robdd part)
+Authors: Yiqi (Nick) Zhao, Ziyan An (for the robdd part)
 
 This program solves SMT (integer signature) using a build DPLL SAT Solver.
+# I used the codes from here: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
 """
 
 from dpll.logic_tree import Logic
 from dpll.solver import solve
 from bdd.robdd_solver import solve as robdd_solve
 import random
+
+
+def check_int(s):
+    # I used the codes from here: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
+    if s[0] in ('-', '+'):
+        return s[1:].isdigit()
+    return s.isdigit()
 
 
 def realize(variable, assignment):
@@ -19,7 +27,7 @@ def realize(variable, assignment):
 
     variable_list = variable.split()
     if len(variable_list) == 1:
-        if variable.isnumeric():
+        if check_int(variable):
             return int(variable)
         else:
             return assignment[variable]
@@ -27,12 +35,12 @@ def realize(variable, assignment):
         # Allow +, -, *, //
         operator = variable_list[1]
 
-        if variable_list[0].isnumeric():
+        if check_int(variable_list[0]):
             var1 = int(variable_list[0])
         else:
             var1 = assignment[variable_list[0]]
 
-        if variable_list[2].isnumeric():
+        if check_int(variable_list[2]):
             var2 = int(variable_list[2])
         else:
             var2 = assignment[variable_list[2]]
@@ -101,7 +109,7 @@ def find_conflicted_variables(converted, assignment):
                 vars_of_interest.extend(formula[2].split())
 
             for var in vars_of_interest:
-                if (var not in ["+", "-", "*", "/", "//"]) and (not var.isnumeric()):
+                if (var not in ["+", "-", "*", "/", "//"]) and (not check_int(var)):
                     conflicted.add(var)
             continue
 
@@ -136,7 +144,7 @@ def find_conflicted_variables(converted, assignment):
                 vars_of_interest.extend(formula[2].split())
 
             for var in vars_of_interest:
-                if (var not in ["+", "-", "*", "/", "//"]) and (not var.isnumeric()):
+                if (var not in ["+", "-", "*", "/", "//"]) and (not check_int(var)):
                     conflicted.add(var)
 
     return conflicted
@@ -298,6 +306,6 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
 
 if __name__ == "__main__":
     #{'y1': 2, 'y0': 1}
-    solution1 = solve_SMT(['and', ['not', 'x1'], ['or', 'x0', 'x0']], {'x1': ['eq', 'y0', 1], 'x0': ['lt', 'y0 * y0', 'y1']}, ["y0", "y1"], 0, 10)
+    solution1 = solve_SMT(['and', 'x0', 'x1'], {'x0': ['gt', 'y1', '5'], 'x1': ['eq', 'y1 + -10', '0']}, ['y2', 'y1'], -10, 10, method = "backtracking")
     print("Solution:", solution1)
 

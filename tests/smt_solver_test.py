@@ -174,6 +174,21 @@ class SMTTest(unittest.TestCase):
         y3 = solution7["y3"]
         self.assertTrue(y1 + y2 + y3 == 10)
 
+    def test_case_8(self):
+        solution8 = solve_SMT("x1", {"x1": ["lt", "y1", "-5"]}, ["y1"], -10, 10, method = "backtracking")
+        y1 = solution8["y1"]
+        self.assertTrue(y1 < -5)
+
+    def test_case_8r(self):
+        solution8 = solve_SMT("x1", {"x1": ["lt", "y1", "-5"]}, ["y1"], -10, 10, method = "robdd")
+        y1 = solution8["y1"]
+        self.assertTrue(y1 < -5)
+
+    def test_case_8m(self):
+        solution8 = solve_SMT("x1", {"x1": ["lt", "y1", "-5"]}, ["y1"], -10, 10, method = "minconflicts")
+        y1 = solution8["y1"]
+        self.assertTrue(y1 < -5)
+
     def test_exception(self):
         self.assertRaises(Exception, solve_SMT, ["and", "x1", "x2"],
                           {"x1": ["eq", "y1", 3], "x2": ["eq", "x3", 10]}, ["y1", "x3"], 0, 10)

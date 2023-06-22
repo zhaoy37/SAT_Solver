@@ -190,7 +190,16 @@ def solve(sat_formula, get_time=False, multiple=True):
     """
     logic = sat_formula
 
+    if type(sat_formula) == str:
+        flatten_ls = [sat_formula]
+    else:
+        flatten_ls = flatten(sat_formula)
+
+    """
+    Original:
     flatten_ls = flatten(sat_formula)
+    """
+
     variables = []
     for f in flatten_ls:
         if 'x' in f:

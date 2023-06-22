@@ -15,38 +15,39 @@ Rule 9     formula -> expression EQ expression
 Rule 10    formula -> expression NQ expression
 Rule 11    subexpression -> ATOM
 Rule 12    subexpression -> NUM
-Rule 13    expression -> subexpression
-Rule 14    expression -> subexpression PLUS subexpression
-Rule 15    expression -> subexpression MINUS subexpression
-Rule 16    expression -> subexpression TIMES subexpression
-Rule 17    expression -> subexpression DIV subexpression
+Rule 13    subexpression -> MINUS NUM
+Rule 14    expression -> subexpression
+Rule 15    expression -> subexpression PLUS subexpression
+Rule 16    expression -> subexpression MINUS subexpression
+Rule 17    expression -> subexpression TIMES subexpression
+Rule 18    expression -> subexpression DIV subexpression
 
 Terminals, with rules where they appear
 
 AND                  : 1
 ATOM                 : 11
-DIV                  : 17
+DIV                  : 18
 EQ                   : 9
 GE                   : 8
 GT                   : 6
 LE                   : 7
 LPAREN               : 4
 LT                   : 5
-MINUS                : 15
+MINUS                : 13 16
 NOT                  : 3
 NQ                   : 10
-NUM                  : 12
+NUM                  : 12 13
 OR                   : 2
-PLUS                 : 14
+PLUS                 : 15
 RPAREN               : 4
-TIMES                : 16
+TIMES                : 17
 error                : 
 
 Nonterminals, with rules where they appear
 
 expression           : 5 5 6 6 7 7 8 8 9 9 10 10
 formula              : 1 1 2 2 3 4 0
-subexpression        : 13 14 14 15 15 16 16 17 17
+subexpression        : 14 15 15 16 16 17 17 18 18
 
 Parsing method: LALR
 
@@ -63,18 +64,20 @@ state 0
     (8) formula -> . expression GE expression
     (9) formula -> . expression EQ expression
     (10) formula -> . expression NQ expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
     NOT             shift and go to state 2
     LPAREN          shift and go to state 3
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     formula                        shift and go to state 1
     expression                     shift and go to state 4
@@ -86,8 +89,8 @@ state 1
     (1) formula -> formula . AND formula
     (2) formula -> formula . OR formula
 
-    AND             shift and go to state 8
-    OR              shift and go to state 9
+    AND             shift and go to state 9
+    OR              shift and go to state 10
 
 
 state 2
@@ -103,20 +106,22 @@ state 2
     (8) formula -> . expression GE expression
     (9) formula -> . expression EQ expression
     (10) formula -> . expression NQ expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
     NOT             shift and go to state 2
     LPAREN          shift and go to state 3
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
-    formula                        shift and go to state 10
+    formula                        shift and go to state 11
     expression                     shift and go to state 4
     subexpression                  shift and go to state 5
 
@@ -133,20 +138,22 @@ state 3
     (8) formula -> . expression GE expression
     (9) formula -> . expression EQ expression
     (10) formula -> . expression NQ expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
     NOT             shift and go to state 2
     LPAREN          shift and go to state 3
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
-    formula                        shift and go to state 11
+    formula                        shift and go to state 12
     expression                     shift and go to state 4
     subexpression                  shift and go to state 5
 
@@ -159,39 +166,46 @@ state 4
     (9) formula -> expression . EQ expression
     (10) formula -> expression . NQ expression
 
-    LT              shift and go to state 12
-    GT              shift and go to state 13
-    LE              shift and go to state 14
-    GE              shift and go to state 15
-    EQ              shift and go to state 16
-    NQ              shift and go to state 17
+    LT              shift and go to state 13
+    GT              shift and go to state 14
+    LE              shift and go to state 15
+    GE              shift and go to state 16
+    EQ              shift and go to state 17
+    NQ              shift and go to state 18
 
 
 state 5
 
-    (13) expression -> subexpression .
-    (14) expression -> subexpression . PLUS subexpression
-    (15) expression -> subexpression . MINUS subexpression
-    (16) expression -> subexpression . TIMES subexpression
-    (17) expression -> subexpression . DIV subexpression
+    (14) expression -> subexpression .
+    (15) expression -> subexpression . PLUS subexpression
+    (16) expression -> subexpression . MINUS subexpression
+    (17) expression -> subexpression . TIMES subexpression
+    (18) expression -> subexpression . DIV subexpression
 
-    LT              reduce using rule 13 (expression -> subexpression .)
-    GT              reduce using rule 13 (expression -> subexpression .)
-    LE              reduce using rule 13 (expression -> subexpression .)
-    GE              reduce using rule 13 (expression -> subexpression .)
-    EQ              reduce using rule 13 (expression -> subexpression .)
-    NQ              reduce using rule 13 (expression -> subexpression .)
-    AND             reduce using rule 13 (expression -> subexpression .)
-    OR              reduce using rule 13 (expression -> subexpression .)
-    $end            reduce using rule 13 (expression -> subexpression .)
-    RPAREN          reduce using rule 13 (expression -> subexpression .)
-    PLUS            shift and go to state 18
-    MINUS           shift and go to state 19
-    TIMES           shift and go to state 20
-    DIV             shift and go to state 21
+    LT              reduce using rule 14 (expression -> subexpression .)
+    GT              reduce using rule 14 (expression -> subexpression .)
+    LE              reduce using rule 14 (expression -> subexpression .)
+    GE              reduce using rule 14 (expression -> subexpression .)
+    EQ              reduce using rule 14 (expression -> subexpression .)
+    NQ              reduce using rule 14 (expression -> subexpression .)
+    AND             reduce using rule 14 (expression -> subexpression .)
+    OR              reduce using rule 14 (expression -> subexpression .)
+    $end            reduce using rule 14 (expression -> subexpression .)
+    RPAREN          reduce using rule 14 (expression -> subexpression .)
+    PLUS            shift and go to state 19
+    MINUS           shift and go to state 20
+    TIMES           shift and go to state 21
+    DIV             shift and go to state 22
 
 
 state 6
+
+    (13) subexpression -> MINUS . NUM
+
+    NUM             shift and go to state 23
+
+
+state 7
 
     (11) subexpression -> ATOM .
 
@@ -211,7 +225,7 @@ state 6
     RPAREN          reduce using rule 11 (subexpression -> ATOM .)
 
 
-state 7
+state 8
 
     (12) subexpression -> NUM .
 
@@ -231,7 +245,7 @@ state 7
     RPAREN          reduce using rule 12 (subexpression -> NUM .)
 
 
-state 8
+state 9
 
     (1) formula -> formula AND . formula
     (1) formula -> . formula AND formula
@@ -244,24 +258,26 @@ state 8
     (8) formula -> . expression GE expression
     (9) formula -> . expression EQ expression
     (10) formula -> . expression NQ expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
     NOT             shift and go to state 2
     LPAREN          shift and go to state 3
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
-    formula                        shift and go to state 22
+    formula                        shift and go to state 24
     expression                     shift and go to state 4
     subexpression                  shift and go to state 5
 
-state 9
+state 10
 
     (2) formula -> formula OR . formula
     (1) formula -> . formula AND formula
@@ -274,24 +290,26 @@ state 9
     (8) formula -> . expression GE expression
     (9) formula -> . expression EQ expression
     (10) formula -> . expression NQ expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
     NOT             shift and go to state 2
     LPAREN          shift and go to state 3
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
-    formula                        shift and go to state 23
+    formula                        shift and go to state 25
     expression                     shift and go to state 4
     subexpression                  shift and go to state 5
 
-state 10
+state 11
 
     (3) formula -> NOT formula .
     (1) formula -> formula . AND formula
@@ -302,168 +320,208 @@ state 10
     $end            reduce using rule 3 (formula -> NOT formula .)
     RPAREN          reduce using rule 3 (formula -> NOT formula .)
 
-  ! AND             [ shift and go to state 8 ]
-  ! OR              [ shift and go to state 9 ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
 
 
-state 11
+state 12
 
     (4) formula -> LPAREN formula . RPAREN
     (1) formula -> formula . AND formula
     (2) formula -> formula . OR formula
 
-    RPAREN          shift and go to state 24
-    AND             shift and go to state 8
-    OR              shift and go to state 9
+    RPAREN          shift and go to state 26
+    AND             shift and go to state 9
+    OR              shift and go to state 10
 
-
-state 12
-
-    (5) formula -> expression LT . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
-    (11) subexpression -> . ATOM
-    (12) subexpression -> . NUM
-
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
-
-    expression                     shift and go to state 25
-    subexpression                  shift and go to state 5
 
 state 13
 
-    (6) formula -> expression GT . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (5) formula -> expression LT . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
-
-    expression                     shift and go to state 26
-    subexpression                  shift and go to state 5
-
-state 14
-
-    (7) formula -> expression LE . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
-    (11) subexpression -> . ATOM
-    (12) subexpression -> . NUM
-
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     expression                     shift and go to state 27
     subexpression                  shift and go to state 5
 
-state 15
+state 14
 
-    (8) formula -> expression GE . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (6) formula -> expression GT . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     expression                     shift and go to state 28
     subexpression                  shift and go to state 5
 
-state 16
+state 15
 
-    (9) formula -> expression EQ . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (7) formula -> expression LE . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     expression                     shift and go to state 29
     subexpression                  shift and go to state 5
 
-state 17
+state 16
 
-    (10) formula -> expression NQ . expression
-    (13) expression -> . subexpression
-    (14) expression -> . subexpression PLUS subexpression
-    (15) expression -> . subexpression MINUS subexpression
-    (16) expression -> . subexpression TIMES subexpression
-    (17) expression -> . subexpression DIV subexpression
+    (8) formula -> expression GE . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     expression                     shift and go to state 30
     subexpression                  shift and go to state 5
 
-state 18
+state 17
 
-    (14) expression -> subexpression PLUS . subexpression
+    (9) formula -> expression EQ . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
-    subexpression                  shift and go to state 31
+    expression                     shift and go to state 31
+    subexpression                  shift and go to state 5
+
+state 18
+
+    (10) formula -> expression NQ . expression
+    (14) expression -> . subexpression
+    (15) expression -> . subexpression PLUS subexpression
+    (16) expression -> . subexpression MINUS subexpression
+    (17) expression -> . subexpression TIMES subexpression
+    (18) expression -> . subexpression DIV subexpression
+    (11) subexpression -> . ATOM
+    (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
+
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
+
+    expression                     shift and go to state 32
+    subexpression                  shift and go to state 5
 
 state 19
 
-    (15) expression -> subexpression MINUS . subexpression
+    (15) expression -> subexpression PLUS . subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
-
-    subexpression                  shift and go to state 32
-
-state 20
-
-    (16) expression -> subexpression TIMES . subexpression
-    (11) subexpression -> . ATOM
-    (12) subexpression -> . NUM
-
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     subexpression                  shift and go to state 33
 
-state 21
+state 20
 
-    (17) expression -> subexpression DIV . subexpression
+    (16) expression -> subexpression MINUS . subexpression
     (11) subexpression -> . ATOM
     (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
 
-    ATOM            shift and go to state 6
-    NUM             shift and go to state 7
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
 
     subexpression                  shift and go to state 34
 
+state 21
+
+    (17) expression -> subexpression TIMES . subexpression
+    (11) subexpression -> . ATOM
+    (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
+
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
+
+    subexpression                  shift and go to state 35
+
 state 22
+
+    (18) expression -> subexpression DIV . subexpression
+    (11) subexpression -> . ATOM
+    (12) subexpression -> . NUM
+    (13) subexpression -> . MINUS NUM
+
+    ATOM            shift and go to state 7
+    NUM             shift and go to state 8
+    MINUS           shift and go to state 6
+
+    subexpression                  shift and go to state 36
+
+state 23
+
+    (13) subexpression -> MINUS NUM .
+
+    PLUS            reduce using rule 13 (subexpression -> MINUS NUM .)
+    MINUS           reduce using rule 13 (subexpression -> MINUS NUM .)
+    TIMES           reduce using rule 13 (subexpression -> MINUS NUM .)
+    DIV             reduce using rule 13 (subexpression -> MINUS NUM .)
+    LT              reduce using rule 13 (subexpression -> MINUS NUM .)
+    GT              reduce using rule 13 (subexpression -> MINUS NUM .)
+    LE              reduce using rule 13 (subexpression -> MINUS NUM .)
+    GE              reduce using rule 13 (subexpression -> MINUS NUM .)
+    EQ              reduce using rule 13 (subexpression -> MINUS NUM .)
+    NQ              reduce using rule 13 (subexpression -> MINUS NUM .)
+    AND             reduce using rule 13 (subexpression -> MINUS NUM .)
+    OR              reduce using rule 13 (subexpression -> MINUS NUM .)
+    $end            reduce using rule 13 (subexpression -> MINUS NUM .)
+    RPAREN          reduce using rule 13 (subexpression -> MINUS NUM .)
+
+
+state 24
 
     (1) formula -> formula AND formula .
     (1) formula -> formula . AND formula
@@ -474,11 +532,11 @@ state 22
     $end            reduce using rule 1 (formula -> formula AND formula .)
     RPAREN          reduce using rule 1 (formula -> formula AND formula .)
 
-  ! AND             [ shift and go to state 8 ]
-  ! OR              [ shift and go to state 9 ]
+  ! AND             [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
 
 
-state 23
+state 25
 
     (2) formula -> formula OR formula .
     (1) formula -> formula . AND formula
@@ -487,13 +545,13 @@ state 23
     OR              reduce using rule 2 (formula -> formula OR formula .)
     $end            reduce using rule 2 (formula -> formula OR formula .)
     RPAREN          reduce using rule 2 (formula -> formula OR formula .)
-    AND             shift and go to state 8
+    AND             shift and go to state 9
 
   ! AND             [ reduce using rule 2 (formula -> formula OR formula .) ]
-  ! OR              [ shift and go to state 9 ]
+  ! OR              [ shift and go to state 10 ]
 
 
-state 24
+state 26
 
     (4) formula -> LPAREN formula RPAREN .
 
@@ -503,7 +561,7 @@ state 24
     RPAREN          reduce using rule 4 (formula -> LPAREN formula RPAREN .)
 
 
-state 25
+state 27
 
     (5) formula -> expression LT expression .
 
@@ -513,7 +571,7 @@ state 25
     RPAREN          reduce using rule 5 (formula -> expression LT expression .)
 
 
-state 26
+state 28
 
     (6) formula -> expression GT expression .
 
@@ -523,7 +581,7 @@ state 26
     RPAREN          reduce using rule 6 (formula -> expression GT expression .)
 
 
-state 27
+state 29
 
     (7) formula -> expression LE expression .
 
@@ -533,7 +591,7 @@ state 27
     RPAREN          reduce using rule 7 (formula -> expression LE expression .)
 
 
-state 28
+state 30
 
     (8) formula -> expression GE expression .
 
@@ -543,7 +601,7 @@ state 28
     RPAREN          reduce using rule 8 (formula -> expression GE expression .)
 
 
-state 29
+state 31
 
     (9) formula -> expression EQ expression .
 
@@ -553,7 +611,7 @@ state 29
     RPAREN          reduce using rule 9 (formula -> expression EQ expression .)
 
 
-state 30
+state 32
 
     (10) formula -> expression NQ expression .
 
@@ -563,66 +621,66 @@ state 30
     RPAREN          reduce using rule 10 (formula -> expression NQ expression .)
 
 
-state 31
-
-    (14) expression -> subexpression PLUS subexpression .
-
-    LT              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    GT              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    LE              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    GE              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    EQ              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    NQ              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    AND             reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    OR              reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    $end            reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-    RPAREN          reduce using rule 14 (expression -> subexpression PLUS subexpression .)
-
-
-state 32
-
-    (15) expression -> subexpression MINUS subexpression .
-
-    LT              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    GT              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    LE              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    GE              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    EQ              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    NQ              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    AND             reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    OR              reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    $end            reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-    RPAREN          reduce using rule 15 (expression -> subexpression MINUS subexpression .)
-
-
 state 33
 
-    (16) expression -> subexpression TIMES subexpression .
+    (15) expression -> subexpression PLUS subexpression .
 
-    LT              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    GT              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    LE              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    GE              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    EQ              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    NQ              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    AND             reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    OR              reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    $end            reduce using rule 16 (expression -> subexpression TIMES subexpression .)
-    RPAREN          reduce using rule 16 (expression -> subexpression TIMES subexpression .)
+    LT              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    GT              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    LE              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    GE              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    EQ              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    NQ              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    AND             reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    OR              reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    $end            reduce using rule 15 (expression -> subexpression PLUS subexpression .)
+    RPAREN          reduce using rule 15 (expression -> subexpression PLUS subexpression .)
 
 
 state 34
 
-    (17) expression -> subexpression DIV subexpression .
+    (16) expression -> subexpression MINUS subexpression .
 
-    LT              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    GT              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    LE              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    GE              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    EQ              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    NQ              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    AND             reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    OR              reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    $end            reduce using rule 17 (expression -> subexpression DIV subexpression .)
-    RPAREN          reduce using rule 17 (expression -> subexpression DIV subexpression .)
+    LT              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    GT              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    LE              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    GE              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    EQ              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    NQ              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    AND             reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    OR              reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    $end            reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+    RPAREN          reduce using rule 16 (expression -> subexpression MINUS subexpression .)
+
+
+state 35
+
+    (17) expression -> subexpression TIMES subexpression .
+
+    LT              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    GT              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    LE              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    GE              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    EQ              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    NQ              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    AND             reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    OR              reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    $end            reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+    RPAREN          reduce using rule 17 (expression -> subexpression TIMES subexpression .)
+
+
+state 36
+
+    (18) expression -> subexpression DIV subexpression .
+
+    LT              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    GT              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    LE              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    GE              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    EQ              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    NQ              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    AND             reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    OR              reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    $end            reduce using rule 18 (expression -> subexpression DIV subexpression .)
+    RPAREN          reduce using rule 18 (expression -> subexpression DIV subexpression .)
 

@@ -136,6 +136,10 @@ def p_subexpression_num(p):
     'subexpression : NUM'
     p[0] = p[1]
 
+def p_subexpression_negative_num(p):
+    'subexpression : MINUS NUM'
+    p[0] = "-" + p[2]
+
 def p_expression_subexpression(p):
     'expression : subexpression'
     p[0] = p[1]
@@ -189,4 +193,4 @@ def parse_smt(logic):
 
 
 if __name__ == "__main__":
-    print(parse_smt("(y1 > y1) and (y1 // y1 <= 3) and not (y1 > y1) or (y1 // y1 <= 3) or y1 < 1"))
+    print(parse_smt("y1 < -9 and y1 + y2 = 3"))
