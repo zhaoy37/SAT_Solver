@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftORleftANDleftNOTAND FALSE LITERAL LPAREN NOT OR RPAREN TRUEformula : LITERALformula : formula AND formulaformula : formula OR formulaformula : NOT formulaformula : LPAREN formula RPARENformula : TRUEformula : FALSE'
+_lr_signature = 'leftORleftANDleftNOTAND ATOM DIV EQ GE GT LE LPAREN LT MINUS NOT NQ NUM OR PLUS RPAREN TIMESformula : formula AND formulaformula : formula OR formulaformula : NOT formulaformula : LPAREN formula RPARENformula : expression LT expressionformula : expression GT expressionformula : expression LE expressionformula : expression GE expressionformula : expression EQ expressionformula : expression NQ expressionsubexpression : ATOMsubexpression : NUMexpression : subexpressionexpression : subexpression PLUS subexpressionexpression : subexpression MINUS subexpressionexpression : subexpression TIMES subexpressionexpression : subexpression DIV subexpression'
     
-_lr_action_items = {'LITERAL':([0,3,4,7,8,],[2,2,2,2,2,]),'NOT':([0,3,4,7,8,],[3,3,3,3,3,]),'LPAREN':([0,3,4,7,8,],[4,4,4,4,4,]),'TRUE':([0,3,4,7,8,],[5,5,5,5,5,]),'FALSE':([0,3,4,7,8,],[6,6,6,6,6,]),'$end':([1,2,5,6,9,11,12,13,],[0,-1,-6,-7,-4,-2,-3,-5,]),'AND':([1,2,5,6,9,10,11,12,13,],[7,-1,-6,-7,-4,7,-2,7,-5,]),'OR':([1,2,5,6,9,10,11,12,13,],[8,-1,-6,-7,-4,8,-2,-3,-5,]),'RPAREN':([2,5,6,9,10,11,12,13,],[-1,-6,-7,-4,13,-2,-3,-5,]),}
+_lr_action_items = {'NOT':([0,2,3,8,9,],[2,2,2,2,2,]),'LPAREN':([0,2,3,8,9,],[3,3,3,3,3,]),'ATOM':([0,2,3,8,9,12,13,14,15,16,17,18,19,20,21,],[6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,]),'NUM':([0,2,3,8,9,12,13,14,15,16,17,18,19,20,21,],[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,]),'$end':([1,5,6,7,10,22,23,24,25,26,27,28,29,30,31,32,33,34,],[0,-13,-11,-12,-3,-1,-2,-4,-5,-6,-7,-8,-9,-10,-14,-15,-16,-17,]),'AND':([1,5,6,7,10,11,22,23,24,25,26,27,28,29,30,31,32,33,34,],[8,-13,-11,-12,-3,8,-1,8,-4,-5,-6,-7,-8,-9,-10,-14,-15,-16,-17,]),'OR':([1,5,6,7,10,11,22,23,24,25,26,27,28,29,30,31,32,33,34,],[9,-13,-11,-12,-3,9,-1,-2,-4,-5,-6,-7,-8,-9,-10,-14,-15,-16,-17,]),'LT':([4,5,6,7,31,32,33,34,],[12,-13,-11,-12,-14,-15,-16,-17,]),'GT':([4,5,6,7,31,32,33,34,],[13,-13,-11,-12,-14,-15,-16,-17,]),'LE':([4,5,6,7,31,32,33,34,],[14,-13,-11,-12,-14,-15,-16,-17,]),'GE':([4,5,6,7,31,32,33,34,],[15,-13,-11,-12,-14,-15,-16,-17,]),'EQ':([4,5,6,7,31,32,33,34,],[16,-13,-11,-12,-14,-15,-16,-17,]),'NQ':([4,5,6,7,31,32,33,34,],[17,-13,-11,-12,-14,-15,-16,-17,]),'RPAREN':([5,6,7,10,11,22,23,24,25,26,27,28,29,30,31,32,33,34,],[-13,-11,-12,-3,24,-1,-2,-4,-5,-6,-7,-8,-9,-10,-14,-15,-16,-17,]),'PLUS':([5,6,7,],[18,-11,-12,]),'MINUS':([5,6,7,],[19,-11,-12,]),'TIMES':([5,6,7,],[20,-11,-12,]),'DIV':([5,6,7,],[21,-11,-12,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'formula':([0,3,4,7,8,],[1,9,10,11,12,]),}
+_lr_goto_items = {'formula':([0,2,3,8,9,],[1,10,11,22,23,]),'expression':([0,2,3,8,9,12,13,14,15,16,17,],[4,4,4,4,4,25,26,27,28,29,30,]),'subexpression':([0,2,3,8,9,12,13,14,15,16,17,18,19,20,21,],[5,5,5,5,5,5,5,5,5,5,5,31,32,33,34,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,11 +27,21 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> formula","S'",1,None,None,None),
-  ('formula -> LITERAL','formula',1,'p_formula_literal','logic_parser.py',72),
-  ('formula -> formula AND formula','formula',3,'p_formula_and','logic_parser.py',76),
-  ('formula -> formula OR formula','formula',3,'p_formula_or','logic_parser.py',80),
-  ('formula -> NOT formula','formula',2,'p_formula_not','logic_parser.py',84),
-  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','logic_parser.py',88),
-  ('formula -> TRUE','formula',1,'p_formula_true','logic_parser.py',92),
-  ('formula -> FALSE','formula',1,'p_formula_false','logic_parser.py',96),
+  ('formula -> formula AND formula','formula',3,'p_formula_and','smt_parser.py',89),
+  ('formula -> formula OR formula','formula',3,'p_formula_or','smt_parser.py',93),
+  ('formula -> NOT formula','formula',2,'p_formula_not','smt_parser.py',97),
+  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_formula_par','smt_parser.py',101),
+  ('formula -> expression LT expression','formula',3,'p_formula_expression_1','smt_parser.py',105),
+  ('formula -> expression GT expression','formula',3,'p_formula_expression_2','smt_parser.py',109),
+  ('formula -> expression LE expression','formula',3,'p_formula_expression_3','smt_parser.py',113),
+  ('formula -> expression GE expression','formula',3,'p_formula_expression_4','smt_parser.py',117),
+  ('formula -> expression EQ expression','formula',3,'p_formula_expression_5','smt_parser.py',121),
+  ('formula -> expression NQ expression','formula',3,'p_formula_expression_6','smt_parser.py',125),
+  ('subexpression -> ATOM','subexpression',1,'p_subexpression_atom','smt_parser.py',129),
+  ('subexpression -> NUM','subexpression',1,'p_subexpression_num','smt_parser.py',133),
+  ('expression -> subexpression','expression',1,'p_expression_subexpression','smt_parser.py',137),
+  ('expression -> subexpression PLUS subexpression','expression',3,'p_expression_plus','smt_parser.py',141),
+  ('expression -> subexpression MINUS subexpression','expression',3,'p_expression_minus','smt_parser.py',145),
+  ('expression -> subexpression TIMES subexpression','expression',3,'p_expression_times','smt_parser.py',149),
+  ('expression -> subexpression DIV subexpression','expression',3,'p_expression_divides','smt_parser.py',153),
 ]
