@@ -27,13 +27,13 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> formula","S'",1,None,None,None),
-  ('formula -> exp','formula',1,'p_formula_exp','calculator.py',70),
-  ('formula -> MINUS formula','formula',2,'p_formula_negative','calculator.py',74),
-  ('formula -> formula TIMES formula','formula',3,'p_formula_formula_times_formula','calculator.py',78),
-  ('formula -> formula PLUS formula','formula',3,'p_formula_formula_plus_formula','calculator.py',82),
-  ('formula -> formula MINUS formula','formula',3,'p_formula_formula_minus_formula','calculator.py',86),
-  ('formula -> formula DIV formula','formula',3,'p_formula_formula_div_formula','calculator.py',90),
-  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_paren_formula','calculator.py',94),
-  ('exp -> NUM','exp',1,'p_exp_num','calculator.py',98),
-  ('exp -> LITERAL','exp',1,'p_exp_lit','calculator.py',102),
+  ('formula -> exp','formula',1,'p_formula_exp','calculator.py',74),
+  ('formula -> MINUS formula','formula',2,'p_formula_negative','calculator.py',78),
+  ('formula -> formula TIMES formula','formula',3,'p_formula_formula_times_formula','calculator.py',82),
+  ('formula -> formula PLUS formula','formula',3,'p_formula_formula_plus_formula','calculator.py',86),
+  ('formula -> formula MINUS formula','formula',3,'p_formula_formula_minus_formula','calculator.py',90),
+  ('formula -> formula DIV formula','formula',3,'p_formula_formula_div_formula','calculator.py',94),
+  ('formula -> LPAREN formula RPAREN','formula',3,'p_formula_paren_formula','calculator.py',98),
+  ('exp -> NUM','exp',1,'p_exp_num','calculator.py',102),
+  ('exp -> LITERAL','exp',1,'p_exp_lit','calculator.py',106),
 ]

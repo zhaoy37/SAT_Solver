@@ -5,7 +5,7 @@ for user input (SMT).
 
 Acknowledgement: Some parts of the codes
 come from the PLY documentation: https://www.dabeaz.com/ply/ply.html#ply_nn4
-I also refered to this table:
+I also referred to this table:
 https://tool.oschina.net/uploads/apidocs/jquery/regexp.html
 and this tool:
 https://regex101.com/
@@ -13,6 +13,7 @@ I also used some class materials from CS 3276 Provided
 by professor Kevin Leach: Please see https://www.youtube.com/watch?v=xfjCWRmDj3Q&t=1176s
 This work may partially overlap with my work in CS 8395, another class at Vanderbilt.
 """
+
 import ply.lex as lex
 import ply.yacc as yacc
 
@@ -81,7 +82,11 @@ Build the parser.
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
-    ('left', 'NOT')
+    ('left', 'NOT'),
+    ('left', 'MINUS'),
+    ('left', 'PLUS'),
+    ('left', 'DIV'),
+    ('left', 'TIMES')
 )
 
 smt_atoms = set()
@@ -127,39 +132,38 @@ def p_formula_expression_6(p):
     'formula : expression NQ expression'
     p[0] = ["nq", p[1], p[3]]
 
-def p_subexpression_atom(p):
-    'subexpression : ATOM'
+def p_expression_atom(p):
+    'expression : ATOM'
     smt_atoms.add(p[1])
     p[0] = p[1]
 
-def p_subexpression_num(p):
-    'subexpression : NUM'
+def p_expression_num(p):
+    'expression : NUM'
     p[0] = p[1]
 
-def p_subexpression_negative_num(p):
-    'subexpression : MINUS NUM'
+def p_expression_negative_num(p):
+    'expression : MINUS NUM'
     p[0] = "-" + p[2]
 
-def p_expression_subexpression(p):
-    'expression : subexpression'
-    p[0] = p[1]
-
 def p_expression_plus(p):
-    'expression : subexpression PLUS subexpression'
+    'expression : expression PLUS expression'
     p[0] = p[1] + " + " + p[3]
 
 def p_expression_minus(p):
-    'expression : subexpression MINUS subexpression'
+    'expression : expression MINUS expression'
     p[0] = p[1] + " - " + p[3]
 
 def p_expression_times(p):
-    'expression : subexpression TIMES subexpression'
+    'expression : expression TIMES expression'
     p[0] = p[1] + " * " + p[3]
 
-def p_expression_divides(p):
-    'expression : subexpression DIV subexpression'
+def p_expression_div(p):
+    'expression : expression DIV expression'
     p[0] = p[1] + " // " + p[3]
 
+def p_expression_paren(p):
+    'expression : LPAREN expression RPAREN'
+    p[0] = "( " + p[2] + " )"
 
 def p_error(p):
     print("Syntactic error is detected when parsing the logic.")
@@ -193,4 +197,4 @@ def parse_smt(logic):
 
 
 if __name__ == "__main__":
-    print(parse_smt("y1 < -9 and y1 + y2 = 3"))
+    print(parse_smt("y1 * (3 + y1) < -9 and y1 * (3 + y1) < -9"))

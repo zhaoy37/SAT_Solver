@@ -6,7 +6,7 @@ for user input.
 The output of the program should be some abstract syntax tree (AST) for the logic.
 Acknowledgement: Some parts of the codes
 come from the PLY documentation: https://www.dabeaz.com/ply/ply.html#ply_nn4
-I also refered to this table:
+I also referred to this table:
 https://tool.oschina.net/uploads/apidocs/jquery/regexp.html
 and this tool:
 https://regex101.com/
