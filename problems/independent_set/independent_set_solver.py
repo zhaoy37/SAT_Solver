@@ -4,12 +4,10 @@ Author: Yiqi (Nick) Zhao.
 This file provides an example for the user to use the SMT solver created in this project in solving
 the independent set problem.
 """
-import sys
-sys.path.append('..')
 from SMT_Solver.smt import *
 
 
-def solve_independent_set(graph, target_cardinality, method='dpll'):
+def solve_independent_set(graph, target_cardinality, method='backtracking'):
 
     # Check target_cardinality.
     if target_cardinality < 1:
@@ -40,20 +38,14 @@ def solve_independent_set(graph, target_cardinality, method='dpll'):
         smt_variables.add(node)
 
     # Assert that the sum is equal to target_cardinality.
-    cur_y = graph_nodes[0]
-    cur_y_index = len(graph_nodes)
+    summation = ""
     for i in range(len(graph_nodes)):
-        while("y" + str(cur_y_index) in smt_variables):
-            cur_y_index += 1
-        temp_y = "y" + str(cur_y_index)
-        if i > 0:
-            smt_encoding["x" + str(index)] = ["eq", cur_y + " + " + graph_nodes[i], temp_y]
-            cur_y = temp_y
-            smt_variables.add(cur_y)
-            smt_variables.add(graph_nodes[i])
-            smt_variables.add(temp_y)
-        index += 1
-    smt_encoding["x" + str(index)] = ["eq", cur_y, target_cardinality]
+        if i == len(graph_nodes) - 1:
+            summation += graph_nodes[i]
+        else:
+            summation += (graph_nodes[i] + " + ")
+        smt_variables.add(graph_nodes[i])
+    smt_encoding[summation] = ["eq", summation, target_cardinality]
     smt_variables = list(smt_variables)
 
     # Now, formulate the SAT encoding:
@@ -70,10 +62,7 @@ def solve_independent_set(graph, target_cardinality, method='dpll'):
     lower_bound = 0
     upper_bound = target_cardinality
 
-    if method == 'robdd':
-        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = "robdd")
-    else:
-        solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound)
+    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = method)
 
     if solution == "UNSAT":
         return "UNSAT"
@@ -86,9 +75,9 @@ def solve_independent_set(graph, target_cardinality, method='dpll'):
     return answer
 
 
-def find_maximum_independent_set(graph, method='dpll'):
+def find_maximum_independent_set(graph, method = 'backtracking'):
     i = 1
-    solution = solve_independent_set(graph, i, method=method)
+    solution = solve_independent_set(graph, i, method = method)
     prev_solution = solution
     while solution != "UNSAT":
         i += 1

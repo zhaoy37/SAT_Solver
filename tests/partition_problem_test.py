@@ -37,6 +37,21 @@ class PartitionTest(unittest.TestCase):
         part1, part2 = solve_partition([1, 0, 1])
         self.assertTrue(sum(part1) == sum(part2))
 
+    def test_case_length_3_UNSAT(self):
+        solution = solve_partition([6, 90, -10])
+        self.assertTrue(solution == "UNSAT")
+
+    def test_case_length_4_SAT(self):
+        part1, part2 = solve_partition([1, 2, 3, 2])
+        self.assertTrue(sum(part1) == sum(part2))
+        self.assertTrue(len(part1) != 0)
+        self.assertTrue(len(part2) != 0)
+
+    def test_case_length_4_SAT2(self):
+        part1, part2 = solve_partition([0, 1, 0, -1])
+        self.assertTrue(sum(part1) == sum(part2))
+        self.assertTrue(len(part1) != 0)
+        self.assertTrue(len(part2) != 0)
 
 if __name__ == '__main__':
     unittest.main()

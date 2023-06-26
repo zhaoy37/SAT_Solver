@@ -13,7 +13,9 @@ import unittest
 graph = {
     "y1": ["y2", "y3"],
     "y2": ["y4"],
-    "y4": ["y5"]
+    "y4": ["y5"],
+    "y3": ["y1"],
+    "y5": ["y4"]
 }
 
 # The graph looks like this:
@@ -22,7 +24,7 @@ y1 ---- y2----y4----y5
 |-------y3
 """
 
-class GraphColoringTest(unittest.TestCase):
+class IndependentSetTest(unittest.TestCase):
 
     """
     Users are encouraged to try out these tests and customize their own tests
@@ -44,9 +46,15 @@ class GraphColoringTest(unittest.TestCase):
 
     def test_graph_max(self):
         solution = find_maximum_independent_set(graph)
-        self.assertTrue(len(solution) == 2)
-        self.assertTrue(solution[1] not in graph[solution[0]])
+        print(solution)
+        self.assertTrue(len(solution) == 3)
         self.assertTrue(solution[0] not in graph[solution[1]])
+        self.assertTrue(solution[0] not in graph[solution[2]])
+        self.assertTrue(solution[1] not in graph[solution[0]])
+        self.assertTrue(solution[1] not in graph[solution[2]])
+        self.assertTrue(solution[2] not in graph[solution[0]])
+        self.assertTrue(solution[2] not in graph[solution[1]])
+
 
     def test_graph_UNSAT(self):
         solution = solve_independent_set(graph, 5)
