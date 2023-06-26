@@ -5,16 +5,18 @@ In this file, I evaluate and compare the SMT solver kernels.
 """
 
 from resources.smt_clause_generator import *
-from SMT_Solver.smt import solve_SMT, realize
+from SMT_Solver.smt import solve_SMT
+from resources.calculator import calculate
 import time
+
 
 def verify_solution(solution, sat_formula, smt_formula):
     sat_valuations = dict()
     for sat_atom in smt_formula:
         formula = smt_formula[sat_atom]
         try:
-            var1 = realize(formula[1], solution)
-            var2 = realize(formula[2], solution)
+            var1 = calculate(formula[1], solution)
+            var2 = calculate(formula[2], solution)
         except ZeroDivisionError:
             sat_valuations[sat_atom] = False
             continue
@@ -79,7 +81,6 @@ def perform_smt_evaluation(num_clauses, num_sat_variables, num_smt_variables, de
     all_solutions = []
     for kernel in ["backtracking", "minconflicts"]:
         all_solutions.append(evaluate_smt_kernel(kernel, random_smt_logics))
-        print()
     # Now, perform cross_check for UNSAT.
     print("Check Accuracy for UNSAT solutions:")
     UNSAT_correctness_flag = True

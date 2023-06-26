@@ -8,6 +8,7 @@ This program solves SMT (integer signature) using a build DPLL SAT Solver.
 from dpll.logic_tree import Logic
 from dpll.solver import solve
 from bdd.robdd_solver import solve as robdd_solve
+from resources.calculator import calculate
 import random
 
 
@@ -18,43 +19,6 @@ def check_int(s):
     return s.isdigit()
 
 
-def realize(variable, assignment):
-    if isinstance(variable, int):
-        return variable
-    elif isinstance(variable, str):
-        if variable[0] == 'x':
-            raise Exception("SMT variables cannot start with x.")
-
-    variable_list = variable.split()
-    if len(variable_list) == 1:
-        if check_int(variable):
-            return int(variable)
-        else:
-            return assignment[variable]
-    else:
-        # Allow +, -, *, //
-        operator = variable_list[1]
-
-        if check_int(variable_list[0]):
-            var1 = int(variable_list[0])
-        else:
-            var1 = assignment[variable_list[0]]
-
-        if check_int(variable_list[2]):
-            var2 = int(variable_list[2])
-        else:
-            var2 = assignment[variable_list[2]]
-
-        if operator == "+":
-            return (var1 + var2)
-        elif operator == "-":
-            return (var1 - var2)
-        elif operator == "*":
-            return (var1 * var2)
-        else:
-            return (var1 // var2)
-
-
 def find_num_conflicts(converted, assignment):
     # Calculate the total number of conflicts instead of the conflicts caused
     # by the variable of interest (The argmin should be equivalent).
@@ -63,8 +27,8 @@ def find_num_conflicts(converted, assignment):
         conflict_flag = False
         # Realize the variables.
         try:
-            var1 = realize(formula[1], assignment)
-            var2 = realize(formula[2], assignment)
+            var1 = calculate(formula[1], assignment)
+            var2 = calculate(formula[2], assignment)
         except ZeroDivisionError:
             num_conflicts += 1
             continue
@@ -99,8 +63,8 @@ def find_conflicted_variables(converted, assignment):
     for formula in converted:
         conflict_flag = False
         try:
-            var1 = realize(formula[1], assignment)
-            var2 = realize(formula[2], assignment)
+            var1 = calculate(formula[1], assignment)
+            var2 = calculate(formula[2], assignment)
         except ZeroDivisionError:
             vars_of_interest = []
             if type(formula[1]) == str:
@@ -154,8 +118,8 @@ def evaluate_assignment(converted, assignment):
     for formula in converted:
         # Realize the variables.
         try:
-            var1 = realize(formula[1], assignment)
-            var2 = realize(formula[2], assignment)
+            var1 = calculate(formula[1], assignment)
+            var2 = calculate(formula[2], assignment)
         except ZeroDivisionError:
             return False
 
@@ -205,7 +169,7 @@ def solve_SMT_kernel(converted, smt_vars, lowerbound, upperbound, cur_assignment
 
 # This is the kernel for solving SMT using min-conflicts from Constraint Satisfaction Problem.
 # This algorithm can result in UNSAT even there exists a solution if the argument max_steps is too small.
-def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, max_steps = 99999):
+def solve_SMT_minconflicts_kernel(converted, smt_vars, lowerbound, upperbound, max_steps = 100):
     # Initially, randomly assign values to smt_vars.
     cur_assignment = dict()
     for var in smt_vars:
@@ -306,6 +270,6 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
 
 if __name__ == "__main__":
     #{'y1': 2, 'y0': 1}
-    solution1 = solve_SMT(['and', 'x0', 'x1'], {'x0': ['gt', 'y1', '5'], 'x1': ['eq', 'y1 + -10', '0']}, ['y2', 'y1'], -10, 10, method = "backtracking")
+    solution1 = solve_SMT(["and", "x1", "x2"], {"x1": ["nq", "y1 - y2", "y1 + y2"], "x2": ["eq", "y2 + y1", "y1"]},
+                              ["y1", "y2"], 0, 10)
     print("Solution:", solution1)
-
