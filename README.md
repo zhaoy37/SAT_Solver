@@ -13,7 +13,7 @@ Imagine that you are provided with a boolean formula P and asked to determine if
 
 The implication of SAT solving is theoretically supported by the *Cook-Levin Theorem*, which states that Boolean SAT is NP-complete. Equivalently, any problem in NP can be reduced in polynomial time by a deterministic Turing Machine to a SAT problem. Therefore, many classical NP-complete problems in algorithms, such as graph coloring and sudoku, can be encoded into a SAT Problem representation and solved via a SAT solver. However, for abstraction purposes, such problems can be better represented using SMT.
 
-The SMT problem is similar to the SAT Problem with the exception that the formulas are many-sorted. In our project, we only consider the SMT problem over integer predicates with no support for arithmetic operators that are not in the set of ${=, \le, \ge, \lt, \gt, \neq, +, -, *, \\\\}$, because this representation scheme is all we need to solve the problems in the /problems folder. However, such scheme can be easily expanded to a broader set of operators and predicate domains.
+The SMT problem is similar to the SAT Problem with the exception that the formulas are many-sorted. In our project, we only consider the SMT problem over integer predicates with no support for arithmetic operators that are not in the set of ${=, \le, \ge, \lt, \gt, \neq, +, -, *, //}$, because this representation scheme is all we need to solve the problems in the /problems folder. However, such scheme can be easily expanded to a broader set of operators and predicate domains.
 
 For more details on how to use the SMT solver we create, including how to provide SMT encodings to the solver, please refer to the Theory section. In a nutshell, in our SMT solver, we encode SMT problems as SAT problem representation with each SAT variable represents one SMT clause, and we solve the corresponding SAT problem and use recursive backtracking (or minconflicts) to find the SMT assignments that fits a solution to the SAT problem.
 
@@ -78,9 +78,11 @@ To use our solver, call the function `solve_SMT` from `/SMT_Solver/smt.py`. Curr
 
 2. Setting `method` to "robdd" envokes the naive backtracking approach with a ROBDD SAT Solver.
 
-3. Setting `method` to "minconflicts" (which is the default) envokes the min-conflicts solver from the common min-conflicts algorithm from the Constraint Satisfaction Problem (CSP). The SAT solving approach is DPLL. Please note that this kernel can result in UNSAT even if there exists a solution if the number of termination steps is not sufficiently large (which may result in inability to find a solution if SAT). However, this kernel is often faster than the naive backtracking approach if the problem is solvable.
+3. Setting `method` to "minconflicts" (which is the default) envokes the min-conflicts solver from the common min-conflicts algorithm from the Constraint Satisfaction Problem (CSP). The SAT solving approach is DPLL. Please note that this kernel can result in UNSAT even if there exists a solution if the number of termination steps is not sufficiently large (which may result in inability to find a solution if SAT). However, this kernel can be faster in solving certain problems than the naive backtracking approach if the problem is solvable.
 
-The function accepts `solve_SMT` 5 required parameters (emphasized in bold below): 
+We also offer an interface where the solvers can solve the SMT problems in natural language (standard representations) given by the users. The users can call the solver via `main.py`.
+
+The function `solve_SMT` accepts 5 required parameters (emphasized in bold below): 
 
 #### sat_formula: 
 The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
@@ -94,34 +96,22 @@ Semantically, each `<atom>` maps to one SMT clause (True and False are not used 
 #### encodings:
 The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula permits the following BNF:
 
-`<smt_formula> := [<operator>, <atom1>, <atom2>]`
+`<smt_formula> := [<operator>, <expression>, <expression>]`
  
 `<operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"`
 
-`<atom1> := <var> | <constant>`
+`<expression> := {any integer or string with mathematical expressions with allowed operators without using r'x[0-9]*' or 'rX[0-9]*'}`
 
-`<atom2> := <var> |<constant>`
-
-`<var> := {any string that does not start with 'x'} | <expression>`
-
-`<expression> = "<subvar> <arith> <subvar>"`
-
-`<arith> := {+, -, *, //}`
-
-`<subvar> := {any literal or integer}`
-
-`<constant> := {any integer}`
-
-Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <atom1>, <atom2>]` represents `<atom1> <operator> <atom2>`. For example, ["le", "y1", 2] means y1 < 2. Moreover, the expression "<subvar> <arith> <subvar>" can be taken literally. For example, "y1 + y2" is y1 + y2; "y1 + 3" is y1 + 3.
+Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <expression1>, <expression2>]` represents `<expression1> <operator> <expression2>`. For example, ["lt", "y1", 2] means y1 < 2.
 
 #### smt_vars:
 This is the list of all the variables used in the SMT encoding.
 
 #### lowerbound:
-The lower bound of `<constant>`used in the SMT encoding. Semantically, this is the upper bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
+The lower bound of `<constant>`used in the SMT encoding. Semantically, this is the lower bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
 
 #### upperbound:
-The upper bound of `<constant>`used in the SMT encoding. Semantically, this is the lower bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
+The upper bound of `<constant>`used in the SMT encoding. Semantically, this is the upper bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
 
 
 As an example, to solve $(y1 \le 2) \wedge (y2 = 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
@@ -136,11 +126,9 @@ Lastly, the algorithm calls on the kernel for SMT solving.
 
 When calling the kernel "robdd" or "backtracking", the solver uses recursive backtracking to search through the search space of possible assignments, the space of the close intervals from the preselected lowerbound to the upperbound for each SMT variable. In the aforementioned example execution, the algorithm will try the sequence of assignnments {"y1" : 0, "y2" : 0}, {"y1" : 0, "y2" : 1} ... until  {"x1": True, "x2": True} is the mapping`{"x1" : ["le", "y1", 2], "x2" : ["lt", "y2", 1]} -> {"x1": True, "x2": True}` is satisfied. The solver concludes unsatisfiability when the search space runs out for all possible solutions to the SAT encoding.
 
-When calling the kernel "minconflicts", the solver uses the min-conflicts algorithm commonly used for solving Constraint Satisfaction Problem. The algorithm first randomly initializes the values (given the bounds) for the set of all SMT variables. While the assignment does not satisfy the formula, the algorithm randomly pick a variable from all the set of SMT variables that result in conflict(s), and find the value that best reduces the conflicts associated with that variable to update the assignment (the value found is equivalent to the value that best reduces the conflicts in the existing state of the assignment). The algorithm terminates when an assignment is found to satisfy the SMT formula or when the maximum number of iteration steps is achieved. Please note that "UNSAT" may be found even if there exists a solution if the maximum iteration steps is not sufficiently large. However, this approach is generally faster than the naive backtracking approach given that a solution exists for the SMT problem.
+When calling the kernel "minconflicts", the solver uses the min-conflicts algorithm commonly used for solving Constraint Satisfaction Problem. The algorithm first randomly initializes the values (given the bounds) for the set of all SMT variables. While the assignment does not satisfy the formula, the algorithm randomly pick a variable from all the set of SMT variables that result in conflict(s), and find the value that best reduces the conflicts associated with that variable to update the assignment (the value found is equivalent to the value that best reduces the conflicts in the existing state of the assignment). The algorithm terminates when an assignment is found to satisfy the SMT formula or when the maximum number of iteration steps is achieved. Please note that "UNSAT" may be found even if there exists a solution if the maximum iteration steps is not sufficiently large. However, this approach can be faster than the naive backtracking approach when applied to some of our NP-complete problem solver(s) such as the N-queens problem solver.
 
 One algorithm, which we want to focus on in the future, that solves a broader set of SMT signatures and possibly with a lower time complexity is DPLL(T), which is the SMT variant of DPLL for SAT Problems. Users are encouraged to replace our SMT solver with other alternatives.
-
-One other essential technique is that although operators {+, -, *, //} connect between only two variables, the users can easily modify the representation for more complicated integer formulas by introducing some temporary variables. For instance, if the user wants to find the solution of `y1 + y2 + y3 = 10` with `0 <= y1, y2, y3 <= 10`, they can call: `solve_SMT(["and", "x1", "x2"],{"x1": ["eq", "y1 + y2", "y4"], "x2": ["eq", "y4 + y3", 10]},["y1", "y2", "y3", "y4"], 0, 10)`.
 
 ### Theory of SAT Solving: DPLL
 In this section, we discuss the theory of DPLL and how to use the DPLL solver we create. The Davis-Putnam-Logemann-Loveland algorithm (DPLL) is a widely used algorithm in SAT solving. Its basic idea is recursive backtracking search of atom values that meet the satisfiability with some special heuristics. For the rest of this section, we describe how we structure our DPLL SAT solver to implement the search algorithm and the special heuristics.
@@ -192,7 +180,7 @@ We encourage users to refer to our paper for more theoretical discussions on BDT
 To test out the programs, please run the files in the /tests sub-directory. The users are encouraged to create more tests on their own to facilitate the familiarity with the framework. If you notice any issues when testing, please contact yiqi.zhao@vanderbilt.edu. For details on comparing different solvers and more details on the theories, please refer to the report attached with this repository.
 
 ## Important notes
-1. If the generator takes forever to generate logics, it is possible that the number of depths is too small comparing to the number of variables, leading to impossible generation of SAT formula(s) that meet the requirement.
+1. If the SAT logic generator takes forever to generate logics, it is possible that the number of depths is too small comparing to the number of variables, leading to impossible generation of SAT formula(s) that meet the requirement.
 
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we used some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.
