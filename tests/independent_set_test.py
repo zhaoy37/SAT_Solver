@@ -46,7 +46,6 @@ class IndependentSetTest(unittest.TestCase):
 
     def test_graph_max(self):
         solution = find_maximum_independent_set(graph)
-        print(solution)
         self.assertTrue(len(solution) == 3)
         self.assertTrue(solution[0] not in graph[solution[1]])
         self.assertTrue(solution[0] not in graph[solution[2]])

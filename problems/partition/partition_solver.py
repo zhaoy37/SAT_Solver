@@ -7,7 +7,7 @@ the Partition Problem.
 
 from SMT_Solver.smt import *
 
-def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'backtracking'):
+def solve_partition(target_list, method = 'backtracking'):
 
     if len(target_list) == 0:
         return "UNSAT"
@@ -19,16 +19,10 @@ def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'ba
     # Dictate the range of each variable and generate the temporary variables.
     index = 0
     list_vars = dict()
-    for i in range(len(target_list)):
-        smt_encoding["x" + str(index)] = ["ge", f"y{i}", 0]
-        index += 1
-        smt_encoding["x" + str(index)] = ["le", f"y{i}", 1]
-        index += 1
-        smt_variables.add(f"y{i}")
-        list_vars[f"y{i}"] = i
-
     summation = ""
     for i in range(len(target_list)):
+        smt_variables.add(f"y{i}")
+        list_vars[f"y{i}"] = i
         if i == len(target_list) - 1:
             summation += (f"y{i} * {target_list[i]}")
         else:
@@ -59,7 +53,7 @@ def solve_partition(target_list, lower_bound = 0, upper_bound = 10, method = 'ba
             else:
                 sat_encoding = ["and", sat_node, sat_encoding]
     
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = method)
+    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, 0, 1, method = method)
 
     if solution == "UNSAT":
         return solution

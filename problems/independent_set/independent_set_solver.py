@@ -19,23 +19,15 @@ def solve_independent_set(graph, target_cardinality, method='backtracking'):
     index = 0
     for node in graph:
         connections = graph[node]
+        smt_variables.add(node)
         for connected_node in connections:
             smt_encoding["x" + str(index)] = ["lt", node + " + " + connected_node, 2]
-            smt_variables.add(node)
             smt_variables.add(connected_node)
             index += 1
 
     graph_nodes = list(graph.keys())
     if len(graph_nodes) == 0:
         raise Exception("Number of nodes in the graph cannot be 0.")
-
-    # Set the bounds.
-    for node in graph_nodes:
-        smt_encoding["x" + str(index)] = ["le", node, 1]
-        index += 1
-        smt_encoding["x" + str(index)] = ["ge", node, 0]
-        index += 1
-        smt_variables.add(node)
 
     # Assert that the sum is equal to target_cardinality.
     summation = ""
@@ -44,7 +36,6 @@ def solve_independent_set(graph, target_cardinality, method='backtracking'):
             summation += graph_nodes[i]
         else:
             summation += (graph_nodes[i] + " + ")
-        smt_variables.add(graph_nodes[i])
     smt_encoding[summation] = ["eq", summation, target_cardinality]
     smt_variables = list(smt_variables)
 
@@ -58,11 +49,8 @@ def solve_independent_set(graph, target_cardinality, method='backtracking'):
                 sat_encoding = sat_node
             else:
                 sat_encoding = ["and", sat_node, sat_encoding]
-    # Find the lower and upper bound.
-    lower_bound = 0
-    upper_bound = target_cardinality
 
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = method)
+    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, 0, 1, method = method)
 
     if solution == "UNSAT":
         return "UNSAT"

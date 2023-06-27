@@ -44,5 +44,12 @@ class SumTest(unittest.TestCase):
     def test_case_7(self):
         self.assertRaises(Exception, solve_subset_sum, ["a", 1], 1)
 
+    def test_case_8(self):
+        solution = solve_subset_sum([2, 8, 10, 9], 18)
+        self.assertTrue(solution[0] == 0)
+        self.assertTrue(solution[1] == 1)
+        self.assertTrue(solution[2] == 1)
+        self.assertTrue(solution[3] == 0)
+
 if __name__ == '__main__':
     unittest.main()

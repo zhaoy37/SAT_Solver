@@ -57,24 +57,21 @@ def main(method='dpll'):
     print("----------Problem 2----------")
     print("Solving the N-Queens problem: Example 1 (N = 3) --> Expected: UNSAT")
     print("Solution from the solver:")
-    print(solve_n_queens(3))
+    print(solve_n_queens(3, method = "minconflicts"))
     print()
     print("Solving the N-Queens problem: Example 2 (N = 4) --> Expected: This should be solvable.")
     print("Solution from the solver:")
-    print(solve_n_queens(4))
+    print(solve_n_queens(4, method = "minconflicts"))
     print()
     print("Solving the N-Queens problem: Example 2 (N = 8) --> Expected: This should be solvable. It may take a while.")
     print("Solution from the solver:")
-    print(solve_n_queens(8))
+    print(solve_n_queens(8, method = "minconflicts"))
     print()
 
     """
     Problem 3: Subset Sum
     """
     print("----------Problem 3----------")
-    print("Solving subset sum using this solver actually takes a extremely long time.")
-    print("This is just a demonstration for educational purpose and does not scale.")
-    print()
     print("Solving the subset sum problem: [1, 2] -> 1 --> Expected: SAT")
     print(solve_subset_sum([1, 2], 1))
     print()
@@ -102,7 +99,6 @@ def main(method='dpll'):
     """
     print("----------Problem 5----------")
     print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
-    print("This may take a while.")
     print(solve_partition([1, 5, 4]))
     print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
     print(solve_partition([3, 3]))

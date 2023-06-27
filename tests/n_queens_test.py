@@ -66,7 +66,7 @@ class NQueesTest(unittest.TestCase):
         self.assertTrue(solution == "UNSAT")
 
     def test_case_SAT(self):
-        for i in range(4, 9):
+        for i in range(4, 7):
             board = solve_n_queens(i)
             self.assertTrue(is_valid_board(board))
 

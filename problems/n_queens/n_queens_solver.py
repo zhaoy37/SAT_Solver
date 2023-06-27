@@ -7,7 +7,7 @@ the N-Queens problem.
 import numpy as np
 from SMT_Solver.smt import *
 
-def solve_n_queens(num_queens, method='minconflicts'):
+def solve_n_queens(num_queens, method='backtracking'):
     # For the queens to not attack each other, they must be already in different columns.
     # The algorithm needs to find the row position of each queen in different columns.
 

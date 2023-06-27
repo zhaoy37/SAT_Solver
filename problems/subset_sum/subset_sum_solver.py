@@ -8,7 +8,7 @@ the Subset Sum Problem.
 from SMT_Solver.smt import *
 
 
-def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10, method='backtracking'):
+def solve_subset_sum(target_list, target_sum, method='backtracking'):
     for value in target_list:
         if value <= 0:
             raise Exception("List element must be positive.")
@@ -23,22 +23,14 @@ def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10,
     smt_variables = set()
     smt_encoding = dict()
 
-    # Dictate the bound on the variables.
     index = 0
     list_map = dict()
-    for i in range(len(target_list)):
-        list_var = f"y{i}"
-        # Bound the encoding of the list variables.
-        smt_encoding["x" + str(index)] = ["ge", f"{list_var}", 0]
-        index += 1
-        smt_encoding["x" + str(index)] = ["le", f"{list_var}", 1]
-        index += 1
-        smt_variables.add(list_var)
-        list_map[list_var] = i
-
     # Now, ensure that the sum of the variables is the target sum.
     summation = ""
     for i in range(len(target_list)):
+        list_var = f"y{i}"
+        list_map[list_var] = i
+        smt_variables.add(list_var)
         if i == len(target_list) - 1:
             summation += f"y{i} * {target_list[i]}"
         else:
@@ -56,8 +48,7 @@ def solve_subset_sum(target_list, target_sum, lower_bound = 0, upper_bound = 10,
                 sat_encoding = sat_node
             else:
                 sat_encoding = ["and", sat_node, sat_encoding]
-
-    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, lower_bound, upper_bound, method = method)
+    solution = solve_SMT(sat_encoding, smt_encoding, smt_variables, 0, 1, method = method)
     if solution == "UNSAT":
         return "UNSAT"
 
