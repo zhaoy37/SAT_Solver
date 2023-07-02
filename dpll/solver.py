@@ -237,7 +237,6 @@ def solve(tree, heuristic_enabled = True, multiple = False):
     # Tree Heuristic automatically enabled in this branch.
     cur_assignment = dict()
     target = tree.formula
-    # Right now, multiple only works for the naive mode. I will add multiple option for the heuristic mode later.
     if (not heuristic_enabled):
         solve_kernel_with_no_heuristic(target, variable_list, multiple, solutions)
     else:
