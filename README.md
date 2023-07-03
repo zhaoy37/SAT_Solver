@@ -85,22 +85,22 @@ We also offer an interface where the solvers can solve the SMT problems in natur
 The function `solve_SMT` accepts 5 required parameters (emphasized in bold below): 
 
 #### sat_formula: 
-The SAT encoding of the SMT clauses follows the following BNF (where r denotes that the followed string is a regular expression):
+The SAT encoding of the SMT subclauses follows the following BNF (where r denotes that the followed string is a regular expression):
 
 `<sat_formula> := <atom> | ["and", <sat_formula>, <sat_formula>] | ["or", <sat_formula>, <sat_formula>] | ["not", <sat_formula>]`
 
 `<atom> := r"x[0-9]+" | True | False`
 
-Semantically, each `<atom>` maps to one SMT clause (True and False are not used in sat_formula for SMT encoding but can be used for SAT formula representations in the next subsection in SAT solving).
+Semantically, each `<atom>` maps to one SMT subclause (True and False are not used in sat_formula for SMT encoding but can be used for SAT formula representations in the next subsection in SAT solving).
 
 #### encodings:
-The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT clause, where each SMT formula permits the following BNF:
+The SMT encoding is a dictionary mapping each atom from the SAT encoding to an SMT subclause, where each SMT formula permits the following BNF:
 
 `<smt_formula> := [<operator>, <expression>, <expression>]`
  
 `<operator> := "le" | "ge" | "eq" | "lt" | "gt" | "nq"`
 
-`<expression> := {any integer or string with mathematical expressions with allowed operators without using r'x[0-9]*' or 'rX[0-9]*'}`
+`<expression> := {any integer or string with mathematical expressions with allowed operators without using r'x[0-9]*' or r'X[0-9]*'}`
 
 Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt$, "gt" stands for $\gt$, "eq" stands for =, and "nq" stands for $\neq$. The SMT formula `[<operator>, <expression1>, <expression2>]` represents `<expression1> <operator> <expression2>`. For example, ["lt", "y1", 2] means y1 < 2.
 
@@ -108,15 +108,14 @@ Semantically, "le" stands for $\le$, "ge" stands for $\ge$, "lt" stands for $\lt
 This is the list of all the variables used in the SMT encoding.
 
 #### lowerbound:
-The lower bound of `<constant>`used in the SMT encoding. Semantically, this is the lower bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
+Semantically, this is the lower bound of the search space (the lower bound of that any SMT variable can be assigned to). If the solution is outside of the search space, we do not guarantee the correctness.
 
 #### upperbound:
-The upper bound of `<constant>`used in the SMT encoding. Semantically, this is the upper bound of the search space. If the solution is outside of the search space, we do not guarantee the correctness.
-
+Semantically, this is the upper bound of the search space (the upper bound of that any SMT variable can be assigned to). If the solution is outside of the search space, we do not guarantee the correctness.
 
 As an example, to solve $(y1 \le 2) \wedge (y2 = 3)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["le", "y1", 2], "x2": ["eq", "y2", 3]}, ["y1", "y2"], 0, 10)`.
 
-To solve $(y1 - 2 = y2) \wedge (y2 + y1 > 5)$ with the bounds $0, \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10)`.
+To solve $(y1 - 2 = y2) \wedge (y2 + y1 > 5)$ with the bounds $0 \le y1, y2 \le 10$, call the function like this: `solve_SMT(["and", "x1", "x2"], {"x1": ["eq", "y1 - 2", "y2"], "x2": ["gt", "y2 + y1", 5]}, ["y1", "y2"], 0, 10)`.
 
 Internally, the SMT solver first finds all possible solutions to the SAT encoding. Consider the example execution: `solve_SMT(["and", "x1", ["not", "x2"]], {"x1" : ["le", "y1", 2], "x2" : ["ge", "y2", 1]}, ["y1", "y2"], 0, 10)`. The SMT solver first uses dpll (default) or robdd to solve the SAT problem `["and", "x1", ["not", "x2"]]`. The only possible solution to the SAT encoding is {"x1" : True, "x2": False}.
 
