@@ -7,6 +7,8 @@ The purpose of the project is to allow interested readers to learn some classica
 
 To run the solver, please clone the github repository and run the command `python3 main.py`, which directs you to using the SAT and SMT solvers. The solvers accept different SMT kernels. If the user chooses the minconflicts kernel (or if the default is the minconflicts kernel), the algorithm **may be theoretically inconclusive** (as described in the section on the theory of solving SMT problems).
 
+We also provide an interactive tutorial, through which the user can learn about SAT and SMT solving (as well as solving some NP-complete problems) via a jupyter notebook. The user can access the tutorial at `/EduSAT_Interactive_Tutorial/Tutorial on SAT and SMT Solving.ipynb`.
+
 ## Applications
 ### Background knowledge on SAT and SMT
 Imagine that you are provided with a boolean formula P and asked to determine if P is *satisfiable*. P is satisfiabile if there exists values for each variable such that P evaluates to true. For example, the formula $P = (x1 \wedge x2) \vee x3$ is satisfiable because there exists a model {x1 = 1, x2 = 1, x3 = 0} such that the the boolean formula evaluates to true. On the contrary, $P = (x1 \wedge \neg x1)$ is not satisfiable. *Validity* means that the formula evaluates to true for all models.
