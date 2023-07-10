@@ -83,6 +83,17 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
                 correct_num += trees[i].evaluate(single_h_solutions[i])
                 total += 1
         print("Accuracy for Heuristic:", correct_num * 100 / total, "%")
+
+        print()
+        print("Cross checking the accuracy of the solutions when it comes to UNSAT:")
+        correct_num = 0
+        total = 0
+        for i in range(len(single_noh_solutions)):
+            if single_noh_solutions[i] == "UNSAT":
+                correct_num += (single_h_solutions[i] == "UNSAT")
+                total += 1
+        print("Accuracy on UNSAT of all possible solutions:", correct_num * 100 / total, "%")
+        print("-------------------------------------")
     else:
         print("Evaluating the accuracy (This only evaluates the accuracy on problems that are SAT, for a more complete version, use Z3 to prove UNSAT):")
         print("-------------------------------------")
@@ -106,7 +117,6 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
 
         print()
         print("Cross checking the completeness of solutions:")
-        print("-------------------------------------")
         correct_num = 0
         total = 0
         for i in range(len(multiple_noh_solutions)):
@@ -115,6 +125,17 @@ def perform_ablation_study(num_formula, num_variables, depth, multiple):
                 total += 1
         print("Accuracy on completeness of all possible solutions:", correct_num * 100 / total, "%")
 
+        print()
+        print("Cross checking the accuracy of the solutions when it comes to UNSAT:")
+        correct_num = 0
+        total = 0
+        for i in range(len(multiple_noh_solutions)):
+            if multiple_noh_solutions[i] == "UNSAT":
+                correct_num += (multiple_h_solutions[i] == "UNSAT")
+                total += 1
+        print("Accuracy on UNSAT of all possible solutions:", correct_num * 100 / total, "%")
+        print("-------------------------------------")
+
 
 if __name__ == "__main__":
-    perform_ablation_study(1000, 3, 5, False)
+    perform_ablation_study(1000, 3, 5, True)
