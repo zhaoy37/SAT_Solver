@@ -4,6 +4,8 @@ Author: Yiqi (Nick) Zhao.
 This file provides an example for the user to use the SMT solver created in this project in solving
 the graph coloring problem.
 """
+import sys
+sys.path.insert(0, '..')
 from SMT_Solver.smt import *
 
 

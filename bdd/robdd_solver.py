@@ -14,8 +14,8 @@ import networkx as nx
 import numpy as np
 import copy
 import timeit
-import networkx as nx
 import itertools
+import networkx as nx
 
 
 def allPaths(node):  
@@ -195,11 +195,6 @@ def solve(sat_formula, get_time=False, multiple=True):
     else:
         flatten_ls = flatten(sat_formula)
 
-    """
-    Original:
-    flatten_ls = flatten(sat_formula)
-    """
-
     variables = []
     for f in flatten_ls:
         if 'x' in f:
@@ -266,7 +261,20 @@ def solve(sat_formula, get_time=False, multiple=True):
             varb = 'x'+str(G.nodes[c[0]]['var'])
             valu = 1 if edge_labels[c] == 'high' else 0
             one_sol[varb] = valu
-        all_solutions.append(one_sol)
+        missing_var = []
+        for var in variables:
+            if 'x'+str(var) in one_sol.keys():
+                missing_var.append('x'+str(var))
+        if len(missing_var) == 0:
+            all_solutions.append(one_sol)
+        else:
+            values = [0, 1]
+            filled_sol = list(itertools.product(values, repeat=len(variables)))
+            for fs in filled_sol:
+                temp_sol = one_sol
+                for idx,m in enumerate(missing_var):
+                    temp_sol[m] = fs[idx]
+                all_solutions.append(temp_sol)
     
     if get_time:
         return all_solutions, timeit.default_timer()-start_time

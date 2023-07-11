@@ -10,9 +10,11 @@ import plotly
 import numpy as np
 import networkx as nx
 import plotly.graph_objs as go
+import matplotlib
 import matplotlib.pyplot as plt
 from bdd.robdd_graph import ROBDD_graph
 
+matplotlib.use('TKAgg')
 plt.rcParams['interactive']
 
 
@@ -60,7 +62,6 @@ def view_rodbb(g, ordering, view=True, label=False):
                 G.add_nodes_from([(node_id, {'var':v[1].var, 'color':'blue'})])
                 G.add_edge(node_id-1, node_map[v[1]])
                 edge_labels[(node_id-1, node_map[v[1]])] = 'high'
-                
 
         node_id += 1 
 
@@ -73,7 +74,7 @@ def view_rodbb(g, ordering, view=True, label=False):
                 labels[k] = 'x'+str(val)
             else:
                 labels[k] = str(val+2)
-        nx.draw(G, pos=pos, node_size=500, with_labels=True, 
+        nx.draw_networkx(G, pos=pos, node_size=500, with_labels=True, 
                 node_color=color_map, alpha=0.6, 
                 labels=labels)
         nx.draw_networkx_edge_labels(G, pos=pos, 

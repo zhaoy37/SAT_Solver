@@ -14,7 +14,7 @@ from independent_set.independent_set_solver import solve_independent_set, find_m
 from partition.partition_solver import solve_partition
 
 
-def main(method='dpll'):
+def main(method='robdd'):
     """
     Problem 1: Graph coloring.
     """
@@ -43,67 +43,68 @@ def main(method='dpll'):
 
     # First, solve the problem with only 2 colors. This should return UNSAT:
     print("Solving Graph Coloring Problem: Example 1 --> Expected: UNSAT")
-    print("Solution from our solver:", solve_graph_coloring(graph, 2))
+    print("Solution from our solver:", solve_graph_coloring(graph, 2, method=method))
     print()
 
     # Now, solve the problem with 3 colors. This is solvable.
     print("Solving Graph Coloring Problem: Example 2 --> Expected: This should be solvable.")
-    print("Solution from our solver:", solve_graph_coloring(graph, 3))
+    print("Solution from our solver:", solve_graph_coloring(graph, 3, method=method))
     print()
 
-    """
-    Problem 2: N-Queens
-    """
-    print("----------Problem 2----------")
-    print("Solving the N-Queens problem: Example 1 (N = 3) --> Expected: UNSAT")
-    print("Solution from the solver:")
-    print(solve_n_queens(3, method = "minconflicts"))
-    print()
-    print("Solving the N-Queens problem: Example 2 (N = 4) --> Expected: This should be solvable.")
-    print("Solution from the solver:")
-    print(solve_n_queens(4, method = "minconflicts"))
-    print()
-    print("Solving the N-Queens problem: Example 2 (N = 8) --> Expected: This should be solvable. It may take a while.")
-    print("Solution from the solver:")
-    print(solve_n_queens(8, method = "minconflicts"))
-    print()
+    # """
+    # Problem 2: N-Queens
+    # """
+    # print("----------Problem 2----------")
+    # print("Solving the N-Queens problem: Example 1 (N = 3) --> Expected: UNSAT")
+    # print("Solution from the solver:")
+    # print(solve_n_queens(3, method=method))
+    # print()
+    # print("Solving the N-Queens problem: Example 2 (N = 4) --> Expected: This should be solvable.")
+    # print("Solution from the solver:")
+    # print(solve_n_queens(4, method=method))
+    # print()
+    # print("Solving the N-Queens problem: Example 2 (N = 8) --> Expected: This should be solvable. It may take a while.")
+    # print("Solution from the solver:")
+    # print(solve_n_queens(8, method=method))
+    # print()
 
-    """
-    Problem 3: Subset Sum
-    """
-    print("----------Problem 3----------")
-    print("Solving the subset sum problem: [1, 2] -> 1 --> Expected: SAT")
-    print(solve_subset_sum([1, 2], 1))
-    print()
-    print("Solving the subset sum problem: [1, 2] -> 3 --> Expected: SAT")
-    print(solve_subset_sum([1, 2], 3))
-    print()
-    print("Solving the subset sum problem: [1, 2] -> 4 --> Expected: UNSAT")
-    print(solve_subset_sum([1, 2], 4))
-    print()
+    # """
+    # Problem 3: Subset Sum
+    # """
+    # print("----------Problem 3----------")
+    # print("Solving the subset sum problem: [1, 2] -> 1 --> Expected: SAT")
+    # print(solve_subset_sum([1, 2], 1, method=method))
+    # print()
+    # print("Solving the subset sum problem: [1, 2] -> 3 --> Expected: SAT")
+    # print(solve_subset_sum([1, 2], 3, method=method))
+    # print()
+    # print("Solving the subset sum problem: [1, 2] -> 4 --> Expected: UNSAT")
+    # print(solve_subset_sum([1, 2], 4, method=method))
+    # print()
 
     """
     Problem 4: Independent Set
     """
     print("----------Problem 4----------")
+    ## TODO: parser
     print("Solving independent set problem with cardinality 1 on the same graph for Problem 1. --> Expected: SAT")
-    print(solve_independent_set(graph, 1))
+    print(solve_independent_set(graph, 1, method=method))
     print("Solving independent set problem with cardinality 3 on the same graph for Problem 1. --> Expected: UNSAT")
-    print(solve_independent_set(graph, 3))
+    print(solve_independent_set(graph, 3, method=method))
     print("Finding the maximum independent set --> Expected: SAT")
-    print(find_maximum_independent_set(graph))
+    print(find_maximum_independent_set(graph, method=method))
     print()
 
     """
     Problem 5: Partition
     """
-    print("----------Problem 5----------")
-    print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
-    print(solve_partition([1, 5, 4]))
-    print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
-    print(solve_partition([3, 3]))
-    print("Solving the Partition Problem: [1, 2] --> Expected: UNSAT")
-    print(solve_partition([1, 2]))
+    # print("----------Problem 5----------")
+    # print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
+    # print(solve_partition([1, 5, 4], method=method))
+    # print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
+    # print(solve_partition([3, 3], method=method))
+    # print("Solving the Partition Problem: [1, 2] --> Expected: UNSAT")
+    # print(solve_partition([1, 2], method=method))
 
 
 if __name__ == "__main__":

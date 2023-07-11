@@ -4,7 +4,8 @@ Authors: Yiqi (Nick) Zhao, Ziyan An (for the robdd part)
 This program solves SMT (integer signature) using a build DPLL SAT Solver.
 # I used the codes from here: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
 """
-
+import sys
+sys.path.insert(0, '..')
 from dpll.logic_tree import Logic
 from dpll.solver import solve
 from bdd.robdd_solver import solve as robdd_solve
