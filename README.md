@@ -182,6 +182,7 @@ To test out the programs, please run the files in the /tests sub-directory. The 
 
 ## Important notes
 1. If the SAT logic generator takes forever to generate logics, it is possible that the number of depths is too small comparing to the number of variables, leading to impossible generation of SAT formula(s) that meet the requirement.
+2. In the natural language interface, each SMT atom must start with y. For instance a valid SMT clause is y1 + 1 = 2. On the other hand, each SAT atom must start with x. For instance a valid SAT clause is (x1 and x2).
 
 ## Acknowledgements
 Throughout the tutorial and the codes for this project, we used some materials from the lecture slides provided by Professor Taylor Johnson from CS 6315. More acknowledgements are in the comments of the codes.

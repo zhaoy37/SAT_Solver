@@ -34,14 +34,16 @@ def smt_kernel():
     converted = parse_smt(formula)
     sat_formula, smt_formula, smt_vars = converted
 
-    selected_method = input("Which SMT solver method do you want to use? 1. backtracking; 2. minconflicts. Please enter 1 or 2.")
-    while selected_method != "1" and selected_method != "2":
+    selected_method = input("Which SMT solver method do you want to use? 1. backtracking; 2. minconflicts. 3. robdd. Please enter 1 or 2 or 3.")
+    while selected_method != "1" and selected_method != "2" and selected_method != "3":
         selected_method = input("Invalid option. Please re-enter.")
 
     start_time = time.time()
     if selected_method == "1":
         solution = solve_SMT(sat_formula, smt_formula, smt_vars, lower_bound, upper_bound, method = "backtracking")
-    else:
+    elif selected_method == "2":
         solution = solve_SMT(sat_formula, smt_formula, smt_vars, lower_bound, upper_bound, method = "minconflicts")
+    else:
+        solution = solve_SMT(sat_formula, smt_formula, smt_vars, lower_bound, upper_bound, method = "robdd")
     print("---Total time to find the solution(s): %s seconds --- " % (time.time() - start_time))
     print("The solution is:", solution)

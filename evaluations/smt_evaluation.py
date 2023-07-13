@@ -76,10 +76,9 @@ def evaluate_smt_kernel(kernel_name, random_smt_logics):
 
 def perform_smt_evaluation(num_clauses, num_sat_variables, num_smt_variables, depth_sat, lower_bound, upper_bound):
     # First, generate the random smt logics.
-    #Todo: include "robdd" kernel later after I improve it.
     random_smt_logics = generate_random_SMT_clauses(num_clauses, num_sat_variables, num_smt_variables, depth_sat, lower_bound, upper_bound)
     all_solutions = []
-    for kernel in ["backtracking", "minconflicts"]:
+    for kernel in ["backtracking", "minconflicts", "robdd"]:
         all_solutions.append(evaluate_smt_kernel(kernel, random_smt_logics))
     # Now, perform cross_check for UNSAT.
     print("Check Accuracy for UNSAT solutions:")
