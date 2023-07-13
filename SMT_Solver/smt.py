@@ -227,9 +227,9 @@ def solve_SMT(sat_formula, encodings, smt_vars, lowerbound, upperbound, method =
     """
     # First, solve the sat_formula.
     tree = Logic(sat_formula)
+
     if method == "robdd":
         sat_solutions = robdd_solve(sat_formula)
-        #Todo: to be improved later.
     else:
         sat_solutions = solve(tree, multiple = True)
 

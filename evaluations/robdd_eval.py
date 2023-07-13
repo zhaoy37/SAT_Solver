@@ -4,6 +4,7 @@
 import sys
 sys.path.append('..')
 from bdd.robdd_logic_generate import *
+from resources.logic_generator import generate_one_logic
 from bdd.robdd_solver import solve
 from bdd.logic_eval import logic_eval_dict
 from resources.logic_parser import parse_logic
@@ -19,11 +20,11 @@ def perform_ablation_study(num_formula=2, num_variables=3, depth=3, multiple=Tru
     print("Generating {} random logic with {} variables, depth={}...".format(num_formula, num_variables, depth))
     
     formulae = []
-    single_logics = []
+    # single_logics = []
     for i in range(num_formula):
-        single_logic = random_logic_gen(n=num_variables, components=depth)
-        single_logics.append(single_logic)
-        parsed = parse_logic(single_logic)
+        # single_logic = random_logic_gen(n=num_variables, components=depth)
+        # single_logics.append(single_logic)
+        parsed = generate_one_logic(num_variables, depth, False)
         formulae.append(parsed)
     print("Success.")
     
@@ -89,11 +90,11 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
     print("Generating {} random logic with {} variables, depth={}...".format(num_formula, num_variables, depth))
     
     formulae = []
-    single_logics = []
+    # single_logics = []
     for i in range(num_formula):
-        single_logic = random_logic_gen(n=num_variables, components=depth)
-        single_logics.append(single_logic)
-        parsed = parse_logic(single_logic)
+        # single_logic = random_logic_gen(n=num_variables, components=depth)
+        # single_logics.append(single_logic)
+        parsed = generate_one_logic(num_variables, depth, False)
         formulae.append(parsed)
     print("Success.")
 
@@ -115,7 +116,6 @@ def cross_check(num_formula=2, num_variables=3, depth=3):
         else:
             single_solutions.append("UNSAT")
             multi_solutions.append("UNSAT")
-
 
     print("Execution time: %s seconds" % total_time)
 

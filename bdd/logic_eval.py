@@ -33,6 +33,10 @@ def eval(logic, value):
     """
     if isinstance(logic, str):
         return dict(value)[int(logic[1:])]
+        # try:
+        #     return dict(value)[int(logic[1:])]
+        # except ValueError:
+        #     pass
 
     if logic[0] == "and":       ## evaluates 'and' 
         left_val = eval(logic[1], value)

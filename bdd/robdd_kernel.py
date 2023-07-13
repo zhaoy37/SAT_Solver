@@ -13,7 +13,7 @@ from bdd.robdd_logic_generate import *
 from dpll.logic_tree import Logic
 import pprint
 import time
-
+from resources.logic_generator import generate_one_logic
 
 
 def user_prompt_generat_formulae():
@@ -26,7 +26,7 @@ def user_prompt_generat_formulae():
     while (not num_comp.isnumeric()) and (not int(num_comp)>=(num_param)):
         num_comp = input("Invalid input. Please re-enter:")
     num_comp = int(num_comp)
-    gen_logic = random_logic_gen(n=num_param, components=num_comp)
+    gen_logic = generate_one_logic(num_param, num_comp, False)
     return gen_logic, num_param, num_comp
 
 
@@ -134,7 +134,7 @@ def robdd_kernel():
     elif int(choice) == 3:
         print("Testing a randomly generated logic formula.")
         formula, num_param, _ = user_prompt_generat_formulae()
-        logic = parse_logic(formula)
+        logic = formula
         print("Generated logic formula:", formula)
 
         print("Please enter the ordering of parameters.")

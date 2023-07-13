@@ -51,18 +51,18 @@ def main(method='robdd'):
     print("Solution from our solver:", solve_graph_coloring(graph, 3, method=method))
     print()
 
-    # """
-    # Problem 2: N-Queens
-    # """
-    # print("----------Problem 2----------")
-    # print("Solving the N-Queens problem: Example 1 (N = 3) --> Expected: UNSAT")
-    # print("Solution from the solver:")
-    # print(solve_n_queens(3, method=method))
-    # print()
-    # print("Solving the N-Queens problem: Example 2 (N = 4) --> Expected: This should be solvable.")
-    # print("Solution from the solver:")
-    # print(solve_n_queens(4, method=method))
-    # print()
+    """
+    Problem 2: N-Queens
+    """
+    print("----------Problem 2----------")
+    print("Solving the N-Queens problem: Example 1 (N = 3) --> Expected: UNSAT")
+    print("Solution from the solver:")
+    print(solve_n_queens(3, method=method))
+    print()
+    print("Solving the N-Queens problem: Example 2 (N = 4) --> Expected: This should be solvable.")
+    print("Solution from the solver:")
+    print(solve_n_queens(4, method=method))
+    print()
     # print("Solving the N-Queens problem: Example 2 (N = 8) --> Expected: This should be solvable. It may take a while.")
     # print("Solution from the solver:")
     # print(solve_n_queens(8, method=method))
@@ -71,22 +71,21 @@ def main(method='robdd'):
     # """
     # Problem 3: Subset Sum
     # """
-    # print("----------Problem 3----------")
-    # print("Solving the subset sum problem: [1, 2] -> 1 --> Expected: SAT")
-    # print(solve_subset_sum([1, 2], 1, method=method))
-    # print()
-    # print("Solving the subset sum problem: [1, 2] -> 3 --> Expected: SAT")
-    # print(solve_subset_sum([1, 2], 3, method=method))
-    # print()
-    # print("Solving the subset sum problem: [1, 2] -> 4 --> Expected: UNSAT")
-    # print(solve_subset_sum([1, 2], 4, method=method))
-    # print()
+    print("----------Problem 3----------")
+    print("Solving the subset sum problem: [1, 2] -> 1 --> Expected: SAT")
+    print(solve_subset_sum([1, 2], 1, method=method))
+    print()
+    print("Solving the subset sum problem: [1, 2] -> 3 --> Expected: SAT")
+    print(solve_subset_sum([1, 2], 3, method=method))
+    print()
+    print("Solving the subset sum problem: [1, 2] -> 4 --> Expected: UNSAT")
+    print(solve_subset_sum([1, 2], 4, method=method))
+    print()
 
     """
     Problem 4: Independent Set
     """
     print("----------Problem 4----------")
-    ## TODO: parser
     print("Solving independent set problem with cardinality 1 on the same graph for Problem 1. --> Expected: SAT")
     print(solve_independent_set(graph, 1, method=method))
     print("Solving independent set problem with cardinality 3 on the same graph for Problem 1. --> Expected: UNSAT")
@@ -98,13 +97,13 @@ def main(method='robdd'):
     """
     Problem 5: Partition
     """
-    # print("----------Problem 5----------")
-    # print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
-    # print(solve_partition([1, 5, 4], method=method))
-    # print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
-    # print(solve_partition([3, 3], method=method))
-    # print("Solving the Partition Problem: [1, 2] --> Expected: UNSAT")
-    # print(solve_partition([1, 2], method=method))
+    print("----------Problem 5----------")
+    print("Solving the Partition Problem: [1, 5, 4] --> Expected: SAT")
+    print(solve_partition([1, 5, 4], method=method))
+    print("Solving the Partition Problem: [3, 3] --> Expected: SAT")
+    print(solve_partition([3, 3], method=method))
+    print("Solving the Partition Problem: [1, 2] --> Expected: UNSAT")
+    print(solve_partition([1, 2], method=method))
 
 
 if __name__ == "__main__":

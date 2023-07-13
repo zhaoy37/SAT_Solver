@@ -10,6 +10,7 @@ from bdd.rodbb_visualization import view_rodbb
 from resources.logic_parser import parse_logic
 import matplotlib.pyplot as plt
 from bdd.logic_eval import eval
+from resources.calculator import calculate
 import networkx as nx
 import numpy as np
 import copy
@@ -184,11 +185,49 @@ def flatten(lst):
 
 
 
+def replace_val(sat_formula, convertion):
+    if type(sat_formula) == str:
+        try:
+            return convertion[sat_formula]
+        except KeyError:
+            return sat_formula
+    else:
+        for i in range(len(sat_formula)):
+            sat_formula[i] = replace_val(sat_formula[i], convertion)
+        return sat_formula
+
+
+
+def check_sat_formula_format(sat_formula):
+    if type(sat_formula) == str:
+        flatten_ls = [sat_formula]
+    else:
+        flatten_ls = flatten(sat_formula)
+
+    counter = 0
+    for lt in flatten_ls:
+        if 'x' in lt:
+            counter = max(counter, int(lt[1:]))
+    counter += 1
+    convertion = {}
+    reversed_conv = {}
+    for lt in flatten_ls:
+        if 'x' not in lt and lt not in ['and', 'or', 'not']:
+            convertion[lt] = 'x' + str(counter)
+            reversed_conv['x' + str(counter)] = lt
+            counter += 1
+    
+    if len(convertion) != 0:
+        sat_formula = replace_val(sat_formula, convertion)
+    return sat_formula, convertion, reversed_conv
+
+
 def solve(sat_formula, get_time=False, multiple=True):
     """
-    The input is a parsed logic formula...
+    The input is a parsed logic formula.
     """
     logic = sat_formula
+    sat_formula, convertion, reversed_conv = check_sat_formula_format(sat_formula)
 
     if type(sat_formula) == str:
         flatten_ls = [sat_formula]
@@ -276,6 +315,14 @@ def solve(sat_formula, get_time=False, multiple=True):
                     temp_sol[m] = fs[idx]
                 all_solutions.append(temp_sol)
     
+    for sol in all_solutions:
+        for k, v in reversed_conv.items():
+            try:
+                ans_val = sol[k]
+                sol[v] = ans_val
+            except:
+                pass
+
     if get_time:
         return all_solutions, timeit.default_timer()-start_time
     return all_solutions
