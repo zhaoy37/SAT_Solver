@@ -9,7 +9,6 @@ from resources.logic_parser import parse_logic
 from bdd.rodbb_visualization import view_rodbb
 from bdd.robdd_graph import ROBDD_graph
 from bdd.robdd_solver import *
-from bdd.robdd_logic_generate import *
 from dpll.logic_tree import Logic
 import pprint
 import time

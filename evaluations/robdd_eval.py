@@ -3,7 +3,6 @@
 """
 import sys
 sys.path.append('..')
-from bdd.robdd_logic_generate import *
 from resources.logic_generator import generate_one_logic
 from bdd.robdd_solver import solve
 from bdd.logic_eval import logic_eval_dict
