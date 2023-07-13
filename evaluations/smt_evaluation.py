@@ -3,7 +3,8 @@ Author(s): Yiqi (Nick) Zhao
 
 In this file, I evaluate and compare the SMT solver kernels.
 """
-
+import sys
+sys.path.insert(0, '..')
 from resources.smt_clause_generator import *
 from SMT_Solver.smt import solve_SMT
 from resources.calculator import calculate

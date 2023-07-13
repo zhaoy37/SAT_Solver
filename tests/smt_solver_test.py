@@ -6,8 +6,9 @@ This file tests the SMT solver.
 # I used the tutorial here: https://github.com/cgoldberg/python-unittest-tutorial
 """
 
+import sys
+sys.path.insert(0, '..')
 from SMT_Solver.smt import solve_SMT
-
 import unittest
 
 class SMTTest(unittest.TestCase):

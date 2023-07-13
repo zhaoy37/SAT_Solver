@@ -262,6 +262,14 @@ def solve(sat_formula, get_time=False, multiple=True):
         for node in G.nodes():
             if G.nodes[node]['var'] == min(all_node_attr):
                 source_node = node
+
+    # print("target_node", target_node)
+    # print("source_node", source_node)
+    # for node, attributes in G.nodes.data():
+    #     print("Node:", node)
+    #     for attr, value in attributes.items():
+    #         print(f"{attr}: {value}")
+    #     print()
     
     if not target_node and not source_node:
         if get_time:
@@ -269,7 +277,6 @@ def solve(sat_formula, get_time=False, multiple=True):
         return "UNSAT"
 
     paths_to_t = []
-    
     if not multiple:
         try:
             path = nx.shortest_path(G, source_node, target_node)
@@ -290,7 +297,6 @@ def solve(sat_formula, get_time=False, multiple=True):
             if get_time:
                 return "UNSAT", timeit.default_timer()-start_time
             return "UNSAT"
-    
 
     all_solutions = []
     for sol in paths_to_t:
@@ -300,10 +306,12 @@ def solve(sat_formula, get_time=False, multiple=True):
             varb = 'x'+str(G.nodes[c[0]]['var'])
             valu = 1 if edge_labels[c] == 'high' else 0
             one_sol[varb] = valu
+        
         missing_var = []
         for var in variables:
-            if 'x'+str(var) in one_sol.keys():
+            if 'x'+str(var) not in one_sol.keys():
                 missing_var.append('x'+str(var))
+        
         if len(missing_var) == 0:
             all_solutions.append(one_sol)
         else:
