@@ -162,35 +162,35 @@ if __name__ == "__main__":
     cross_check(1000)
 
     ## testing on more logic components 
-    perform_ablation_study(10, 5, 5, False)
-    perform_ablation_study(10, 5, 5, True)
-    cross_check(10, 5, 5)
+    # perform_ablation_study(10, 5, 5, False)
+    # perform_ablation_study(10, 5, 5, True)
+    # cross_check(10, 5, 5)
 
-    perform_ablation_study(10, 5, 5, False)
-    perform_ablation_study(10, 5, 5, True)
-    cross_check(10, 5, 5)
+    # perform_ablation_study(10, 5, 5, False)
+    # perform_ablation_study(10, 5, 5, True)
+    # cross_check(10, 5, 5)
 
-    perform_ablation_study(10, 5, 6, False)
-    perform_ablation_study(10, 5, 6, True)
-    cross_check(10, 5, 6)
+    # perform_ablation_study(10, 5, 6, False)
+    # perform_ablation_study(10, 5, 6, True)
+    # cross_check(10, 5, 6)
 
-    perform_ablation_study(10, 5, 7, False)
-    perform_ablation_study(10, 5, 7, True)
-    cross_check(10, 5, 7)
+    # perform_ablation_study(10, 5, 7, False)
+    # perform_ablation_study(10, 5, 7, True)
+    # cross_check(10, 5, 7)
 
-    ## testing on more variables
-    perform_ablation_study(10, 2, 1, False)
-    perform_ablation_study(10, 2, 1, True)
-    cross_check(10, 2, 1)
+    # ## testing on more variables
+    # perform_ablation_study(10, 2, 1, False)
+    # perform_ablation_study(10, 2, 1, True)
+    # cross_check(10, 2, 1)
 
-    perform_ablation_study(10, 3, 3, False)
-    perform_ablation_study(10, 3, 3, True)
-    cross_check(10, 3, 3)
+    # perform_ablation_study(10, 3, 3, False)
+    # perform_ablation_study(10, 3, 3, True)
+    # cross_check(10, 3, 3)
 
-    perform_ablation_study(10, 5, 7, False)
-    perform_ablation_study(10, 5, 7, True)
-    cross_check(10, 5, 7)
+    # perform_ablation_study(10, 5, 7, False)
+    # perform_ablation_study(10, 5, 7, True)
+    # cross_check(10, 5, 7)
 
-    perform_ablation_study(10, 7, 6, False)
-    perform_ablation_study(10, 7, 6, True)
-    cross_check(10, 7, 6)
+    # perform_ablation_study(10, 7, 6, False)
+    # perform_ablation_study(10, 7, 6, True)
+    # cross_check(10, 7, 6)
