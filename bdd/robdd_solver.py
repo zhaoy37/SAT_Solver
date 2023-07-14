@@ -4,7 +4,8 @@ References:
 
 Implementation for the main OBDD, ROBDD solver.
 """
-
+import sys
+sys.path.append('..')
 from bdd.robdd_graph import OBDD_node, ROBDDNode, ROBDD_graph
 from bdd.rodbb_visualization import view_rodbb
 from resources.logic_parser import parse_logic
@@ -239,6 +240,7 @@ def solve(sat_formula, get_time=False, multiple=True):
         if 'x' in f:
             variables.append(int(f[1:]))
     ordering = [i for i in range(max(variables)+1)]
+    variables = [*set(variables)]
     
     obdd = construct_obdd(ordering, logic, vis=False)
     start_time = timeit.default_timer()
