@@ -24,7 +24,7 @@ To use the smt solver, in your python file, use the command `from edusat.smt_sol
 
 To give a concrete example, `smt_solve("y1 < y2 + 1 and y2 > 3", 0, 10)` can be `{'y2': 4, 'y1': 0}`.
 
-## from problems_solver import *
+### from problems_solver import *
 
 To use any of the solvers described in Section Applications, you can use the command `from edusat.problems_solver import *`.
 
