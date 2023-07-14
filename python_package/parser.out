@@ -1,0 +1,362 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> formula
+Rule 1     formula -> exp
+Rule 2     formula -> MINUS formula
+Rule 3     formula -> formula TIMES formula
+Rule 4     formula -> formula PLUS formula
+Rule 5     formula -> formula MINUS formula
+Rule 6     formula -> formula DIV formula
+Rule 7     formula -> LPAREN formula RPAREN
+Rule 8     exp -> NUM
+Rule 9     exp -> LITERAL
+
+Terminals, with rules where they appear
+
+DIV                  : 6
+LITERAL              : 9
+LPAREN               : 7
+MINUS                : 2 5
+NUM                  : 8
+PLUS                 : 4
+RPAREN               : 7
+TIMES                : 3
+error                : 
+
+Nonterminals, with rules where they appear
+
+exp                  : 1
+formula              : 2 3 3 4 4 5 5 6 6 7 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 1
+    exp                            shift and go to state 2
+
+state 1
+
+    (0) S' -> formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    TIMES           shift and go to state 7
+    PLUS            shift and go to state 8
+    MINUS           shift and go to state 9
+    DIV             shift and go to state 10
+
+
+state 2
+
+    (1) formula -> exp .
+
+    TIMES           reduce using rule 1 (formula -> exp .)
+    PLUS            reduce using rule 1 (formula -> exp .)
+    MINUS           reduce using rule 1 (formula -> exp .)
+    DIV             reduce using rule 1 (formula -> exp .)
+    $end            reduce using rule 1 (formula -> exp .)
+    RPAREN          reduce using rule 1 (formula -> exp .)
+
+
+state 3
+
+    (2) formula -> MINUS . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 11
+    exp                            shift and go to state 2
+
+state 4
+
+    (7) formula -> LPAREN . formula RPAREN
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 12
+    exp                            shift and go to state 2
+
+state 5
+
+    (8) exp -> NUM .
+
+    TIMES           reduce using rule 8 (exp -> NUM .)
+    PLUS            reduce using rule 8 (exp -> NUM .)
+    MINUS           reduce using rule 8 (exp -> NUM .)
+    DIV             reduce using rule 8 (exp -> NUM .)
+    $end            reduce using rule 8 (exp -> NUM .)
+    RPAREN          reduce using rule 8 (exp -> NUM .)
+
+
+state 6
+
+    (9) exp -> LITERAL .
+
+    TIMES           reduce using rule 9 (exp -> LITERAL .)
+    PLUS            reduce using rule 9 (exp -> LITERAL .)
+    MINUS           reduce using rule 9 (exp -> LITERAL .)
+    DIV             reduce using rule 9 (exp -> LITERAL .)
+    $end            reduce using rule 9 (exp -> LITERAL .)
+    RPAREN          reduce using rule 9 (exp -> LITERAL .)
+
+
+state 7
+
+    (3) formula -> formula TIMES . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 13
+    exp                            shift and go to state 2
+
+state 8
+
+    (4) formula -> formula PLUS . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 14
+    exp                            shift and go to state 2
+
+state 9
+
+    (5) formula -> formula MINUS . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 15
+    exp                            shift and go to state 2
+
+state 10
+
+    (6) formula -> formula DIV . formula
+    (1) formula -> . exp
+    (2) formula -> . MINUS formula
+    (3) formula -> . formula TIMES formula
+    (4) formula -> . formula PLUS formula
+    (5) formula -> . formula MINUS formula
+    (6) formula -> . formula DIV formula
+    (7) formula -> . LPAREN formula RPAREN
+    (8) exp -> . NUM
+    (9) exp -> . LITERAL
+
+    MINUS           shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUM             shift and go to state 5
+    LITERAL         shift and go to state 6
+
+    formula                        shift and go to state 16
+    exp                            shift and go to state 2
+
+state 11
+
+    (2) formula -> MINUS formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    MINUS           reduce using rule 2 (formula -> MINUS formula .)
+    $end            reduce using rule 2 (formula -> MINUS formula .)
+    RPAREN          reduce using rule 2 (formula -> MINUS formula .)
+    TIMES           shift and go to state 7
+    PLUS            shift and go to state 8
+    DIV             shift and go to state 10
+
+  ! TIMES           [ reduce using rule 2 (formula -> MINUS formula .) ]
+  ! PLUS            [ reduce using rule 2 (formula -> MINUS formula .) ]
+  ! DIV             [ reduce using rule 2 (formula -> MINUS formula .) ]
+  ! MINUS           [ shift and go to state 9 ]
+
+
+state 12
+
+    (7) formula -> LPAREN formula . RPAREN
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    RPAREN          shift and go to state 17
+    TIMES           shift and go to state 7
+    PLUS            shift and go to state 8
+    MINUS           shift and go to state 9
+    DIV             shift and go to state 10
+
+
+state 13
+
+    (3) formula -> formula TIMES formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    TIMES           reduce using rule 3 (formula -> formula TIMES formula .)
+    PLUS            reduce using rule 3 (formula -> formula TIMES formula .)
+    MINUS           reduce using rule 3 (formula -> formula TIMES formula .)
+    DIV             reduce using rule 3 (formula -> formula TIMES formula .)
+    $end            reduce using rule 3 (formula -> formula TIMES formula .)
+    RPAREN          reduce using rule 3 (formula -> formula TIMES formula .)
+
+  ! TIMES           [ shift and go to state 7 ]
+  ! PLUS            [ shift and go to state 8 ]
+  ! MINUS           [ shift and go to state 9 ]
+  ! DIV             [ shift and go to state 10 ]
+
+
+state 14
+
+    (4) formula -> formula PLUS formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    PLUS            reduce using rule 4 (formula -> formula PLUS formula .)
+    MINUS           reduce using rule 4 (formula -> formula PLUS formula .)
+    $end            reduce using rule 4 (formula -> formula PLUS formula .)
+    RPAREN          reduce using rule 4 (formula -> formula PLUS formula .)
+    TIMES           shift and go to state 7
+    DIV             shift and go to state 10
+
+  ! TIMES           [ reduce using rule 4 (formula -> formula PLUS formula .) ]
+  ! DIV             [ reduce using rule 4 (formula -> formula PLUS formula .) ]
+  ! PLUS            [ shift and go to state 8 ]
+  ! MINUS           [ shift and go to state 9 ]
+
+
+state 15
+
+    (5) formula -> formula MINUS formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    MINUS           reduce using rule 5 (formula -> formula MINUS formula .)
+    $end            reduce using rule 5 (formula -> formula MINUS formula .)
+    RPAREN          reduce using rule 5 (formula -> formula MINUS formula .)
+    TIMES           shift and go to state 7
+    PLUS            shift and go to state 8
+    DIV             shift and go to state 10
+
+  ! TIMES           [ reduce using rule 5 (formula -> formula MINUS formula .) ]
+  ! PLUS            [ reduce using rule 5 (formula -> formula MINUS formula .) ]
+  ! DIV             [ reduce using rule 5 (formula -> formula MINUS formula .) ]
+  ! MINUS           [ shift and go to state 9 ]
+
+
+state 16
+
+    (6) formula -> formula DIV formula .
+    (3) formula -> formula . TIMES formula
+    (4) formula -> formula . PLUS formula
+    (5) formula -> formula . MINUS formula
+    (6) formula -> formula . DIV formula
+
+    PLUS            reduce using rule 6 (formula -> formula DIV formula .)
+    MINUS           reduce using rule 6 (formula -> formula DIV formula .)
+    DIV             reduce using rule 6 (formula -> formula DIV formula .)
+    $end            reduce using rule 6 (formula -> formula DIV formula .)
+    RPAREN          reduce using rule 6 (formula -> formula DIV formula .)
+    TIMES           shift and go to state 7
+
+  ! TIMES           [ reduce using rule 6 (formula -> formula DIV formula .) ]
+  ! PLUS            [ shift and go to state 8 ]
+  ! MINUS           [ shift and go to state 9 ]
+  ! DIV             [ shift and go to state 10 ]
+
+
+state 17
+
+    (7) formula -> LPAREN formula RPAREN .
+
+    TIMES           reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+    PLUS            reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+    MINUS           reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+    DIV             reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+    $end            reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+    RPAREN          reduce using rule 7 (formula -> LPAREN formula RPAREN .)
+
