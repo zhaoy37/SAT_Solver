@@ -9,6 +9,27 @@ To run the solver, please clone the github repository and run the command `pytho
 
 We also provide an interactive tutorial, through which the user can learn about SAT and SMT solving (as well as solving some NP-complete problems) via a jupyter notebook. The user can access the tutorial at `/EduSAT_Interactive_Tutorial/Tutorial on SAT and SMT Solving.ipynb`.
 
+## Python Package
+The user is encouraged to try out our python package if they simply want to use the solvers as tools instead of learning about the details. To use the python package, in your terminal, cd to the subfolder `/python_package`. Then, install the wheel file for the python package with the command `pip install edusat-0.0.1-py3-none-any.whl`. There are three parts to the python package:
+
+### sat_solver.sat_solve.
+
+To use the sat solver, in your python file, use the command `from edusat.sat_solver import sat_solve`. The function takes one required parameter `formula` in natural language. Any SAT atom must start with the letter x. The users can selet the method "dpll" vs. "robdd" and multiple = True or multiple = False to control which SAT solving method they want to use and if they want all the solutions (multiple = True) or just one (multiple = False).
+
+To give a concrete example, the return of `sat_solve("x1 or x2", multiple = True)` can be `[{'x1': 1, 'x2': 0}, {'x1': 1, 'x2': 1}, {'x1': 0, 'x2': 1}]` (you can ignore any LALR table generations).
+
+### smt_solver.smt_solve
+
+To use the smt solver, in your python file, use the command `from edusat.smt_solver import smt_solve`. The function takes three required parameters `formula` in natural language, which denotes the SMT formula (where the atoms must start with y), `lower_bound`, which denotes the lower bound of the search range, and `upper_bound`, which denotes the upper bound of the search range. An optional parameter `method` is given for the users to select which solving method to use: "backtracking", "minconflicts", or "robdd". For any information about the parameters please read the tutorials on SMT solving in the tutorial.
+
+To give a concrete example, `smt_solve("y1 < y2 + 1 and y2 > 3", 0, 10)` can be `{'y2': 4, 'y1': 0}`.
+
+## from problems_solver import *
+
+To use any of the solvers described in Section Applications, you can use the command `from edusat.problems_solver import *`.
+
+For instance calling `solve_n_queens(8, method = "minconflicts")` generates the solution to the 8-queens problem.
+
 ## Applications
 ### Background knowledge on SAT and SMT
 Imagine that you are provided with a boolean formula P and asked to determine if P is *satisfiable*. P is satisfiabile if there exists values for each variable such that P evaluates to true. For example, the formula $P = (x1 \wedge x2) \vee x3$ is satisfiable because there exists a model {x1 = 1, x2 = 1, x3 = 0} such that the the boolean formula evaluates to true. On the contrary, $P = (x1 \wedge \neg x1)$ is not satisfiable. *Validity* means that the formula evaluates to true for all models.
