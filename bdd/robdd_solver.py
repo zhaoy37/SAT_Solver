@@ -333,6 +333,8 @@ def solve(sat_formula, get_time=False, multiple=True):
             except:
                 pass
 
+    ret_solutions = [i for n, i in enumerate(all_solutions) if i not in all_solutions[n + 1:]]
+
     if get_time:
-        return all_solutions, timeit.default_timer()-start_time
-    return all_solutions
+        return ret_solutions, timeit.default_timer()-start_time
+    return ret_solutions
