@@ -11,6 +11,7 @@ from dpll.solver import solve
 from bdd.robdd_solver import solve as robdd_solve
 from resources.calculator import calculate
 import random
+import re
 
 
 def check_int(s):
@@ -69,13 +70,12 @@ def find_conflicted_variables(converted, assignment):
         except ZeroDivisionError:
             vars_of_interest = []
             if type(formula[1]) == str:
-                vars_of_interest.extend(formula[1].split())
+                vars_of_interest.extend(re.findall("y[0-9]+", formula[1]))
             if type(formula[2]) == str:
-                vars_of_interest.extend(formula[2].split())
+                vars_of_interest.extend(re.findall("y[0-9]+", formula[2]))
 
             for var in vars_of_interest:
-                if (var not in ["+", "-", "*", "/", "//"]) and (not check_int(var)):
-                    conflicted.add(var)
+                conflicted.add(var)
             continue
 
         operator = formula[0]
@@ -104,13 +104,12 @@ def find_conflicted_variables(converted, assignment):
         if conflict_flag:
             vars_of_interest = []
             if type(formula[1]) == str:
-                vars_of_interest.extend(formula[1].split())
+                vars_of_interest.extend(re.findall("y[0-9]+", formula[1]))
             if type(formula[2]) == str:
-                vars_of_interest.extend(formula[2].split())
+                vars_of_interest.extend(re.findall("y[0-9]+", formula[2]))
 
             for var in vars_of_interest:
-                if (var not in ["+", "-", "*", "/", "//"]) and (not check_int(var)):
-                    conflicted.add(var)
+                conflicted.add(var)
 
     return conflicted
 

@@ -14,7 +14,7 @@ from independent_set.independent_set_solver import solve_independent_set, find_m
 from partition.partition_solver import solve_partition
 
 
-def main(method='dpll'):
+def main(method='minconflicts'):
     """
     Problem 1: Graph coloring.
     """
