@@ -10,7 +10,7 @@ To run the solver, please clone the github repository and run the command `pytho
 We also provide an interactive tutorial, through which the user can learn about SAT and SMT solving (as well as solving some NP-complete problems) via a jupyter notebook. The user can access the tutorial at `/EduSAT_Interactive_Tutorial/Tutorial on SAT and SMT Solving.ipynb`.
 
 ## Python Package
-The user is encouraged to try out our python package if they simply want to use the solvers as tools instead of learning about the details. To use the python package, in your terminal, cd to the subfolder `/python_package`. Then, install the wheel file for the python package with the command `pip install edusat-0.0.1-py3-none-any.whl`. The source codes, which are basically adopted from the project, for generating the wheel file can be found here if the reader is interested: https://drive.google.com/drive/folders/1YB99o1JwoQ1SUOwS_B_sQgXIJpMBDwfC?usp=sharing
+The user is encouraged to try out our python package if they simply want to use the solvers as tools instead of learning about the details. To use the python package, in your terminal, cd to the subfolder `/python_package`. Then, install the wheel file for the python package with the command `pip install edusat-0.0.1-py3-none-any.whl`. The source codes, which are basically adopted from the project, for generating the wheel file can be found here if the reader is interested: https://drive.google.com/drive/folders/1qad9KoW1oBqlFKit0CILObY3K4hAiaft?usp=sharing
 
 ### sat_solver.sat_solve.
 
